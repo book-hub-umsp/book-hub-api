@@ -8,11 +8,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/BooksService/BooksService.csproj", "src/BooksService/"]
-COPY ["src/Storage/Storage.csproj", "src/Storage/"]
-RUN dotnet restore "./src/BooksService/BooksService.csproj"
+COPY ["BooksService/BooksService.csproj", "BooksService/"]
+COPY ["Storage/Storage.csproj", "Storage/"]
+RUN dotnet restore "./BooksService/BooksService.csproj"
 COPY . .
-WORKDIR "/src/src/BooksService"
+WORKDIR "/src/BooksService"
 RUN dotnet build "./BooksService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
