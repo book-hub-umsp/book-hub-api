@@ -13,6 +13,8 @@ COPY ["Storage/Storage.csproj", "Storage/"]
 RUN dotnet restore "./BooksService/BooksService.csproj"
 COPY . .
 WORKDIR "/src/BooksService"
+
+RUN dotnet dev-certs https
 RUN dotnet build "./BooksService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
