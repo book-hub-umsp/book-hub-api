@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksService", "src\BooksService\BooksService.csproj", "{E54588A0-AC4B-4A90-B94A-E18DB977C07C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "src\Storage\Storage.csproj", "{F6C803B1-AE64-4EAF-9706-8AB82E112773}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E54588A0-AC4B-4A90-B94A-E18DB977C07C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E54588A0-AC4B-4A90-B94A-E18DB977C07C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E54588A0-AC4B-4A90-B94A-E18DB977C07C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E54588A0-AC4B-4A90-B94A-E18DB977C07C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C803B1-AE64-4EAF-9706-8AB82E112773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C803B1-AE64-4EAF-9706-8AB82E112773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C803B1-AE64-4EAF-9706-8AB82E112773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C803B1-AE64-4EAF-9706-8AB82E112773}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F97AD105-2C44-41FC-A6F0-7EA0065F4488}
+	EndGlobalSection
+EndGlobal
