@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Storage.PostgreSQL.Abstractions;
+﻿using BookHub.Storage.PostgreSQL.Abstractions;
+using Microsoft.Extensions.Logging;
 
-namespace Storage.PostgreSQL;
+namespace BookHub.Storage.PostgreSQL;
 
 public sealed class RepositoryContext : IRepositoryContext
 {

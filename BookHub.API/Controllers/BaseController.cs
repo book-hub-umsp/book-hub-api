@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BooksService.Controllers
+namespace BookHub.API.Controllers
 {
     /// <summary>
     /// A controller for verifying user authentication.

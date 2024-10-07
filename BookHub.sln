@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksService", "src\BooksService\BooksService.csproj", "{E54588A0-AC4B-4A90-B94A-E18DB977C07C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.API", "BookHub.API\BookHub.API.csproj", "{E54588A0-AC4B-4A90-B94A-E18DB977C07C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Storage", "src\Storage\Storage.csproj", "{F6C803B1-AE64-4EAF-9706-8AB82E112773}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Storage", "BookHub.Storage\BookHub.Storage.csproj", "{F6C803B1-AE64-4EAF-9706-8AB82E112773}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Tests", "test\Storage.Tests\Storage.Tests.csproj", "{839F7801-88F7-4C14-BDF7-D8023651324D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Storage.Tests", "BookHub.Storage.Tests\BookHub.Storage.Tests.csproj", "{839F7801-88F7-4C14-BDF7-D8023651324D}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose.dcproj", "{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "BookHub.docker-compose", "BookHub.docker-compose/BookHub.docker-compose.dcproj", "{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

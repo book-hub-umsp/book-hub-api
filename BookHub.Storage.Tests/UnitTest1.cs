@@ -1,4 +1,4 @@
-namespace Storage.Tests;
+namespace BookHub.Storage.Tests;
 
 public class UnitTest1
 {

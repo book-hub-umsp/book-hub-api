@@ -4,7 +4,7 @@ using Google.Apis.Auth;
 
 using Microsoft.Extensions.Options;
 
-namespace BooksService.Authentification;
+namespace BookHub.API.Authentification;
 
 /// <summary>
 /// Представляет валидатора <see cref="GoogleJsonWebSignature.ValidationSettings"/>.

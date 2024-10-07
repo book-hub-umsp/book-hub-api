@@ -1,4 +1,4 @@
-﻿namespace Storage.PostgreSQL.Abstractions;
+﻿namespace BookHub.Storage.PostgreSQL.Abstractions;
 
 public interface IRepository
 {

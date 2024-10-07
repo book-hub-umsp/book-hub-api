@@ -1,10 +1,10 @@
-﻿using BooksService.Authentification;
+﻿using BookHub.API.Authentification;
 
 using Google.Apis.Auth;
 
 using Microsoft.Extensions.Options;
 
-namespace BooksService.Registrations;
+namespace BookHub.API.Registrations;
 
 internal static class LogicExtensions
 {

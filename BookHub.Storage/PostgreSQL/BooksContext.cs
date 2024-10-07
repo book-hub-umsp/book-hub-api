@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Storage.PostgreSQL;
+namespace BookHub.Storage.PostgreSQL;
 
 public sealed class BooksContext : DbContext
 {
