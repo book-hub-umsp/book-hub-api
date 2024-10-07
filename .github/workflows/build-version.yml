@@ -1,0 +1,13 @@
+name: Create git tag
+
+on:
+  pull_request:
+    types: [closed]
+
+
+jobs:
+  git-tag-create:
+    permissions:
+      contents: write
+    uses: book-hub-umsp/bh-infrastructure/.github/workflows/version.yml@master
+    secrets: inherit
