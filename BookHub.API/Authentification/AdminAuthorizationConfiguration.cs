@@ -1,4 +1,4 @@
-﻿namespace BooksService.Authentification;
+﻿namespace BookHub.API.Authentification;
 
 /// <summary>
 /// Конфигураци, содержащая список администраторов сервиса.

@@ -1,5 +1,5 @@
-using BooksService.Authentification;
-using BooksService.Registrations;
+using BookHub.API.Authentification;
+using BookHub.API.Registrations;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 var builder = WebApplication.CreateBuilder(args);

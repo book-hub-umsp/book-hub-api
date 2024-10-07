@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 using Microsoft.Extensions.Options;
 
-namespace BooksService.Authentification;
+namespace BookHub.API.Authentification;
 
 /// <summary>
 /// Валидатор для <see cref="AuthorizationConfiguration"/>.

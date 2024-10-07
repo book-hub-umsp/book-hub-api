@@ -1,7 +1,7 @@
-﻿using Storage.PostgreSQL;
+﻿using BookHub.Storage.PostgreSQL;
 
 using Microsoft.EntityFrameworkCore;
-using Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Abstractions;
 using StackExchange.Redis;
 
 namespace BooksService.Registrations;
