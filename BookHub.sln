@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models", "BookHub.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models.Tests", "BookHub.Models.Tests\BookHub.Models.Tests.csproj", "{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Logic", "BookHub.Logic\BookHub.Logic.csproj", "{2CBF004C-9B6B-48D3-860B-24B181C2F60D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CBF004C-9B6B-48D3-860B-24B181C2F60D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CBF004C-9B6B-48D3-860B-24B181C2F60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CBF004C-9B6B-48D3-860B-24B181C2F60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CBF004C-9B6B-48D3-860B-24B181C2F60D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
