@@ -41,7 +41,7 @@ public enum BookGenre
     Elegy,
 
     /// <summary>
-    /// Поэма.
+    /// Поcлание.
     /// </summary>
     Epistle,
 
