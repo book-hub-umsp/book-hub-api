@@ -7,6 +7,8 @@ namespace BookHub.Models.Users;
 /// </summary>
 public sealed class UserProfileInfo
 {
+    public Id<User> Id { get; }
+
     public Name<User> Name { get; }
 
     public Email Email { get; }
@@ -14,10 +16,14 @@ public sealed class UserProfileInfo
     public About About { get; }
 
     public UserProfileInfo(
+        Id<User> id,
         Name<User> name,
         Email email,
         About about)
     {
+        ArgumentNullException.ThrowIfNull(id);
+        Id = id;
+
         ArgumentNullException.ThrowIfNull(name);
         Name = name;
 

@@ -3,7 +3,7 @@ using FluentAssertions;
 using System.ComponentModel;
 using Xunit;
 
-namespace BookHub.Models.Tests;
+namespace BookHub.Models.Tests.Users;
 
 public class UserTests
 {
@@ -12,7 +12,11 @@ public class UserTests
     public void CanCreate()
     {
         // Arrange
-        var profileInfo = new UserProfileInfo(new("name"), new("email"), new("about"));
+        var profileInfo = new UserProfileInfo(
+            new(123),
+            new("name"),
+            new("email"), 
+            new("about"));
         var userStatus = UserStatus.Blocked;
         var userPremission = UserPremission.Moderation;
 
@@ -30,7 +34,7 @@ public class UserTests
     public void CanNotCreateWithoutProfileInfo()
     {
         // Act
-        var exception = Record.Exception(() => 
+        var exception = Record.Exception(() =>
             new User(
                 null!,
                 UserStatus.Blocked,
@@ -47,7 +51,11 @@ public class UserTests
         // Act
         var exception = Record.Exception(() =>
             new User(
-                new UserProfileInfo(new("name"), new("email"), new("about")),
+                new UserProfileInfo(
+                    new(123),
+                    new("name"),
+                    new("email"), 
+                    new("about")),
                 (UserStatus)int.MaxValue,
                 UserPremission.Moderation));
 
@@ -62,7 +70,11 @@ public class UserTests
         // Act
         var exception = Record.Exception(() =>
             new User(
-                new UserProfileInfo(new("name"), new("email"), new("about")),
+                new UserProfileInfo(
+                    new(123), 
+                    new("name"), 
+                    new("email"), 
+                    new("about")),
                 UserStatus.Blocked,
                 (UserPremission)int.MaxValue));
 

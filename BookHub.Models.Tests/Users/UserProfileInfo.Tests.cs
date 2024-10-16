@@ -2,7 +2,7 @@ using BookHub.Models.Users;
 using FluentAssertions;
 using Xunit;
 
-namespace BookHub.Models.Tests;
+namespace BookHub.Models.Tests.Users;
 
 public class UserProfileInfoTests
 {
@@ -11,17 +11,35 @@ public class UserProfileInfoTests
     public void CanCreate()
     {
         // Arrange
+        var id = new Id<User>(123);
         var name = new Name<User>("name");
         var email = new Email("email@gmail.com");
         var about = new About("some");
 
         // Act
-        var profileInfo = new UserProfileInfo(name, email, about);
+        var profileInfo = new UserProfileInfo(id, name, email, about);
 
         // Assert
+        profileInfo.Id.Should().Be(id);
         profileInfo.Name.Should().Be(name);
         profileInfo.Email.Should().Be(email);
         profileInfo.About.Should().Be(about);
+    }
+
+    [Fact(DisplayName = "Cannot create without id.")]
+    [Trait("Category", "Unit")]
+    public void CanNotCreateWithoutId()
+    {
+        // Act
+        var exception = Record.Exception(() =>
+            new UserProfileInfo(
+                null!,
+                new("name"),
+                new("email@gmail.com"),
+                new("about")));
+
+        // Assert
+        exception.Should().BeOfType<ArgumentNullException>();
     }
 
     [Fact(DisplayName = "Cannot create without name.")]
@@ -31,6 +49,7 @@ public class UserProfileInfoTests
         // Act
         var exception = Record.Exception(() =>
             new UserProfileInfo(
+                new(123),
                 null!,
                 new("email@gmail.com"),
                 new("about")));
