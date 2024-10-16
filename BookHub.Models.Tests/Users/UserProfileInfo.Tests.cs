@@ -65,6 +65,7 @@ public class UserProfileInfoTests
         // Act
         var exception = Record.Exception(() =>
             new UserProfileInfo(
+                new(123),
                 new("name"),
                 null!,
                 new("about")));
@@ -80,6 +81,7 @@ public class UserProfileInfoTests
         // Act
         var exception = Record.Exception(() =>
             new UserProfileInfo(
+                new(123),
                 new("name"),
                 new("email@gmail.com"),
                 null!));
