@@ -24,4 +24,5 @@ public sealed class BookAuthor : IEquatable<BookAuthor>
         other is not null
             ? AuthorId == other.AuthorId 
             : false;
+    public override int GetHashCode() => AuthorId.GetHashCode();
 }
