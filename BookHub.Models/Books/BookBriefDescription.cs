@@ -1,5 +1,10 @@
-﻿namespace BookHub.Storage.Models;
+﻿using System;
 
+namespace BookHub.Models.Books;
+
+/// <summary>
+/// Краткое описание книги.
+/// </summary>
 public sealed record class BookBriefDescription
 {
     public string Content { get; }

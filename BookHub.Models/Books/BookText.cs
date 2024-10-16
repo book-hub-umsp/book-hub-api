@@ -1,13 +1,15 @@
-﻿namespace BookHub.Storage.Models;
+﻿using System;
+
+namespace BookHub.Models.Books;
 
 /// <summary>
-/// Ключевое словосочетание.
+/// Сам текст книги.
 /// </summary>
-public sealed record class KeyWord
+public sealed record class BookText
 {
     public string Content { get; }
 
-    public KeyWord(string content)
+    public BookText(string content)
     {
         ArgumentException.ThrowIfNullOrEmpty(content);
 
@@ -27,5 +29,5 @@ public sealed record class KeyWord
     }
 
     private const int MIN_LENGHT = 1;
-    private const int MAX_LENGHT = 250;
+    private const int MAX_LENGHT = 1_000_000;
 }

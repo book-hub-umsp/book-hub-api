@@ -1,4 +1,4 @@
-﻿namespace BookHub.Storage.Models;
+﻿namespace BookHub.Models.Books;
 
 /// <summary>
 /// Жанр книги.

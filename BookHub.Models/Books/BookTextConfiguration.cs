@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookHub.Storage.Models;
+namespace BookHub.Models.Books;
 
 /// <summary>
 /// Конфигурация лимита книги.
