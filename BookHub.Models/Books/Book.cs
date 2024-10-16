@@ -56,4 +56,18 @@ public sealed class Book
         CreationDate = DateTimeOffset.UtcNow;
         LastEditDate = CreationDate;
     }
+
+    public void ChangeDefinition(BookDefinition newDefinition)
+    {
+        ArgumentNullException.ThrowIfNull(newDefinition);
+
+        Definition = newDefinition;
+    }
+
+    public void ChangeText(BookText newText)
+    {
+        ArgumentNullException.ThrowIfNull(newText);
+
+        Text = newText;
+    }
 }
