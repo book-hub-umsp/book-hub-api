@@ -1,5 +1,5 @@
 ﻿using BookHub.API.Authentification;
-
+using BookHub.Logic.Configuration;
 using Google.Apis.Auth;
 
 using Microsoft.Extensions.Options;
@@ -22,4 +22,11 @@ internal static class LogicExtensions
                 .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
                 .ValidateOnStart()
                 .Services;
+
+    public static IServiceCollection AddRestOfConfigs(
+        this IServiceCollection services,
+        IConfiguration configuration)
+       => services
+            .Configure<BookTextConfiguration>(configuration.GetSection(nameof(BookTextConfiguration)))
+            .AddSingleton<IValidateOptions<BookTextConfiguration>, BookTextConfigurationValidator>();
 }

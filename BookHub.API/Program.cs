@@ -50,7 +50,9 @@ builder.Services.AddAuthorizationBuilder()
                     throw new InvalidOperationException(
                         "Admin authorization configuration is not found.")));
 
-builder.Services.AddAuthorizationConfigs(builder.Configuration);
+builder.Services
+    .AddAuthorizationConfigs(builder.Configuration)
+    .AddRestOfConfigs(builder.Configuration);
 
 var app = builder.Build();
 
