@@ -18,15 +18,15 @@ public class UserTests
             new("email@gmail.com"), 
             new("about"));
         var userStatus = UserStatus.Blocked;
-        var userPremission = UserPermission.Moderation;
+        var userPermission = UserPermission.Moderation;
 
         // Act
-        var user = new User(profileInfo, userStatus, userPremission);
+        var user = new User(profileInfo, userStatus, userPermission);
 
         // Assert
         user.ProfileInfo.Should().Be(profileInfo);
         user.Status.Should().Be(userStatus);
-        user.Permission.Should().Be(userPremission);
+        user.Permission.Should().Be(userPermission);
     }
 
     [Fact(DisplayName = "Cannot create without profile info.")]
