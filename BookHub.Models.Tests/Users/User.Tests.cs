@@ -18,7 +18,7 @@ public class UserTests
             new("email"), 
             new("about"));
         var userStatus = UserStatus.Blocked;
-        var userPremission = UserPremission.Moderation;
+        var userPremission = UserPermission.Moderation;
 
         // Act
         var user = new User(profileInfo, userStatus, userPremission);
@@ -26,7 +26,7 @@ public class UserTests
         // Assert
         user.ProfileInfo.Should().Be(profileInfo);
         user.Status.Should().Be(userStatus);
-        user.Premission.Should().Be(userPremission);
+        user.Permission.Should().Be(userPremission);
     }
 
     [Fact(DisplayName = "Cannot create without profile info.")]
@@ -38,7 +38,7 @@ public class UserTests
             new User(
                 null!,
                 UserStatus.Blocked,
-                UserPremission.Moderation));
+                UserPermission.Moderation));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
@@ -57,7 +57,7 @@ public class UserTests
                     new("email"), 
                     new("about")),
                 (UserStatus)int.MaxValue,
-                UserPremission.Moderation));
+                UserPermission.Moderation));
 
         // Assert
         exception.Should().BeOfType<InvalidEnumArgumentException>();
@@ -76,7 +76,7 @@ public class UserTests
                     new("email"), 
                     new("about")),
                 UserStatus.Blocked,
-                (UserPremission)int.MaxValue));
+                (UserPermission)int.MaxValue));
 
         // Assert
         exception.Should().BeOfType<InvalidEnumArgumentException>();

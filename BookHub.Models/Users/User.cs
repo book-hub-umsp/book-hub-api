@@ -12,12 +12,12 @@ public sealed class User
 
     public UserStatus Status { get; }
 
-    public UserPremission Premission { get; }
+    public UserPermission Permission { get; }
 
     public User(
         UserProfileInfo profileInfo,
         UserStatus status,
-        UserPremission premission)
+        UserPermission premission)
     {
         ArgumentNullException.ThrowIfNull(profileInfo);
         ProfileInfo = profileInfo;
@@ -36,8 +36,8 @@ public sealed class User
             throw new InvalidEnumArgumentException(
                 nameof(premission),
                 (int)premission,
-                typeof(UserPremission));
+                typeof(UserPermission));
         }
-        Premission = premission;
+        Permission = premission;
     }
 }

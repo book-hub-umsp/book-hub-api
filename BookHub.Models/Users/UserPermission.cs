@@ -3,7 +3,7 @@
 /// <summary>
 /// Права пользователя.
 /// </summary>
-public enum UserPremission
+public enum UserPermission
 {
     None,
     Moderation

@@ -9,4 +9,4 @@
 /// <param name="Value">
 /// Значение.
 /// </param>
-public sealed class Id<TEntity>(long Value);
+public sealed record class Id<TEntity>(long Value);
