@@ -15,7 +15,7 @@ public class UserTests
         var profileInfo = new UserProfileInfo(
             new(123),
             new("name"),
-            new("email"), 
+            new("email@gmail.com"), 
             new("about"));
         var userStatus = UserStatus.Blocked;
         var userPremission = UserPermission.Moderation;
@@ -54,7 +54,7 @@ public class UserTests
                 new UserProfileInfo(
                     new(123),
                     new("name"),
-                    new("email"), 
+                    new("email@gmail.com"), 
                     new("about")),
                 (UserStatus)int.MaxValue,
                 UserPermission.Moderation));
@@ -73,7 +73,7 @@ public class UserTests
                 new UserProfileInfo(
                     new(123), 
                     new("name"), 
-                    new("email"), 
+                    new("email@gmail.com"), 
                     new("about")),
                 UserStatus.Blocked,
                 (UserPermission)int.MaxValue));

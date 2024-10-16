@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mail;
 
 namespace BookHub.Models.Users;
 
@@ -11,14 +12,14 @@ public sealed class UserProfileInfo
 
     public Name<User> Name { get; }
 
-    public Email Email { get; }
+    public MailAddress Email { get; }
 
     public About About { get; }
 
     public UserProfileInfo(
         Id<User> id,
         Name<User> name,
-        Email email,
+        MailAddress email,
         About about)
     {
         ArgumentNullException.ThrowIfNull(id);

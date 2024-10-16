@@ -1,5 +1,6 @@
 using BookHub.Models.Users;
 using FluentAssertions;
+using System.Net.Mail;
 using Xunit;
 
 namespace BookHub.Models.Tests.Users;
@@ -13,7 +14,7 @@ public class UserProfileInfoTests
         // Arrange
         var id = new Id<User>(123);
         var name = new Name<User>("name");
-        var email = new Email("email@gmail.com");
+        var email = new MailAddress("email@gmail.com");
         var about = new About("some");
 
         // Act
