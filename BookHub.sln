@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.API", "BookHub.API\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Storage", "BookHub.Storage\BookHub.Storage.csproj", "{F6C803B1-AE64-4EAF-9706-8AB82E112773}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Storage.Tests", "BookHub.Storage.Tests\BookHub.Storage.Tests.csproj", "{839F7801-88F7-4C14-BDF7-D8023651324D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Storage.Tests", "BookHub.Storage.Tests\BookHub.Storage.Tests.csproj", "{839F7801-88F7-4C14-BDF7-D8023651324D}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "BookHub.docker-compose", "BookHub.docker-compose/BookHub.docker-compose.dcproj", "{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "BookHub.docker-compose", "BookHub.docker-compose\BookHub.docker-compose.dcproj", "{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models", "BookHub.Models\BookHub.Models.csproj", "{DAD41106-F589-4A38-8BEC-5534AC18D467}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models.Tests", "BookHub.Models.Tests\BookHub.Models.Tests.csproj", "{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAD41106-F589-4A38-8BEC-5534AC18D467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAD41106-F589-4A38-8BEC-5534AC18D467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAD41106-F589-4A38-8BEC-5534AC18D467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAD41106-F589-4A38-8BEC-5534AC18D467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
