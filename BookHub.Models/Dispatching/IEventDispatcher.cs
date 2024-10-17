@@ -1,4 +1,5 @@
 ﻿using System;
+using BookHub.Models.Dispatching.Events;
 
 namespace BookHub.Models.Dispatching;
 

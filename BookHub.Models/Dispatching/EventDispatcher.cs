@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using BookHub.Models.Dispatching.Events;
 
 namespace BookHub.Models.Dispatching;
 

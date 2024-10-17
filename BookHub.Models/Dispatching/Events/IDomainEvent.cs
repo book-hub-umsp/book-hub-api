@@ -1,4 +1,4 @@
-﻿namespace BookHub.Models.Dispatching;
+﻿namespace BookHub.Models.Dispatching.Events;
 
 /// <summary>
 /// Маркер для доменного события.
