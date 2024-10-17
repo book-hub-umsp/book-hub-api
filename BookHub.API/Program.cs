@@ -1,5 +1,7 @@
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
+using BookHub.Models.Dispatching;
+using BooksService.Registrations;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +54,9 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services
     .AddAuthorizationConfigs(builder.Configuration)
-    .AddRestOfConfigs(builder.Configuration);
+    .AddRestOfConfigs(builder.Configuration)
+    .AddPostgresStorage(builder.Configuration)
+    .AddSingleton<IEventDispatcher, EventDispatcher>();
 
 var app = builder.Build();
 
