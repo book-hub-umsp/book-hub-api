@@ -8,11 +8,11 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// </summary>
 public sealed class Book
 {
-    public Id<Book> Id { get; set; }
+    public long Id { get; set; }
 
-    public required Name<Book> Caption { get; set; }
+    public required string Caption { get; set; }
 
-    public required Id<Author> AuthorId { get; set; }
+    public required long AuthorId { get; set; }
 
     public required BookGenre BookGenre { get; set; }
 
@@ -26,7 +26,7 @@ public sealed class Book
 
     public required DateTimeOffset LastEditDate { get; set; }
 
-    public HashSet<Author> LikedUsers { get; set; } = null!;
+    public HashSet<FavouriteLink> LikedUsersLinks { get; set; } = null!;
 
-    public HashSet<KeyWord> Keywords { get; set; } = null!;
+    public HashSet<KeyWordLink> KeywordsLinks { get; set; } = null!;
 }

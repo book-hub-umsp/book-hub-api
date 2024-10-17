@@ -1,4 +1,5 @@
 ﻿using BookHub.Models;
+using BookHub.Models.Books;
 
 namespace BookHub.Storage.PostgreSQL.Models;
 
@@ -7,7 +8,11 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// </summary>
 public sealed class KeyWordLink
 {
-    public required Id<KeyWord> KeyWordId { get; init; }
+    public required long KeyWordId { get; init; }
 
-    public required Id<Book> BookId { get; init; }
+    public KeyWord KeyWord { get; set; }
+
+    public required long BookId { get; init; }
+
+    public Book Book { get; set; }
 }

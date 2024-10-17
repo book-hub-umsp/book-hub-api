@@ -7,7 +7,11 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// </summary>
 public sealed class FavouriteLink
 {
-    public required Id<Author> AuthorId { get; init; }
+    public required long AuthorId { get; init; }
 
-    public required Id<Book> BookId { get; init; }
+    public Author Author { get; set; }
+
+    public required long BookId { get; init; }
+
+    public Book Book { get; set; }
 }
