@@ -6,7 +6,7 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Модель книги.
 /// </summary>
-public sealed class Book
+public class Book
 {
     public BookAuthor Author { get; }
 
@@ -14,17 +14,17 @@ public sealed class Book
     { 
         get { return Definition; } 
 
-        private set { LastEditDate = DateTimeOffset.UtcNow; } 
+        protected set { LastEditDate = DateTimeOffset.UtcNow; } 
     }
 
     public BookText Text
     {
         get { return Text; }
 
-        private set { LastEditDate = DateTimeOffset.UtcNow; }
+        protected set { LastEditDate = DateTimeOffset.UtcNow; }
     }
 
-    public BookStatus Status { get; private set; }
+    public BookStatus Status { get; protected set; }
 
     public DateTimeOffset CreationDate { get; }
 
@@ -55,19 +55,5 @@ public sealed class Book
 
         CreationDate = DateTimeOffset.UtcNow;
         LastEditDate = CreationDate;
-    }
-
-    public void ChangeDefinition(BookDefinition newDefinition)
-    {
-        ArgumentNullException.ThrowIfNull(newDefinition);
-
-        Definition = newDefinition;
-    }
-
-    public void ChangeText(BookText newText)
-    {
-        ArgumentNullException.ThrowIfNull(newText);
-
-        Text = newText;
     }
 }

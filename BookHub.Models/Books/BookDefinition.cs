@@ -7,18 +7,18 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Описание книги.
 /// </summary>
-public sealed class BookDefinition
+public class BookDefinition
 {
     /// <remarks>
     /// Подразумевается неизменяемым.
     /// </remarks>
     public BookGenre Genre { get; }
 
-    public Name<Book> Caption { get; private set; }
+    public Name<Book> Caption { get; protected set; }
 
-    public BookBriefDescription BriefDescription { get; private set; }
+    public BookBriefDescription BriefDescription { get; protected set; }
 
-    public HashSet<KeyWord> KeyWords { get; private set; } = [];
+    public HashSet<KeyWord> KeyWords { get; protected set; } = [];
 
     public BookDefinition(
         BookGenre genre, 
@@ -38,29 +38,5 @@ public sealed class BookDefinition
         Caption = caption ?? throw new ArgumentNullException(nameof(caption));
         BriefDescription = briefDescription 
             ?? throw new ArgumentNullException(nameof(briefDescription));
-    }
-
-    public void ChangeCaption(Name<Book> newCaption)
-    {
-        ArgumentNullException.ThrowIfNull(nameof(newCaption));
-
-        Caption = newCaption;
-    }
-
-    public void ChangeBriefDescription(BookBriefDescription newBriefDescription)
-    {
-        ArgumentNullException.ThrowIfNull(nameof(newBriefDescription));
-
-        BriefDescription = newBriefDescription;
-    }
-
-    public void AddKeyWords(IReadOnlySet<KeyWord> keyWords)
-    {
-        ArgumentNullException.ThrowIfNull(nameof(keyWords));
-
-        foreach (var keyWord in keyWords)
-        {
-            _ = KeyWords.Add(keyWord);
-        }
     }
 }
