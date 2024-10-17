@@ -16,4 +16,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PostgreSQL\Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookHub.Models\BookHub.Models.csproj" />
+  </ItemGroup>
+
 </Project>

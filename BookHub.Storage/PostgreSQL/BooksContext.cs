@@ -14,8 +14,6 @@ public sealed class BooksContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // write your mapping
-
         base.OnModelCreating(modelBuilder);
     }
 }
