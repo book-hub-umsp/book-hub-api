@@ -5,13 +5,13 @@ namespace BookHub.Storage.PostgreSQL;
 
 public sealed class BooksContext : DbContext
 {
-    public DbSet<Author> Authors { get; }
+    public DbSet<Author> Authors { get; } = null!;
 
-    public DbSet<Book> Books { get; }
+    public DbSet<Book> Books { get; } = null!;
 
-    public DbSet<KeyWord> KeyWords { get; }
+    public DbSet<KeyWord> KeyWords { get; } = null!;
 
-    public DbSet<KeyWordLink> KeyWordsLinks { get; }
+    public DbSet<KeyWordLink> KeyWordsLinks { get; } = null!;
 
     public BooksContext(DbContextOptions<BooksContext> options)
         : base(options)
