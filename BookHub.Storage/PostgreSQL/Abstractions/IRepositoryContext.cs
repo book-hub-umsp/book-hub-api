@@ -1,6 +1,20 @@
-﻿namespace BookHub.Storage.PostgreSQL.Abstractions;
+﻿using BookHub.Storage.PostgreSQL.Models;
+using Microsoft.EntityFrameworkCore;
 
+namespace BookHub.Storage.PostgreSQL.Abstractions;
+
+/// <summary>
+/// Описывает контекст для репозиториев.
+/// </summary>
 public interface IRepositoryContext
 {
-    void SaveChanges();
+    public DbSet<Author> Authors { get; }
+
+    public DbSet<Book> Books { get; }
+
+    public DbSet<KeyWord> KeyWords { get; }
+
+    public DbSet<FavouriteLink> FavoriteLinks { get; }
+
+    public DbSet<KeyWordLink> KeyWordsLinks { get; }
 }
