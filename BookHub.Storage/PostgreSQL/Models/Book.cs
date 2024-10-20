@@ -25,7 +25,5 @@ public sealed class Book
 
     public required DateTimeOffset LastEditDate { get; set; }
 
-    public HashSet<FavouriteLink> LikedUsersLinks { get; set; } = null!;
-
     public HashSet<KeyWordLink> KeywordsLinks { get; set; } = null!;
 }

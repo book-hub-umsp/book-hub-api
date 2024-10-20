@@ -11,8 +11,6 @@ public sealed class BooksContext : DbContext
 
     public DbSet<KeyWord> KeyWords { get; }
 
-    public DbSet<FavouriteLink> FavoriteLinks { get; }
-
     public DbSet<KeyWordLink> KeyWordsLinks { get; }
 
     public BooksContext(DbContextOptions<BooksContext> options)
@@ -28,7 +26,6 @@ public sealed class BooksContext : DbContext
         CreateAuthor(modelBuilder);
         CreateBook(modelBuilder);
         CreateKeyWord(modelBuilder);
-        CreateFavouriteLink(modelBuilder);
         CreateKeyWordLink(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
@@ -67,27 +64,6 @@ public sealed class BooksContext : DbContext
         _ = modelBuilder.Entity<KeyWord>()
             .Property(x => x.Id)
             .UseIdentityAlwaysColumn();
-    }
-
-    private static void CreateFavouriteLink(ModelBuilder modelBuilder)
-    {
-        _ = modelBuilder.Entity<FavouriteLink>()
-            .HasKey(l => new { l.AuthorId, l.BookId });
-
-        _ = modelBuilder.Entity<FavouriteLink>()
-            .HasOne(l => l.Author)
-            .WithMany(l => l.FavouriteBooksLinks)
-            .HasForeignKey(l => l.AuthorId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        _ = modelBuilder.Entity<FavouriteLink>()
-            .HasOne(l => l.Book)
-            .WithMany(l => l.LikedUsersLinks)
-            .HasForeignKey(l => l.BookId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        _ = modelBuilder.Entity<FavouriteLink>()
-            .ToTable("favourites");
     }
 
     private static void CreateKeyWordLink(ModelBuilder modelBuilder)

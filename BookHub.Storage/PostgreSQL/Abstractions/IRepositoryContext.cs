@@ -14,7 +14,5 @@ public interface IRepositoryContext
 
     public DbSet<KeyWord> KeyWords { get; }
 
-    public DbSet<FavouriteLink> FavoriteLinks { get; }
-
     public DbSet<KeyWordLink> KeyWordsLinks { get; }
 }

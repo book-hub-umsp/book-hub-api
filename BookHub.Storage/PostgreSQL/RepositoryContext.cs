@@ -16,8 +16,6 @@ public sealed class RepositoryContext : IRepositoryContext
 
     public DbSet<KeyWord> KeyWords => _context.KeyWords;
 
-    public DbSet<FavouriteLink> FavoriteLinks => _context.FavoriteLinks;
-
     public DbSet<KeyWordLink> KeyWordsLinks => _context.KeyWordsLinks;
 
     public RepositoryContext(BooksContext context)
