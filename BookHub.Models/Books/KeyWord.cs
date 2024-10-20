@@ -5,27 +5,31 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Ключевое слово.
 /// </summary>
-public sealed record class KeyWord
+public sealed class KeyWord
 {
-    public string Content { get; }
+    public Id<KeyWord> Id { get; }
 
-    public KeyWord(string content)
+    public Name<KeyWord> Content { get; }
+
+    public KeyWord(Id<KeyWord> id, Name<KeyWord> content)
     {
-        ArgumentException.ThrowIfNullOrEmpty(content);
+        Id = id ?? throw new ArgumentNullException(nameof(id));
 
-        content = content.Trim();
+        ArgumentNullException.ThrowIfNull(content);
 
-        if (content.Length > MAX_LENGHT)
+        var stringContent = content.Value.Trim();
+
+        if (stringContent.Length > MAX_LENGHT)
         {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols.");
         }
 
-        if (content.Length < MIN_LENGHT)
+        if (stringContent.Length < MIN_LENGHT)
         {
             throw new ArgumentException($"Content min lenght must be {MAX_LENGHT} symbols.");
         }
 
-        Content = content;
+        Content = new(stringContent);
     }
 
     private const int MIN_LENGHT = 1;

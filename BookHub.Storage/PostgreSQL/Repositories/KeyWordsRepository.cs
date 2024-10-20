@@ -1,6 +1,8 @@
 ﻿using BookHub.Models;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+using BookHub.Storage.PostgreSQL.Models;
+using Microsoft.EntityFrameworkCore;
 
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
 
@@ -18,23 +20,70 @@ public sealed class KeyWordsRepository :
     {
     }
 
-    public Task AddKeyWordAsync(DomainKeyWord keyWord)
+    public async Task<Id<DomainKeyWord>> AddKeyWordAsync(
+        Name<DomainKeyWord> content)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(content);
+
+        var keyWord = new KeyWord()
+        {
+            Content = content.Value
+        };
+
+        await Context.KeyWords.AddAsync(keyWord);
+
+        return new(keyWord.Id);
     }
 
-    public Task GetKeyWord(Id<DomainKeyWord> id)
+    public async Task<Name<DomainKeyWord>> GetKeyWord(Id<DomainKeyWord> id)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(id);
+
+        try
+        {
+            return new((await Context.KeyWords
+                .SingleAsync(x => x.Id == id.Value))!.Content);
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException(
+                $"No such key word with id {id.Value}.");
+        }
     }
 
-    public Task UpdateKeyWord(DomainKeyWord newKeyWord)
+    public async Task UpdateKeyWord(DomainKeyWord newKeyWord)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(newKeyWord);
+
+        try
+        {
+            var storageKeyWord =
+                await Context.KeyWords.SingleAsync(x => x.Id == newKeyWord.Id.Value);
+
+            storageKeyWord!.Content = newKeyWord.Content.Value;
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException(
+                $"No such key word with id {newKeyWord.Id.Value}.");
+        }
     }
 
-    public Task DeleteKeyWordAsync(Id<DomainKeyWord> id)
+    public async Task DeleteKeyWordAsync(Id<DomainKeyWord> id)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(id);
+
+        try
+        {
+            var storageKeyWord =
+                await Context.KeyWords.SingleAsync(x => x.Id == id.Value);
+
+            _ = Context.KeyWords.Remove(storageKeyWord);
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException(
+                $"No such key word with id {id.Value}.");
+        }
     }
 }

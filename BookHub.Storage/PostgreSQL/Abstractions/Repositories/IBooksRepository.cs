@@ -12,17 +12,27 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 /// </summary>
 public interface IBooksRepository
 {
-    public Task AddBookAsync(DomainBook book);
+    public Task<Id<DomainBook>> AddBookAsync(DomainBook book);
 
-    public Task<DomainBook> GetInfoAboutBook(Id<DomainBook> bookId);
+    public Task<DomainBook> GetBook(Id<DomainBook> id);
 
-    public Task<bool> IsBookRelatedForCurrentAuthor(Id<DomainBook> bookId, Id<Author> authorId);
+    public Task<bool> IsBookRelatedForCurrentAuthor(
+        Id<DomainBook> bookId, 
+        Id<Author> authorId);
 
-    public Task UpdateBookDescription(Id<DomainBook> bookId, BookDescription newBookDescription);
+    public Task UpdateBookDescription(
+        Id<DomainBook> bookId, 
+        BookDescription newBookDescription);
 
-    public Task UpdateBookStatus(Id<DomainBook> bookId, BookStatus newBookStatus);
+    public Task UpdateBookStatus(
+        Id<DomainBook> bookId, 
+        BookStatus newBookStatus);
 
-    public Task UpdateBookAnnotation(Id<DomainBook> bookId, BookAnnotation newBookAnnotation);
+    public Task UpdateBookAnnotation(
+        Id<DomainBook> bookId, 
+        BookAnnotation newBookAnnotation);
 
-    public Task AddNewKeyWordsForBook(IReadOnlySet<Id<DomainKeyWord>> keyWordsIds);
+    public Task AddNewKeyWordsForBook(
+        Id<DomainBook> bookId, 
+        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds);
 }

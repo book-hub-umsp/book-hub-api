@@ -9,9 +9,10 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 /// </summary>
 public interface IKeyWordsRepository
 {
-    public Task AddKeyWordAsync(DomainKeyWord keyWord);
+    public Task<Id<DomainKeyWord>> AddKeyWordAsync(
+        Name<DomainKeyWord> content);
 
-    public Task GetKeyWord(Id<DomainKeyWord> id);
+    public Task<Name<DomainKeyWord>> GetKeyWord(Id<DomainKeyWord> id);
 
     public Task UpdateKeyWord(DomainKeyWord newKeyWord);
 

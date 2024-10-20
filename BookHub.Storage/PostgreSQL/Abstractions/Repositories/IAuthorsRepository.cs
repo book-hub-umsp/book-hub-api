@@ -10,7 +10,9 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 /// </summary>
 public interface IAuthorsRepository
 {
-    public Task AddAuthorAsync(Id<Author> id, Name<Author> name);
+    public Task<Id<Author>> AddAuthorAsync(Name<Author> name);
+
+    public Task<Name<Author>> GetAuthorNameAsync(Id<Author> id);
 
     public Task<IReadOnlyCollection<DomainBook>> GetWrittenBooks(Id<Author> id);
 }

@@ -40,6 +40,16 @@ public sealed class BookDescription
             ?? throw new ArgumentNullException(nameof(bookAnnotation));
     }
 
+    public BookDescription(
+        BookGenre genre,
+        Name<Book> title,
+        BookAnnotation bookAnnotation,
+        HashSet<KeyWord> keyWords)
+        : this(genre, title, bookAnnotation)
+    {
+        KeyWords = keyWords ?? throw new ArgumentNullException(nameof(keyWords));
+    }
+
     public void ChangeTitle(Name<Book> newTitle)
     {
         ArgumentNullException.ThrowIfNull(newTitle);
