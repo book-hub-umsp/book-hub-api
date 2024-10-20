@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookHub.Models.Users;
+using System;
 using System.ComponentModel;
 
 namespace BookHub.Models.Books;
@@ -8,11 +9,13 @@ namespace BookHub.Models.Books;
 /// </summary>
 public sealed class Book
 {
-    public BookAuthor Author { get; }
+    public Id<Book> Id { get; }
 
-    public BookDefinition Definition 
+    public Id<User> AuthorId { get; }
+
+    public BookDescription Description 
     { 
-        get { return Definition; } 
+        get { return Description; } 
 
         private set { LastEditDate = DateTimeOffset.UtcNow; } 
     }
@@ -31,15 +34,18 @@ public sealed class Book
     public DateTimeOffset LastEditDate { get; private set; }
 
     public Book(
-        BookAuthor author, 
-        BookDefinition definition, 
+        Id<Book> id,
+        Id<User> authorId, 
+        BookDescription description, 
         BookText text, 
         BookStatus status = BookStatus.Published)
     {
-        Author = author ?? throw new ArgumentNullException(nameof(author));
+        Id = id ?? throw new ArgumentNullException(nameof(id));
 
-        Definition = definition 
-            ?? throw new ArgumentNullException(nameof(definition));
+        AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));
+
+        Description = description
+            ?? throw new ArgumentNullException(nameof(description));
 
         Text = text ?? throw new ArgumentNullException(nameof(text));
 
@@ -57,11 +63,11 @@ public sealed class Book
         LastEditDate = CreationDate;
     }
 
-    public void ChangeDefinition(BookDefinition newDefinition)
+    public void ChangeDescription(BookDescription newDescription)
     {
-        ArgumentNullException.ThrowIfNull(newDefinition);
+        ArgumentNullException.ThrowIfNull(newDescription);
 
-        Definition = newDefinition;
+        Description = newDescription;
     }
 
     public void ChangeText(BookText newText)

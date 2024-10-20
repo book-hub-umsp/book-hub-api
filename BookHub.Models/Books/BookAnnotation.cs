@@ -3,13 +3,13 @@
 namespace BookHub.Models.Books;
 
 /// <summary>
-/// Краткое описание книги.
+/// Аннотация книги.
 /// </summary>
-public sealed record class BookBriefDescription
+public sealed record class BookAnnotation
 {
     public string Content { get; }
 
-    public BookBriefDescription(string content)
+    public BookAnnotation(string content)
     {
         ArgumentException.ThrowIfNullOrEmpty(content);
         content = content.Trim();

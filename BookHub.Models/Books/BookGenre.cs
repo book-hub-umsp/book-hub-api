@@ -26,6 +26,11 @@ public enum BookGenre
     Story,
 
     /// <summary>
+    /// Эссе.
+    /// </summary>
+    Essay,
+
+    /// <summary>
     /// Притча.
     /// </summary>
     Parable,
