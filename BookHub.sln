@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Storage.Tests", "Bo
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "BookHub.docker-compose", "BookHub.docker-compose\BookHub.docker-compose.dcproj", "{8431C5BB-2D2F-4102-BAA3-A43E16E9F716}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models", "BookHub.Models\BookHub.Models.csproj", "{DAD41106-F589-4A38-8BEC-5534AC18D467}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Models", "BookHub.Models\BookHub.Models.csproj", "{DAD41106-F589-4A38-8BEC-5534AC18D467}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHub.Models.Tests", "BookHub.Models.Tests\BookHub.Models.Tests.csproj", "{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Models.Tests", "BookHub.Models.Tests\BookHub.Models.Tests.csproj", "{34F7451F-12D6-4D7B-A8E8-3D0E6C245D8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

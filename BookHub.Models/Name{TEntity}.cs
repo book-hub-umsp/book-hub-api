@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BookHub.Models.Users;
+namespace BookHub.Models;
 
 /// <summary>
 /// Имя сущности.

@@ -1,5 +1,4 @@
 ﻿using BookHub.API.Authentification;
-
 using Google.Apis.Auth;
 
 using Microsoft.Extensions.Options;
