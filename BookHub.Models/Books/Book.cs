@@ -20,13 +20,6 @@ public sealed class Book
         private set { LastEditDate = DateTimeOffset.UtcNow; } 
     }
 
-    public BookText Text
-    {
-        get { return Text; }
-
-        private set { LastEditDate = DateTimeOffset.UtcNow; }
-    }
-
     public BookStatus Status { get; private set; }
 
     public DateTimeOffset CreationDate { get; }
@@ -36,8 +29,7 @@ public sealed class Book
     public Book(
         Id<Book> id,
         Id<User> authorId, 
-        BookDescription description, 
-        BookText text, 
+        BookDescription description,
         BookStatus status = BookStatus.Published)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
@@ -46,8 +38,6 @@ public sealed class Book
 
         Description = description
             ?? throw new ArgumentNullException(nameof(description));
-
-        Text = text ?? throw new ArgumentNullException(nameof(text));
 
         if (!Enum.IsDefined(status))
         {
@@ -68,12 +58,5 @@ public sealed class Book
         ArgumentNullException.ThrowIfNull(newDescription);
 
         Description = newDescription;
-    }
-
-    public void ChangeText(BookText newText)
-    {
-        ArgumentNullException.ThrowIfNull(newText);
-
-        Text = newText;
     }
 }
