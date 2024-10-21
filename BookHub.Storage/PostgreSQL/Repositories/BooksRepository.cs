@@ -32,7 +32,6 @@ public sealed class BooksRepository :
             Title = book.Description.Title.Value,
             BookGenre = book.Description.Genre,
             BookAnnotation = book.Description.BookAnnotation.Content,
-            BookText = book.Text.Content,
             BookStatus = book.Status,
             CreationDate = book.CreationDate,
             LastEditDate = book.LastEditDate
@@ -72,7 +71,6 @@ public sealed class BooksRepository :
                             x => new DomainKeyWord(
                                 new(x.KeyWordId), 
                                 new(x.KeyWord.Content))))),
-                    new(storageBook.BookText),
                     storageBook.BookStatus);
         }
         catch (InvalidOperationException)

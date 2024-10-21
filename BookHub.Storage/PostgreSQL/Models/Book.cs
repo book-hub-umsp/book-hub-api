@@ -17,8 +17,6 @@ public sealed class Book
 
     public required string BookAnnotation { get; set; }
 
-    public required string BookText { get; set; }
-
     public required BookStatus BookStatus { get; set; }
 
     public required DateTimeOffset CreationDate { get; set; }

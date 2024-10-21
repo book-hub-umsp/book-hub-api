@@ -72,7 +72,6 @@ public sealed class AuthorsRepository :
                         x => new DomainKeyWord(
                             new(x.KeyWordId), 
                             new(x.KeyWord.Content))))),
-                new(x.BookText),
                 x.BookStatus))
             .ToList();
     }
