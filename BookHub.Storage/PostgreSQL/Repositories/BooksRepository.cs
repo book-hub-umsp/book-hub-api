@@ -66,7 +66,9 @@ public sealed class BooksRepository :
         try
         {
             var storageBook =
-                await Context.Books.SingleAsync(x => x.Id == id.Value, token);
+                await Context.Books
+                    .AsNoTracking()
+                    .SingleAsync(x => x.Id == id.Value, token);
 
             return new DomainBook(
                     new(storageBook.Id),

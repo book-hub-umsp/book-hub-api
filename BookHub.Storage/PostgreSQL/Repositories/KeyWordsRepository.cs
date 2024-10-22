@@ -48,6 +48,7 @@ public sealed class KeyWordsRepository :
         try
         {
             return new((await Context.KeyWords
+                .AsNoTracking()
                 .SingleAsync(x => x.Id == id.Value, token))!.Content);
         }
         catch (InvalidOperationException)
