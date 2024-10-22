@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookHub.Models.Users;
+using System;
 
 namespace BookHub.Models.Books;
 

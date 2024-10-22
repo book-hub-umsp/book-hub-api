@@ -1,4 +1,5 @@
 ﻿using BookHub.Models;
+using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using BookHub.Storage.PostgreSQL.Models;
@@ -16,12 +17,14 @@ public sealed class AuthorsRepository :
     RepositoriesBase,
     IAuthorsRepository
 {
-    public AuthorsRepository(IRepositoryContext context) 
+    public AuthorsRepository(IRepositoryContext context)
         : base(context)
     {
     }
 
-    public async Task<Id<Author>> AddAuthorAsync(Name<Author> name)
+    public async Task<Id<Author>> AddAuthorAsync(
+        Name<Author> name,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(name);
 
@@ -30,19 +33,24 @@ public sealed class AuthorsRepository :
             Name = name.Value
         };
 
-        await Context.Authors.AddAsync(author);
+        Context.Authors.Add(author);
+
+        await Context.SaveChangesAsync(token);
 
         return new(author.Id);
     }
 
-    public async Task<Name<Author>> GetAuthorNameAsync(Id<Author> id)
+    public async Task<Name<Author>> GetAuthorNameAsync(
+        Id<Author> id,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(id);
 
         try
         {
             return new((await Context.Authors
-                .SingleAsync(x => x.Id == id.Value)).Name);
+                .AsNoTracking()
+                .SingleAsync(x => x.Id == id.Value, token)).Name);
         }
         catch (InvalidOperationException)
         {
@@ -50,27 +58,29 @@ public sealed class AuthorsRepository :
         }
     }
 
-    public async Task<IReadOnlyCollection<DomainBook>> GetWrittenBooks(
-        Id<Author> id)
+    public async Task<IReadOnlyCollection<DomainBook>> GetWrittenBooksAsync(
+        Id<Author> id,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(id);
 
-        var storageBooks = 
+        var storageBooks =
             await Context.Books
                 .Where(x => x.AuthorId == id.Value)
-                .ToListAsync();
+                .AsNoTracking()
+                .ToListAsync(token);
 
         return storageBooks
             .Select(x => new DomainBook(
-                new(x.Id), 
+                new(x.Id),
                 new(x.AuthorId),
                 new(
-                    x.BookGenre, 
-                    new(x.Title), 
-                    new(x.BookAnnotation), 
+                    x.BookGenre,
+                    new(x.Title),
+                    new(x.BookAnnotation),
                     new(x.KeywordsLinks.Select(
                         x => new DomainKeyWord(
-                            new(x.KeyWordId), 
+                            new(x.KeyWordId),
                             new(x.KeyWord.Content))))),
                 x.BookStatus))
             .ToList();

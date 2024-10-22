@@ -16,14 +16,17 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// Репозиторий книг.
 /// </summary>
 public sealed class BooksRepository :
-    RepositoriesBase, IBooksRepository
+    RepositoriesBase, 
+    IBooksRepository
 {
     public BooksRepository(IRepositoryContext context)
         : base(context)
     {
     }
 
-    public async Task<Id<DomainBook>> AddBookAsync(DomainBook book)
+    public async Task<Id<DomainBook>> AddBookAsync(
+        DomainBook book,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(book);
 
@@ -38,7 +41,9 @@ public sealed class BooksRepository :
             LastEditDate = book.LastEditDate
         };
 
-        await Context.Books.AddAsync(storageBook);
+        Context.Books.Add(storageBook);
+
+        await Context.SaveChangesAsync(token);
 
         storageBook.KeywordsLinks =
             book.Description.KeyWords
@@ -52,14 +57,16 @@ public sealed class BooksRepository :
         return new(storageBook.Id);
     }
 
-    public async Task<DomainBook> GetBook(Id<DomainBook> id)
+    public async Task<DomainBook> GetBookAsync(
+        Id<DomainBook> id,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(id);
 
         try
         {
             var storageBook =
-                await Context.Books.SingleAsync(x => x.Id == id.Value);
+                await Context.Books.SingleAsync(x => x.Id == id.Value, token);
 
             return new DomainBook(
                     new(storageBook.Id),
@@ -81,9 +88,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task<bool> IsBookRelatedForCurrentAuthor(
+    public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId,
-        Id<Author> authorId)
+        Id<Author> authorId,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
         ArgumentNullException.ThrowIfNull(authorId);
@@ -91,7 +99,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             return storageBook.AuthorId == authorId.Value;
         }
@@ -102,9 +110,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task UpdateBookAnnotation(
+    public async Task UpdateBookAnnotationAsync(
         Id<DomainBook> bookId,
-        BookAnnotation newBookAnnotation)
+        BookAnnotation newBookAnnotation,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
         ArgumentNullException.ThrowIfNull(newBookAnnotation);
@@ -112,7 +121,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             storageBook.BookAnnotation = newBookAnnotation.Content;
         }
@@ -123,9 +132,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task UpdateBookDescription(
+    public async Task UpdateBookDescriptionAsync(
         Id<DomainBook> bookId,
-        BookDescription newBookDescription)
+        BookDescription newBookDescription,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
         ArgumentNullException.ThrowIfNull(newBookDescription);
@@ -133,7 +143,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             storageBook.BookGenre = newBookDescription.Genre;
             storageBook.Title = newBookDescription.Title.Value;
@@ -154,9 +164,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task UpdateBookStatus(
+    public async Task UpdateBookStatusAsync(
         Id<DomainBook> bookId,
-        BookStatus newBookStatus)
+        BookStatus newBookStatus,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
 
@@ -171,7 +182,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             storageBook.BookStatus = newBookStatus;
         }
@@ -182,7 +193,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task UpdateBookGenre(Id<DomainBook> bookId, BookGenre newBookGenre)
+    public async Task UpdateBookGenreAsync(
+        Id<DomainBook> bookId, 
+        BookGenre newBookGenre,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
 
@@ -197,7 +211,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             storageBook.BookGenre = newBookGenre;
         }
@@ -208,9 +222,10 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task AddNewKeyWordsForBook(
+    public async Task AddNewKeyWordsForBookAsync(
         Id<DomainBook> bookId,
-        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds)
+        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
         ArgumentNullException.ThrowIfNull(keyWordsIds);
@@ -218,7 +233,7 @@ public sealed class BooksRepository :
         try
         {
             var storageBook = await Context.Books
-                .SingleAsync(x => x.Id == bookId.Value);
+                .SingleAsync(x => x.Id == bookId.Value, token);
 
             storageBook.KeywordsLinks =
                 keyWordsIds

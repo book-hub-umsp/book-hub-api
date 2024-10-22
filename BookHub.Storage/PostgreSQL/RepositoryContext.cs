@@ -24,4 +24,9 @@ public sealed class RepositoryContext : IRepositoryContext
     }
 
     private readonly BooksContext _context;
+
+    public async Task SaveChangesAsync(CancellationToken token)
+    {
+        await _context.SaveChangesAsync(token);
+    }
 }

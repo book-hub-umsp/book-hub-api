@@ -1,5 +1,5 @@
 ﻿using BookHub.Models;
-
+using BookHub.Models.Users;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
 
 namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
@@ -10,11 +10,18 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 public interface IKeyWordsRepository
 {
     public Task<Id<DomainKeyWord>> AddKeyWordAsync(
-        Name<DomainKeyWord> content);
+        Name<DomainKeyWord> content,
+        CancellationToken token);
 
-    public Task<Name<DomainKeyWord>> GetKeyWord(Id<DomainKeyWord> id);
+    public Task<Name<DomainKeyWord>> GetKeyWordAsync(
+        Id<DomainKeyWord> id, 
+        CancellationToken token);
 
-    public Task UpdateKeyWord(DomainKeyWord newKeyWord);
+    public Task UpdateKeyWordAsync(
+        DomainKeyWord newKeyWord,
+        CancellationToken token);
 
-    public Task DeleteKeyWordAsync(Id<DomainKeyWord> id);
+    public Task DeleteKeyWordAsync(
+        Id<DomainKeyWord> id, 
+        CancellationToken token);
 }

@@ -15,4 +15,6 @@ public interface IRepositoryContext
     public DbSet<KeyWord> KeyWords { get; }
 
     public DbSet<KeyWordLink> KeyWordsLinks { get; }
+
+    public Task SaveChangesAsync(CancellationToken token);
 }

@@ -12,31 +12,41 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 /// </summary>
 public interface IBooksRepository
 {
-    public Task<Id<DomainBook>> AddBookAsync(DomainBook book);
+    public Task<Id<DomainBook>> AddBookAsync(
+        DomainBook book,
+        CancellationToken token);
 
-    public Task<DomainBook> GetBook(Id<DomainBook> id);
+    public Task<DomainBook> GetBookAsync(
+        Id<DomainBook> id,
+        CancellationToken token);
 
-    public Task<bool> IsBookRelatedForCurrentAuthor(
+    public Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId, 
-        Id<Author> authorId);
+        Id<Author> authorId,
+        CancellationToken token);
 
-    public Task UpdateBookDescription(
+    public Task UpdateBookDescriptionAsync(
         Id<DomainBook> bookId, 
-        BookDescription newBookDescription);
+        BookDescription newBookDescription,
+        CancellationToken token);
 
-    public Task UpdateBookStatus(
+    public Task UpdateBookStatusAsync(
         Id<DomainBook> bookId, 
-        BookStatus newBookStatus);
+        BookStatus newBookStatus,
+        CancellationToken token);
 
-    public Task UpdateBookGenre(
+    public Task UpdateBookGenreAsync(
         Id<DomainBook> bookId,
-        BookGenre newBookGenre);
+        BookGenre newBookGenre, 
+        CancellationToken token);
 
-    public Task UpdateBookAnnotation(
+    public Task UpdateBookAnnotationAsync(
         Id<DomainBook> bookId, 
-        BookAnnotation newBookAnnotation);
+        BookAnnotation newBookAnnotation,
+        CancellationToken token);
 
-    public Task AddNewKeyWordsForBook(
+    public Task AddNewKeyWordsForBookAsync(
         Id<DomainBook> bookId, 
-        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds);
+        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds,
+        CancellationToken token);
 }

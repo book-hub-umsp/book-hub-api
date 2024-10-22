@@ -1,4 +1,5 @@
 ﻿using BookHub.Models;
+using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using BookHub.Storage.PostgreSQL.Models;
@@ -21,7 +22,8 @@ public sealed class KeyWordsRepository :
     }
 
     public async Task<Id<DomainKeyWord>> AddKeyWordAsync(
-        Name<DomainKeyWord> content)
+        Name<DomainKeyWord> content,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(content);
 
@@ -30,19 +32,23 @@ public sealed class KeyWordsRepository :
             Content = content.Value
         };
 
-        await Context.KeyWords.AddAsync(keyWord);
+        Context.KeyWords.Add(keyWord);
+
+        await Context.SaveChangesAsync(token);
 
         return new(keyWord.Id);
     }
 
-    public async Task<Name<DomainKeyWord>> GetKeyWord(Id<DomainKeyWord> id)
+    public async Task<Name<DomainKeyWord>> GetKeyWordAsync(
+        Id<DomainKeyWord> id, 
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(id);
 
         try
         {
             return new((await Context.KeyWords
-                .SingleAsync(x => x.Id == id.Value))!.Content);
+                .SingleAsync(x => x.Id == id.Value, token))!.Content);
         }
         catch (InvalidOperationException)
         {
@@ -51,14 +57,18 @@ public sealed class KeyWordsRepository :
         }
     }
 
-    public async Task UpdateKeyWord(DomainKeyWord newKeyWord)
+    public async Task UpdateKeyWordAsync(
+        DomainKeyWord newKeyWord, 
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(newKeyWord);
 
         try
         {
             var storageKeyWord =
-                await Context.KeyWords.SingleAsync(x => x.Id == newKeyWord.Id.Value);
+                await Context.KeyWords.SingleAsync(
+                    x => x.Id == newKeyWord.Id.Value,
+                    token);
 
             storageKeyWord!.Content = newKeyWord.Content.Value;
         }
@@ -69,14 +79,18 @@ public sealed class KeyWordsRepository :
         }
     }
 
-    public async Task DeleteKeyWordAsync(Id<DomainKeyWord> id)
+    public async Task DeleteKeyWordAsync(
+        Id<DomainKeyWord> id, 
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(id);
 
         try
         {
             var storageKeyWord =
-                await Context.KeyWords.SingleAsync(x => x.Id == id.Value);
+                await Context.KeyWords.SingleAsync(
+                    x => x.Id == id.Value,
+                    token);
 
             _ = Context.KeyWords.Remove(storageKeyWord);
         }
