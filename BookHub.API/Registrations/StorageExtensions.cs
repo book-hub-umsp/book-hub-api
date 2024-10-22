@@ -5,6 +5,8 @@ using BookHub.Storage.PostgreSQL.Abstractions;
 using StackExchange.Redis;
 using Npgsql;
 using BookHub.Models.Books;
+using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+using BookHub.Storage.PostgreSQL.Repositories;
 
 namespace BooksService.Registrations;
 
@@ -16,7 +18,12 @@ public static class StorageExtensions
         => services
             .AddDbContext<BooksContext>((sp, dbOpt) =>
                 dbOpt.UseNpgsql(CreateDataSource(configuration)))
-            .AddSingleton<IRepositoryContext, RepositoryContext>();
+            .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
+            .AddScoped<IRepositoryContext, RepositoryContext>()
+            .AddScoped<IBooksUnitOfWork, BooksUnitOfWork>()
+            .AddScoped<IAuthorsRepository, AuthorsRepository>()
+            .AddScoped<IBooksRepository, BooksRepository>()
+            .AddScoped<IKeyWordsRepository, KeyWordsRepository>();
 
     private static NpgsqlDataSource CreateDataSource(IConfiguration configuration)
     {
