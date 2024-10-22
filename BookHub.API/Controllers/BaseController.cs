@@ -16,25 +16,16 @@ namespace BookHub.API.Controllers
     {
         [HttpGet]
         [Route("hc")]
-        public IActionResult GetHC()
-        {
-            return Ok("You joined Books.Service index page. HC is true");
-        }
+        public IActionResult GetHC() => Ok("You joined Books.Service index page. HC is true");
 
         [Authorize]
         [HttpGet]
         [Route("lk")]
-        public IActionResult GetUserLK()
-        {
-            return Ok("You joined Books.Service user page.");
-        }
+        public IActionResult GetUserLK() => Ok("You joined Books.Service user page.");
 
         [Authorize(Policy = "Admin")]
         [HttpGet]
         [Route("adminLK")]
-        public IActionResult GetAdminLK()
-        {
-            return Ok("You joined Books.Service admin page.");
-        }
+        public IActionResult GetAdminLK() => Ok("You joined Books.Service admin page.");
     }
 }
