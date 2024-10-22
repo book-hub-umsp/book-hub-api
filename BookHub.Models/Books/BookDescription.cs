@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookHub.Models.Users;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -12,7 +13,7 @@ public sealed class BookDescription
     /// <remarks>
     /// Подразумевается неизменяемым.
     /// </remarks>
-    public BookGenre Genre { get; }
+    public BookGenre Genre { get; private set; }
 
     public Name<Book> Title { get; private set; }
 
@@ -48,6 +49,19 @@ public sealed class BookDescription
         : this(genre, title, bookAnnotation)
     {
         KeyWords = keyWords ?? throw new ArgumentNullException(nameof(keyWords));
+    }
+
+    public void ChangeGenre(BookGenre newGenre)
+    {
+        if (!Enum.IsDefined(newGenre))
+        {
+            throw new InvalidEnumArgumentException(
+                nameof(newGenre),
+                (int)newGenre,
+                typeof(BookGenre));
+        }
+
+        Genre = newGenre;
     }
 
     public void ChangeTitle(Name<Book> newTitle)

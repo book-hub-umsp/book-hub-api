@@ -4,6 +4,7 @@ using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using BookHub.Storage.PostgreSQL.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 using DomainBook = BookHub.Models.Books.Book;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
@@ -158,7 +159,14 @@ public sealed class BooksRepository :
         BookStatus newBookStatus)
     {
         ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(newBookStatus);
+
+        if (!Enum.IsDefined(newBookStatus))
+        {
+            throw new InvalidEnumArgumentException(
+                nameof(newBookStatus),
+                (int)newBookStatus,
+                typeof(BookGenre));
+        }
 
         try
         {
@@ -166,6 +174,32 @@ public sealed class BooksRepository :
                 .SingleAsync(x => x.Id == bookId.Value);
 
             storageBook.BookStatus = newBookStatus;
+        }
+        catch
+        {
+            throw new InvalidOperationException(
+                $"No such book with id {bookId.Value}.");
+        }
+    }
+
+    public async Task UpdateBookGenre(Id<DomainBook> bookId, BookGenre newBookGenre)
+    {
+        ArgumentNullException.ThrowIfNull(bookId);
+
+        if (!Enum.IsDefined(newBookGenre))
+        {
+            throw new InvalidEnumArgumentException(
+                nameof(newBookGenre),
+                (int)newBookGenre,
+                typeof(BookGenre));
+        }
+
+        try
+        {
+            var storageBook = await Context.Books
+                .SingleAsync(x => x.Id == bookId.Value);
+
+            storageBook.BookGenre = newBookGenre;
         }
         catch
         {

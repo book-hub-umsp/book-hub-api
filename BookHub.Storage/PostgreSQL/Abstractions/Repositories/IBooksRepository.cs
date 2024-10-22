@@ -28,6 +28,10 @@ public interface IBooksRepository
         Id<DomainBook> bookId, 
         BookStatus newBookStatus);
 
+    public Task UpdateBookGenre(
+        Id<DomainBook> bookId,
+        BookGenre newBookGenre);
+
     public Task UpdateBookAnnotation(
         Id<DomainBook> bookId, 
         BookAnnotation newBookAnnotation);
