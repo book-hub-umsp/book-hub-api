@@ -14,13 +14,11 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// Описывает репозиторией авторов.
 /// </summary>
 public sealed class AuthorsRepository :
-    RepositoriesBase,
+    RepositoryBase,
     IAuthorsRepository
 {
     public AuthorsRepository(IRepositoryContext context)
-        : base(context)
-    {
-    }
+        : base(context) {}
 
     public async Task<Id<Author>> AddAuthorAsync(
         Name<Author> name,
@@ -46,16 +44,17 @@ public sealed class AuthorsRepository :
     {
         ArgumentNullException.ThrowIfNull(id);
 
-        try
+        var existedAuthor = await Context.Authors
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == id.Value, token);
+
+        if (existedAuthor is null)
         {
-            return new((await Context.Authors
-                .AsNoTracking()
-                .SingleAsync(x => x.Id == id.Value, token)).Name);
+            throw new InvalidOperationException(
+                $"No such author with id {id.Value}.");
         }
-        catch (InvalidOperationException)
-        {
-            throw new InvalidOperationException($"No such author with id {id.Value}.");
-        }
+
+        return new(existedAuthor.Name);
     }
 
     public async Task<IReadOnlyCollection<DomainBook>> GetWrittenBooksAsync(

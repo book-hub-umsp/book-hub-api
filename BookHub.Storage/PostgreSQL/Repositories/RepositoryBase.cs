@@ -5,11 +5,11 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// База для репозиториев.
 /// </summary>
-public abstract class RepositoriesBase
+public abstract class RepositoryBase
 {
     public IRepositoryContext Context { get; }
 
-    protected RepositoriesBase(IRepositoryContext context)
+    protected RepositoryBase(IRepositoryContext context)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
     }

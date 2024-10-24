@@ -1,7 +1,7 @@
 ﻿namespace BookHub.Storage.PostgreSQL.Models;
 
 /// <summary>
-/// Ключевое слов.
+/// Ключевое слово.
 /// </summary>
 public sealed class KeyWord
 {
@@ -9,5 +9,5 @@ public sealed class KeyWord
 
     public required string Content { get; set; }
 
-    public HashSet<KeyWordLink> BooksLinks { get; set; } = null!;
+    public ICollection<KeyWordLink> BooksLinks { get; set; } = null!;
 }

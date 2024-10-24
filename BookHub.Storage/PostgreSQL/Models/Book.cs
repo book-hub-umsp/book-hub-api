@@ -23,5 +23,5 @@ public sealed class Book
 
     public required DateTimeOffset LastEditDate { get; set; }
 
-    public HashSet<KeyWordLink> KeywordsLinks { get; set; } = null!;
+    public ICollection<KeyWordLink> KeywordsLinks { get; set; } = null!;
 }

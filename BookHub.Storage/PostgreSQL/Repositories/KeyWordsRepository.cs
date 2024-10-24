@@ -13,13 +13,11 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// Описывает репозиторий для ключевых слов.
 /// </summary>
 public sealed class KeyWordsRepository :
-    RepositoriesBase,
+    RepositoryBase,
     IKeyWordsRepository
 {
     public KeyWordsRepository(IRepositoryContext context) 
-        : base(context)
-    {
-    }
+        : base(context) {}
 
     public async Task<Id<DomainKeyWord>> AddKeyWordAsync(
         Name<DomainKeyWord> content,
@@ -45,17 +43,17 @@ public sealed class KeyWordsRepository :
     {
         ArgumentNullException.ThrowIfNull(id);
 
-        try
-        {
-            return new((await Context.KeyWords
-                .AsNoTracking()
-                .SingleAsync(x => x.Id == id.Value, token))!.Content);
-        }
-        catch (InvalidOperationException)
+        var storageKeyWord = await Context.KeyWords
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == id.Value, token);
+
+        if (storageKeyWord is null)
         {
             throw new InvalidOperationException(
                 $"No such key word with id {id.Value}.");
         }
+
+        return new(storageKeyWord.Content);
     }
 
     public async Task UpdateKeyWordAsync(
@@ -64,20 +62,18 @@ public sealed class KeyWordsRepository :
     {
         ArgumentNullException.ThrowIfNull(newKeyWord);
 
-        try
-        {
-            var storageKeyWord =
-                await Context.KeyWords.SingleAsync(
-                    x => x.Id == newKeyWord.Id.Value,
-                    token);
+        var storageKeyWord =
+            await Context.KeyWords.SingleOrDefaultAsync(
+                x => x.Id == newKeyWord.Id.Value,
+                token);
 
-            storageKeyWord!.Content = newKeyWord.Content.Value;
-        }
-        catch (InvalidOperationException)
+        if (storageKeyWord is null)
         {
             throw new InvalidOperationException(
                 $"No such key word with id {newKeyWord.Id.Value}.");
         }
+
+        storageKeyWord.Content = newKeyWord.Content.Value;
     }
 
     public async Task DeleteKeyWordAsync(
@@ -86,19 +82,17 @@ public sealed class KeyWordsRepository :
     {
         ArgumentNullException.ThrowIfNull(id);
 
-        try
-        {
-            var storageKeyWord =
-                await Context.KeyWords.SingleAsync(
-                    x => x.Id == id.Value,
-                    token);
+        var storageKeyWord =
+            await Context.KeyWords.SingleAsync(
+                x => x.Id == id.Value,
+                token);
 
-            _ = Context.KeyWords.Remove(storageKeyWord);
-        }
-        catch (InvalidOperationException)
+        if (storageKeyWord is null)
         {
             throw new InvalidOperationException(
                 $"No such key word with id {id.Value}.");
         }
+
+        _ = Context.KeyWords.Remove(storageKeyWord);
     }
 }
