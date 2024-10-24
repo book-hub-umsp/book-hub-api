@@ -1,5 +1,6 @@
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
+using BooksService.Registrations;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +52,8 @@ builder.Services.AddAuthorizationBuilder()
                         "Admin authorization configuration is not found.")));
 
 builder.Services
-    .AddAuthorizationConfigs(builder.Configuration);
+    .AddAuthorizationConfigs(builder.Configuration)
+    .AddPostgresStorage(builder.Configuration);
 
 var app = builder.Build();
 
