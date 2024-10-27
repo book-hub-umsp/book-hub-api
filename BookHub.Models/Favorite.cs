@@ -2,69 +2,66 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using BookHub.Models.Books;
 
-namespace BookHub.Models
+namespace BookHub.Models;
+
+/// <summary>
+/// Избранное из книг у пользователя.
+/// </summary>
+public sealed class Favorite
 {
-    /// <summary>
-    /// Избранное из книг у пользователя.
-    /// </summary>
-    public sealed class Favorite
+    public Id<User> UserId { get; }
+
+    public HashSet<UserFavoriteBookLink> Links { get; private set; } = [];
+
+    public Favorite(
+        Id<User> userId,
+        IReadOnlySet<UserFavoriteBookLink> links)
     {
-        public Id<User> UserId { get; }
+        UserId = userId ?? throw new ArgumentNullException(nameof(userId));
 
-        public HashSet<UserFavoriteBookLink> Links { get; private set; } = [];
+        AddLinks(userId, links);
+    }
 
-        public Favorite(
-            Id<User> userId,
-            IReadOnlySet<UserFavoriteBookLink> links)
+    public void ChangeLinks(IReadOnlySet<UserFavoriteBookLink> links) => AddLinks(UserId, links);
+
+    public void RemoveLinks(IReadOnlySet<Id<Book>> booksIds)
+    {
+        ArgumentNullException.ThrowIfNull(booksIds);
+
+        foreach (var bookId in booksIds)
         {
-            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
+            var linkToRemove = new UserFavoriteBookLink(UserId, bookId);
 
-            AddLinks(userId, links);
-        }
-
-        public void ChangeLinks(IReadOnlySet<UserFavoriteBookLink> links)
-        {
-            AddLinks(UserId, links);
-        }
-
-        public void RemoveLinks(IReadOnlySet<Id<Book>> booksIds)
-        {
-            ArgumentNullException.ThrowIfNull(booksIds);
-
-            foreach (var bookId in booksIds)
+            if (Links.Contains(linkToRemove))
             {
-                var linkToRemove = new UserFavoriteBookLink(UserId, bookId);
-
-                if (Links.Contains(linkToRemove))
-                {
-                    Links.Remove(linkToRemove);
-                }
+                Links.Remove(linkToRemove);
             }
         }
+    }
 
-        private void AddLinks(
-            Id<User> userId,
-            IReadOnlySet<UserFavoriteBookLink> links)
+    private void AddLinks(
+        Id<User> userId,
+        IReadOnlySet<UserFavoriteBookLink> links)
+    {
+        ArgumentNullException.ThrowIfNull(links);
+
+        try
         {
-            ArgumentNullException.ThrowIfNull(links);
+            var linksDistinctByUser = links
+                .DistinctBy(l => l.UserId)
+                .Single(l => l.UserId == userId);
+        }
+        catch (InvalidOperationException)
+        {
+            throw new InvalidOperationException(
+                $"All links should be related only for user {userId}.");
+        }
 
-            try
-            {
-                var linksDistinctByUser = links
-                    .DistinctBy(l => l.UserId)
-                    .Single(l => l.UserId == userId);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new InvalidOperationException(
-                    $"All links should be related only for user {userId}.");
-            }
-
-            foreach (var link in links)
-            {
-                _ = Links.Add(link);
-            }
+        foreach (var link in links)
+        {
+            _ = Links.Add(link);
         }
     }
 }
