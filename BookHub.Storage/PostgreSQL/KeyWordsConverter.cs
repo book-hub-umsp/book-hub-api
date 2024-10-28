@@ -1,8 +1,12 @@
-﻿using BookHub.Models.Books;
+﻿using BookHub.Contracts;
+using BookHub.Models.Books;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
+
+using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using ContractKeyWord = BookHub.Contracts.KeyWord;
 
 namespace BookHub.Storage.PostgreSQL;
 
@@ -11,28 +15,40 @@ namespace BookHub.Storage.PostgreSQL;
 /// </summary>
 public sealed class KeyWordsConverter : IKeyWordsConverter
 {
-    public IReadOnlySet<KeyWord> ConvertToDomain(string json)
+    public IReadOnlySet<DomainKeyWord> ConvertToDomain(string json)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(json);
 
         using var reader = new JsonTextReader(new StringReader(json));
 
-        var keyWords = _serializer.Deserialize<IReadOnlySet<KeyWord>>(reader);
+        var keyWordsContainer = _serializer.Deserialize<KeyWordsContainer>(reader);
 
-        Debug.Assert(keyWords != null);
+        Debug.Assert(keyWordsContainer != null);
 
-        return keyWords;
+        return keyWordsContainer.Keywords
+            .Select(x => new DomainKeyWord(new(x.Content)))
+            .ToHashSet();
     }
 
-    public string ConvertToStorage(IReadOnlySet<KeyWord> keyWords)
+    public string ConvertToStorage(IReadOnlySet<DomainKeyWord> keyWords)
     {
         ArgumentNullException.ThrowIfNull(keyWords);
+
+        var container = new KeyWordsContainer
+        {
+            Keywords = keyWords
+                .Select(x => new ContractKeyWord
+                {
+                    Content = x.Content.Value
+                })
+                .ToList()
+        };
 
         var stringBuilder = new StringBuilder();
 
         using var writer = new JsonTextWriter(new StringWriter(stringBuilder));
 
-        _serializer.Serialize(writer, keyWords);
+        _serializer.Serialize(writer, container);
 
         return stringBuilder.ToString();
     }

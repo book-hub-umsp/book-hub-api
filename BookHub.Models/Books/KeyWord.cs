@@ -8,14 +8,10 @@ namespace BookHub.Models.Books;
 /// </summary>
 public sealed class KeyWord
 {
-    public Id<KeyWord> Id { get; }
-
     public Name<KeyWord> Content { get; }
 
-    public KeyWord(Id<KeyWord> id, Name<KeyWord> content)
+    public KeyWord(Name<KeyWord> content)
     {
-        Id = id ?? throw new ArgumentNullException(nameof(id));
-
         ArgumentNullException.ThrowIfNull(content);
 
         var stringContent = content.Value.Trim();
