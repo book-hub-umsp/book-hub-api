@@ -7,7 +7,7 @@ namespace BookHub.Storage.PostgreSQL.Abstractions;
 /// </summary>
 public interface IKeyWordsConverter
 {
-    public IReadOnlySet<DomainKeyWord> ConvertToDomain(string json);
+    public IReadOnlySet<DomainKeyWord> ConvertToDomain(string? json);
 
     public string ConvertToStorage(IReadOnlySet<DomainKeyWord> keyWords);
 }

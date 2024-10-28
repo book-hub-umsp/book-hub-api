@@ -4,6 +4,7 @@ using BookHub.Storage.PostgreSQL.Abstractions;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
+using System.Collections.Immutable;
 
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
@@ -15,8 +16,14 @@ namespace BookHub.Storage.PostgreSQL;
 /// </summary>
 public sealed class KeyWordsConverter : IKeyWordsConverter
 {
-    public IReadOnlySet<DomainKeyWord> ConvertToDomain(string json)
+    public IReadOnlySet<DomainKeyWord> ConvertToDomain(string? json)
     {
+        // на случай дефолтного Null значения
+        if (json is null)
+        {
+            return ImmutableHashSet<DomainKeyWord>.Empty;
+        }
+
         ArgumentException.ThrowIfNullOrWhiteSpace(json);
 
         using var reader = new JsonTextReader(new StringReader(json));
@@ -33,6 +40,11 @@ public sealed class KeyWordsConverter : IKeyWordsConverter
     public string ConvertToStorage(IReadOnlySet<DomainKeyWord> keyWords)
     {
         ArgumentNullException.ThrowIfNull(keyWords);
+
+        if (!keyWords.Any())
+        {
+            throw new ArgumentException("Keywords list should not be empty.");
+        }
 
         var container = new KeyWordsContainer
         {

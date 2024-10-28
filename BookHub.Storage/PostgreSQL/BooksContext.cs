@@ -33,6 +33,7 @@ public sealed class BooksContext : DbContext
 
         _ = modelBuilder.Entity<Book>()
             .Property(x => x.KeyWordsContent)
-            .HasColumnType("json");
+            .HasColumnType("json")
+            .HasColumnName("keywords_content");
     }
 }

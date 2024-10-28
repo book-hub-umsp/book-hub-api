@@ -19,7 +19,7 @@ public sealed class Book
 
     public required BookStatus BookStatus { get; set; }
 
-    public string KeyWordsContent { get; set; }
+    public string? KeyWordsContent { get; set; } = null!;
 
     public required DateTimeOffset CreationDate { get; set; }
 
