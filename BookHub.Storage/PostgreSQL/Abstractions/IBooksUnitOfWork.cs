@@ -7,11 +7,7 @@ namespace BookHub.Storage.PostgreSQL.Abstractions;
 /// </summary>
 public interface IBooksUnitOfWork
 {
-    public IAuthorsRepository Authors { get; }
-
     public IBooksRepository Books { get; }
-
-    public IKeyWordsRepository KeyWords { get; }
 
     public Task SaveChangesAsync(CancellationToken token);
 }

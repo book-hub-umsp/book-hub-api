@@ -18,12 +18,11 @@ public static class StorageExtensions
         => services
             .AddDbContext<BooksContext>((sp, dbOpt) =>
                 dbOpt.UseNpgsql(CreateDataSource(configuration)))
-            .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
             .AddScoped<IRepositoryContext, RepositoryContext>()
             .AddScoped<IBooksUnitOfWork, BooksUnitOfWork>()
-            .AddScoped<IAuthorsRepository, AuthorsRepository>()
             .AddScoped<IBooksRepository, BooksRepository>()
-            .AddScoped<IKeyWordsRepository, KeyWordsRepository>();
+
+            .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 
     private static NpgsqlDataSource CreateDataSource(IConfiguration configuration)
     {

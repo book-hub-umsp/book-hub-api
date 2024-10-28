@@ -19,9 +19,9 @@ public sealed class Book
 
     public required BookStatus BookStatus { get; set; }
 
+    public string KeyWordsContent { get; set; }
+
     public required DateTimeOffset CreationDate { get; set; }
 
     public required DateTimeOffset LastEditDate { get; set; }
-
-    public ICollection<KeyWordLink> KeywordsLinks { get; set; } = null!;
 }

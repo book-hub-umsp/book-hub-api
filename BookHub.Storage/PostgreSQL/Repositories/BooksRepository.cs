@@ -1,5 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Books;
+using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using BookHub.Storage.PostgreSQL.Models;
@@ -19,10 +20,16 @@ public sealed class BooksRepository :
     RepositoryBase, 
     IBooksRepository
 {
-    public BooksRepository(IRepositoryContext context)
-        : base(context) {}
+    public BooksRepository(
+        IRepositoryContext context, 
+        IKeyWordsConverter keyWordsConverter)
+        : base(context) 
+    {
+        _keyWordsConverter = keyWordsConverter 
+            ?? throw new ArgumentNullException(nameof(keyWordsConverter));
+    }
 
-    public async Task<Id<DomainBook>> AddBookAsync(
+    public Task AddBookAsync(
         DomainBook book,
         CancellationToken token)
     {
@@ -41,18 +48,10 @@ public sealed class BooksRepository :
 
         Context.Books.Add(storageBook);
 
-        await Context.SaveChangesAsync(token);
+        storageBook.KeyWordsContent = 
+            _keyWordsConverter.ConvertToStorage(book.Description.KeyWords);
 
-        storageBook.KeywordsLinks =
-            book.Description.KeyWords
-                .Select(x => new KeyWordLink()
-                {
-                    BookId = storageBook.Id,
-                    KeyWordId = x.Id.Value
-                })
-                .ToHashSet();
-
-        return new(storageBook.Id);
+        return Task.CompletedTask;
     }
 
     public async Task<DomainBook> GetBookAsync(
@@ -79,16 +78,15 @@ public sealed class BooksRepository :
                     storageBook.BookGenre,
                     new(storageBook.Title),
                     new(storageBook.BookAnnotation),
-                    new(storageBook.KeywordsLinks.Select(
-                        x => new DomainKeyWord(
-                            new(x.KeyWordId),
-                            new(x.KeyWord.Content))))),
+                    _keyWordsConverter
+                        .ConvertToDomain(storageBook.KeyWordsContent)
+                        .ToHashSet()),
                 storageBook.BookStatus);
     }
 
     public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId,
-        Id<Author> authorId,
+        Id<User> authorId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
@@ -147,14 +145,8 @@ public sealed class BooksRepository :
         storageBook.BookGenre = newBookDescription.Genre;
         storageBook.Title = newBookDescription.Title.Value;
         storageBook.BookAnnotation = newBookDescription.BookAnnotation.Content;
-        storageBook.KeywordsLinks =
-            newBookDescription.KeyWords
-                .Select(x => new KeyWordLink()
-                {
-                    BookId = storageBook.Id,
-                    KeyWordId = x.Id.Value
-                })
-                .ToHashSet();
+        storageBook.KeyWordsContent = 
+            _keyWordsConverter.ConvertToStorage(newBookDescription.KeyWords);
     }
 
     public async Task UpdateBookStatusAsync(
@@ -211,13 +203,13 @@ public sealed class BooksRepository :
         storageBook.BookGenre = newBookGenre;
     }
 
-    public async Task AddNewKeyWordsForBookAsync(
+    public async Task AddKeyWordsForBookAsync(
         Id<DomainBook> bookId,
-        IReadOnlySet<Id<DomainKeyWord>> keyWordsIds,
+        IReadOnlySet<DomainKeyWord> keyWords,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(keyWordsIds);
+        ArgumentNullException.ThrowIfNull(keyWords);
 
         var storageBook = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == bookId.Value, token);
@@ -228,13 +220,9 @@ public sealed class BooksRepository :
                $"No such book with id {bookId.Value}.");
         }
 
-        storageBook.KeywordsLinks =
-            keyWordsIds
-                .Select(x => new KeyWordLink()
-                {
-                    BookId = storageBook.Id,
-                    KeyWordId = x.Value
-                })
-                .ToHashSet();
+        storageBook.KeyWordsContent =
+            _keyWordsConverter.ConvertToStorage(keyWords);
     }
+
+    private readonly IKeyWordsConverter _keyWordsConverter;
 }

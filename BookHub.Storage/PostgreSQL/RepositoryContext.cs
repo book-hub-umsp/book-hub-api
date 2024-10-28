@@ -10,13 +10,7 @@ namespace BookHub.Storage.PostgreSQL;
 /// </summary>
 public sealed class RepositoryContext : IRepositoryContext
 {
-    public DbSet<Author> Authors => _context.Authors;
-
     public DbSet<Book> Books => _context.Books;
-
-    public DbSet<KeyWord> KeyWords => _context.KeyWords;
-
-    public DbSet<KeyWordLink> KeyWordsLinks => _context.KeyWordsLinks;
 
     public RepositoryContext(BooksContext context)
     {
@@ -24,9 +18,4 @@ public sealed class RepositoryContext : IRepositoryContext
     }
 
     private readonly BooksContext _context;
-
-    public async Task SaveChangesAsync(CancellationToken token)
-    {
-        await _context.SaveChangesAsync(token);
-    }
 }

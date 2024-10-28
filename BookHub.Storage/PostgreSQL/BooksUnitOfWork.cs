@@ -14,23 +14,15 @@ public sealed class BooksUnitOfWork :
     IBooksUnitOfWork, 
     IAsyncDisposable
 {
-    public IAuthorsRepository Authors { get; }
-
     public IBooksRepository Books { get; }
-
-    public IKeyWordsRepository KeyWords { get; }
 
     public BooksContext Context { get; }
 
     public BooksUnitOfWork(
-        IAuthorsRepository authors, 
         IBooksRepository books, 
-        IKeyWordsRepository keyWords, 
         BooksContext context)
     {
-        Authors = authors ?? throw new ArgumentNullException(nameof(authors));
         Books = books ?? throw new ArgumentNullException(nameof(books));
-        KeyWords = keyWords ?? throw new ArgumentNullException(nameof(keyWords));
         Context = context ?? throw new ArgumentNullException(nameof(context));
         _dbContextTransaction = 
             Context.Database.BeginTransaction(IsolationLevel.ReadCommitted);
