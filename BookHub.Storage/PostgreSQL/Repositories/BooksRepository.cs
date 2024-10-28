@@ -9,6 +9,7 @@ using System.ComponentModel;
 
 using DomainBook = BookHub.Models.Books.Book;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using DomainBookGenre = BookHub.Models.Books.BookGenre;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -37,7 +38,7 @@ public sealed class BooksRepository :
 
         var relatedBookGenre = 
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Genre == book.Description.Genre);
+                .SingleOrDefaultAsync(x => x.Value == book.Description.Genre.Value);
 
         if (relatedBookGenre is null)
         {
@@ -89,7 +90,7 @@ public sealed class BooksRepository :
                 new(storageBook.Id),
                 new(storageBook.AuthorId),
                 new(
-                    storageBook.BookGenre.Genre,
+                    new(storageBook.BookGenre.Value),
                     new(storageBook.Title),
                     new(storageBook.BookAnnotation),
                     _keyWordsConverter
@@ -158,7 +159,7 @@ public sealed class BooksRepository :
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Genre == newBookDescription.Genre);
+                .SingleOrDefaultAsync(x => x.Value == newBookDescription.Genre.Value);
 
         if (relatedBookGenre is null)
         {
@@ -185,7 +186,7 @@ public sealed class BooksRepository :
             throw new InvalidEnumArgumentException(
                 nameof(newBookStatus),
                 (int)newBookStatus,
-                typeof(BookGenre));
+                typeof(BookStatus));
         }
 
         var storageBook = await Context.Books
@@ -202,22 +203,15 @@ public sealed class BooksRepository :
 
     public async Task UpdateBookGenreAsync(
         Id<DomainBook> bookId, 
-        Genre newBookGenre,
+        DomainBookGenre newBookGenre,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
-
-        if (!Enum.IsDefined(newBookGenre))
-        {
-            throw new InvalidEnumArgumentException(
-                nameof(newBookGenre),
-                (int)newBookGenre,
-                typeof(Genre));
-        }
+        ArgumentNullException.ThrowIfNull(newBookGenre);
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Genre == newBookGenre);
+                .SingleOrDefaultAsync(x => x.Value == newBookGenre.Value);
 
         if (relatedBookGenre is null)
         {

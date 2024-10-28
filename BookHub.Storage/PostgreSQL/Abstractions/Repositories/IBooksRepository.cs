@@ -5,6 +5,7 @@ using BookHub.Storage.PostgreSQL.Models;
 
 using DomainBook = BookHub.Models.Books.Book;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using DomainBookGenre = BookHub.Models.Books.BookGenre;
 
 namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 
@@ -38,7 +39,7 @@ public interface IBooksRepository
 
     public Task UpdateBookGenreAsync(
         Id<DomainBook> bookId,
-        Genre newBookGenre, 
+        DomainBookGenre newBookGenre, 
         CancellationToken token);
 
     public Task UpdateBookAnnotationAsync(

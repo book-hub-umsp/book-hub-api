@@ -30,27 +30,8 @@ public static class StorageExtensions
             configuration.GetConnectionString("DefaultConnection"));
 
         _ = dataSourceBuilder
-            .MapEnum<Genre>()
             .MapEnum<BookStatus>();
 
         return dataSourceBuilder.Build();
     }
-
-    //public static IServiceCollection AddRedisCache(
-    //    this IServiceCollection services,
-    //    IConfiguration configuration)
-    //    => services
-    //        .AddSingleton<IConnectionMultiplexer, ConnectionMultiplexer>(
-    //            _ =>
-    //            {
-    //                var connectionString = configuration.GetConnectionString("RedisConnection")!;
-
-    //                return ConnectionMultiplexer.Connect(connectionString);
-    //                /*
-    //                 * sudo apt install redis-server
-    //                 * sudo systemctl restart redis.service
-    //                 * sudo systemctl status redis
-    //                 * redis-cli
-    //                 */
-    //            });
 }

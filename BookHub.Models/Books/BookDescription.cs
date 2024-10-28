@@ -10,10 +10,7 @@ namespace BookHub.Models.Books;
 /// </summary>
 public sealed class BookDescription
 {
-    /// <remarks>
-    /// Подразумевается неизменяемым.
-    /// </remarks>
-    public Genre Genre { get; private set; }
+    public BookGenre Genre { get; private set; }
 
     public Name<Book> Title { get; private set; }
 
@@ -22,27 +19,18 @@ public sealed class BookDescription
     public HashSet<KeyWord> KeyWords { get; private set; } = [];
 
     public BookDescription(
-        Genre genre, 
+        BookGenre genre, 
         Name<Book> title, 
         BookAnnotation bookAnnotation)
     {
-        if (!Enum.IsDefined(genre))
-        {
-            throw new InvalidEnumArgumentException(
-                nameof(genre),
-                (int)genre,
-                typeof(Genre));
-        }
-
-        Genre =  genre;
-
+        Genre =  genre ?? throw new ArgumentNullException(nameof(genre));
         Title = title ?? throw new ArgumentNullException(nameof(title));
         BookAnnotation = bookAnnotation
             ?? throw new ArgumentNullException(nameof(bookAnnotation));
     }
 
     public BookDescription(
-        Genre genre,
+        BookGenre genre,
         Name<Book> title,
         BookAnnotation bookAnnotation,
         HashSet<KeyWord> keyWords)
@@ -51,15 +39,9 @@ public sealed class BookDescription
         KeyWords = keyWords ?? throw new ArgumentNullException(nameof(keyWords));
     }
 
-    public void ChangeGenre(Genre newGenre)
+    public void ChangeGenre(BookGenre newGenre)
     {
-        if (!Enum.IsDefined(newGenre))
-        {
-            throw new InvalidEnumArgumentException(
-                nameof(newGenre),
-                (int)newGenre,
-                typeof(Genre));
-        }
+        ArgumentNullException.ThrowIfNull(newGenre);
 
         Genre = newGenre;
     }

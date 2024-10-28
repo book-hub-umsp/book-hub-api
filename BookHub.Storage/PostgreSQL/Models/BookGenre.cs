@@ -9,7 +9,7 @@ public sealed class BookGenre
 {
     public long Id { get; set; }
 
-    public Genre Genre { get; set; }
+    public required string Value { get; init; }
 
     public ICollection<Book> Books { get; set; } = null!;
 }
