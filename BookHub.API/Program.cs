@@ -1,6 +1,8 @@
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
+using BooksService.Registrations;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
 
