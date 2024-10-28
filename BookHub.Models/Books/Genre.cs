@@ -3,7 +3,7 @@
 /// <summary>
 /// Жанр книги.
 /// </summary>
-public enum BookGenre
+public enum Genre
 {
     /// <summary>
     /// Роман-эпопея.

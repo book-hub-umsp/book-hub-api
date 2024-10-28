@@ -30,7 +30,7 @@ public static class StorageExtensions
             configuration.GetConnectionString("DefaultConnection"));
 
         _ = dataSourceBuilder
-            .MapEnum<BookGenre>()
+            .MapEnum<Genre>()
             .MapEnum<BookStatus>();
 
         return dataSourceBuilder.Build();

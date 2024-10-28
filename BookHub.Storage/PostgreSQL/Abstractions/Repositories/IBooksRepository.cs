@@ -38,7 +38,7 @@ public interface IBooksRepository
 
     public Task UpdateBookGenreAsync(
         Id<DomainBook> bookId,
-        BookGenre newBookGenre, 
+        Genre newBookGenre, 
         CancellationToken token);
 
     public Task UpdateBookAnnotationAsync(
@@ -46,7 +46,7 @@ public interface IBooksRepository
         BookAnnotation newBookAnnotation,
         CancellationToken token);
 
-    public Task AddKeyWordsForBookAsync(
+    public Task UpdateKeyWordsForBookAsync(
         Id<DomainBook> bookId, 
         IReadOnlySet<DomainKeyWord> keyWords,
         CancellationToken token);

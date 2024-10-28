@@ -12,6 +12,8 @@ public sealed class RepositoryContext : IRepositoryContext
 {
     public DbSet<Book> Books => _context.Books;
 
+    public DbSet<BookGenre> Genres => _context.Genres;
+
     public RepositoryContext(BooksContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));

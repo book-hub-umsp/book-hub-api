@@ -6,7 +6,7 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Ключевое слово.
 /// </summary>
-public sealed class KeyWord
+public sealed record class KeyWord
 {
     public Name<KeyWord> Content { get; }
 

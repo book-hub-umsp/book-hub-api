@@ -29,17 +29,27 @@ public sealed class BooksRepository :
             ?? throw new ArgumentNullException(nameof(keyWordsConverter));
     }
 
-    public Task AddBookAsync(
+    public async Task AddBookAsync(
         DomainBook book,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(book);
 
+        var relatedBookGenre = 
+            await Context.Genres.AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Genre == book.Description.Genre);
+
+        if (relatedBookGenre is null)
+        {
+            throw new InvalidOperationException(
+                $"Book genre {book.Description.Genre} is not exists.");
+        }
+
         var storageBook = new StorageBook
         {
             AuthorId = book.AuthorId.Value,
             Title = book.Description.Title.Value,
-            BookGenre = book.Description.Genre,
+            BookGenreId = relatedBookGenre.Id,
             BookAnnotation = book.Description.BookAnnotation.Content,
             BookStatus = book.Status,
             CreationDate = book.CreationDate,
@@ -50,8 +60,6 @@ public sealed class BooksRepository :
 
         storageBook.KeyWordsContent = 
             _keyWordsConverter.ConvertToStorage(book.Description.KeyWords);
-
-        return Task.CompletedTask;
     }
 
     public async Task<DomainBook> GetBookAsync(
@@ -71,11 +79,17 @@ public sealed class BooksRepository :
                 $"No such book with id {id.Value}.");
         }
 
+        if (storageBook.BookGenre is null)
+        {
+            throw new InvalidOperationException(
+                $"Book genre with id {storageBook.BookGenreId} is not exists.");
+        }
+
         return new DomainBook(
                 new(storageBook.Id),
                 new(storageBook.AuthorId),
                 new(
-                    storageBook.BookGenre,
+                    storageBook.BookGenre.Genre,
                     new(storageBook.Title),
                     new(storageBook.BookAnnotation),
                     _keyWordsConverter
@@ -142,7 +156,17 @@ public sealed class BooksRepository :
                $"No such book with id {bookId.Value}.");
         }
 
-        storageBook.BookGenre = newBookDescription.Genre;
+        var relatedBookGenre =
+            await Context.Genres.AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Genre == newBookDescription.Genre);
+
+        if (relatedBookGenre is null)
+        {
+            throw new InvalidOperationException(
+                $"Book genre {newBookDescription.Genre} is not exists.");
+        }
+
+        storageBook.BookGenreId = relatedBookGenre.Id;
         storageBook.Title = newBookDescription.Title.Value;
         storageBook.BookAnnotation = newBookDescription.BookAnnotation.Content;
         storageBook.KeyWordsContent = 
@@ -178,7 +202,7 @@ public sealed class BooksRepository :
 
     public async Task UpdateBookGenreAsync(
         Id<DomainBook> bookId, 
-        BookGenre newBookGenre,
+        Genre newBookGenre,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
@@ -188,7 +212,17 @@ public sealed class BooksRepository :
             throw new InvalidEnumArgumentException(
                 nameof(newBookGenre),
                 (int)newBookGenre,
-                typeof(BookGenre));
+                typeof(Genre));
+        }
+
+        var relatedBookGenre =
+            await Context.Genres.AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Genre == newBookGenre);
+
+        if (relatedBookGenre is null)
+        {
+            throw new InvalidOperationException(
+                $"Book genre {newBookGenre} is not exists.");
         }
 
         var storageBook = await Context.Books
@@ -200,10 +234,10 @@ public sealed class BooksRepository :
                $"No such book with id {bookId.Value}.");
         }
 
-        storageBook.BookGenre = newBookGenre;
+        storageBook.BookGenreId = relatedBookGenre.Id;
     }
 
-    public async Task AddKeyWordsForBookAsync(
+    public async Task UpdateKeyWordsForBookAsync(
         Id<DomainBook> bookId,
         IReadOnlySet<DomainKeyWord> keyWords,
         CancellationToken token)

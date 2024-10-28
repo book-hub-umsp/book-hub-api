@@ -13,7 +13,7 @@ public sealed class BookDescription
     /// <remarks>
     /// Подразумевается неизменяемым.
     /// </remarks>
-    public BookGenre Genre { get; private set; }
+    public Genre Genre { get; private set; }
 
     public Name<Book> Title { get; private set; }
 
@@ -22,7 +22,7 @@ public sealed class BookDescription
     public HashSet<KeyWord> KeyWords { get; private set; } = [];
 
     public BookDescription(
-        BookGenre genre, 
+        Genre genre, 
         Name<Book> title, 
         BookAnnotation bookAnnotation)
     {
@@ -31,7 +31,7 @@ public sealed class BookDescription
             throw new InvalidEnumArgumentException(
                 nameof(genre),
                 (int)genre,
-                typeof(BookGenre));
+                typeof(Genre));
         }
 
         Genre =  genre;
@@ -42,7 +42,7 @@ public sealed class BookDescription
     }
 
     public BookDescription(
-        BookGenre genre,
+        Genre genre,
         Name<Book> title,
         BookAnnotation bookAnnotation,
         HashSet<KeyWord> keyWords)
@@ -51,14 +51,14 @@ public sealed class BookDescription
         KeyWords = keyWords ?? throw new ArgumentNullException(nameof(keyWords));
     }
 
-    public void ChangeGenre(BookGenre newGenre)
+    public void ChangeGenre(Genre newGenre)
     {
         if (!Enum.IsDefined(newGenre))
         {
             throw new InvalidEnumArgumentException(
                 nameof(newGenre),
                 (int)newGenre,
-                typeof(BookGenre));
+                typeof(Genre));
         }
 
         Genre = newGenre;
