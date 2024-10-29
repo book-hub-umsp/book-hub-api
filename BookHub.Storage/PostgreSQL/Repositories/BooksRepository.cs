@@ -1,15 +1,18 @@
-﻿using BookHub.Models;
+﻿using System.ComponentModel;
+
+using BookHub.Abstractions.Repositories;
+using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
-using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using BookHub.Storage.PostgreSQL.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 using DomainBook = BookHub.Models.Books.Book;
-using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using DomainUser = BookHub.Models.Users.User;
 using DomainBookGenre = BookHub.Models.Books.BookGenre;
+using DomainKeyWord = BookHub.Models.Books.KeyWord;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -18,15 +21,15 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// Репозиторий книг.
 /// </summary>
 public sealed class BooksRepository :
-    RepositoryBase, 
+    RepositoryBase,
     IBooksRepository
 {
     public BooksRepository(
-        IRepositoryContext context, 
+        IRepositoryContext context,
         IKeyWordsConverter keyWordsConverter)
-        : base(context) 
+        : base(context)
     {
-        _keyWordsConverter = keyWordsConverter 
+        _keyWordsConverter = keyWordsConverter
             ?? throw new ArgumentNullException(nameof(keyWordsConverter));
     }
 
@@ -36,7 +39,7 @@ public sealed class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        var relatedBookGenre = 
+        var relatedBookGenre =
             await Context.Genres.AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Value == book.Description.Genre.Value);
 
@@ -59,7 +62,7 @@ public sealed class BooksRepository :
 
         Context.Books.Add(storageBook);
 
-        storageBook.KeyWordsContent = 
+        storageBook.KeyWordsContent =
             _keyWordsConverter.ConvertToStorage(book.Description.KeyWords);
     }
 
@@ -101,7 +104,7 @@ public sealed class BooksRepository :
 
     public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId,
-        Id<User> authorId,
+        Id<DomainUser> authorId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
@@ -170,7 +173,7 @@ public sealed class BooksRepository :
         storageBook.BookGenreId = relatedBookGenre.Id;
         storageBook.Title = newBookDescription.Title.Value;
         storageBook.BookAnnotation = newBookDescription.BookAnnotation.Content;
-        storageBook.KeyWordsContent = 
+        storageBook.KeyWordsContent =
             _keyWordsConverter.ConvertToStorage(newBookDescription.KeyWords);
     }
 
@@ -202,7 +205,7 @@ public sealed class BooksRepository :
     }
 
     public async Task UpdateBookGenreAsync(
-        Id<DomainBook> bookId, 
+        Id<DomainBook> bookId,
         DomainBookGenre newBookGenre,
         CancellationToken token)
     {
