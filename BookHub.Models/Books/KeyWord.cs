@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookHub.Models.Users;
+using System;
 
 namespace BookHub.Models.Books;
 
@@ -7,25 +8,25 @@ namespace BookHub.Models.Books;
 /// </summary>
 public sealed record class KeyWord
 {
-    public string Content { get; }
+    public Name<KeyWord> Content { get; }
 
-    public KeyWord(string content)
+    public KeyWord(Name<KeyWord> content)
     {
-        ArgumentException.ThrowIfNullOrEmpty(content);
+        ArgumentNullException.ThrowIfNull(content);
 
-        content = content.Trim();
+        var stringContent = content.Value.Trim();
 
-        if (content.Length > MAX_LENGHT)
+        if (stringContent.Length > MAX_LENGHT)
         {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols.");
         }
 
-        if (content.Length < MIN_LENGHT)
+        if (stringContent.Length < MIN_LENGHT)
         {
             throw new ArgumentException($"Content min lenght must be {MAX_LENGHT} symbols.");
         }
 
-        Content = content;
+        Content = new(stringContent);
     }
 
     private const int MIN_LENGHT = 1;
