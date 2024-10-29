@@ -3,16 +3,14 @@
 using BookHub.Abstractions.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books;
-using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
-using BookHub.Storage.PostgreSQL.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 using DomainBook = BookHub.Models.Books.Book;
-using DomainUser = BookHub.Models.Users.User;
 using DomainBookGenre = BookHub.Models.Books.BookGenre;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using DomainUser = BookHub.Models.Users.User;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
