@@ -1,7 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
-using BookHub.Storage.PostgreSQL.Models;
 
 using DomainBook = BookHub.Models.Books.Book;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;

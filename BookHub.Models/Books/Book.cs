@@ -13,11 +13,11 @@ public sealed class Book
 
     public Id<User> AuthorId { get; }
 
-    public BookDescription Description 
-    { 
-        get { return Description; } 
+    public BookDescription Description
+    {
+        get => Description;
 
-        private set { LastEditDate = DateTimeOffset.UtcNow; } 
+        private set => LastEditDate = DateTimeOffset.UtcNow;
     }
 
     public BookStatus Status { get; private set; }
