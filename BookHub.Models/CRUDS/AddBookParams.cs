@@ -9,7 +9,7 @@ namespace BookHub.Models.CRUDS;
 /// <summary>
 /// Параметры команды добавления новой книги.
 /// </summary>
-public class AddBookParams
+public class AddBookParams : BookParamsBase
 {
     public BookGenre Genre { get; }
 

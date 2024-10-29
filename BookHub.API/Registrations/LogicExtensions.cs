@@ -1,4 +1,8 @@
-﻿using BookHub.API.Authentification;
+﻿using Abstractions.Logic.Converters;
+
+using BookHub.API.Authentification;
+using BookHub.Logic.Converters;
+
 using Google.Apis.Auth;
 
 using Microsoft.Extensions.Options;
@@ -21,4 +25,10 @@ internal static class LogicExtensions
                 .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
                 .ValidateOnStart()
                 .Services;
+
+    public static IServiceCollection AddRequestsHandling(
+        this IServiceCollection services)
+        => services
+            .AddSingleton<IBookParamsDeserializer, BookParamsDeserializer>()
+            .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using BookHub.Models.Books;
+
+using Newtonsoft.Json;
 
 namespace BookHub.Contracts.CRUDS;
 
 /// <summary>
 /// Параметры запроса по обновлению параметров книги.
 /// </summary>
-public sealed class UpdateBookParams
+public sealed class UpdateBookParams : BookParamsWithIdBase
 {
     [JsonProperty("genre", NullValueHandling = NullValueHandling.Ignore)]
 
@@ -13,7 +15,7 @@ public sealed class UpdateBookParams
 
     [JsonProperty("status", NullValueHandling = NullValueHandling.Ignore)]
 
-    public string? NewStatus { get; init; } = null!;
+    public BookStatus? NewStatus { get; init; } = null!;
 
 
     [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]

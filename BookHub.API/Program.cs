@@ -63,6 +63,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services
     .AddAuthorizationConfigs(builder.Configuration)
+    .AddRequestsHandling()
     .AddPostgresStorage(builder.Configuration);
 
 var app = builder.Build();

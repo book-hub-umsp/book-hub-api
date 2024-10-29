@@ -7,7 +7,7 @@ namespace BookHub.Models.CRUDS;
 /// <summary>
 /// Базовая модель параметров книги с идентификатором.
 /// </summary>
-public abstract class BookParamsWithIdBase
+public abstract class BookParamsWithIdBase : BookParamsBase
 {
     public Id<Book> BookId { get; }
 
