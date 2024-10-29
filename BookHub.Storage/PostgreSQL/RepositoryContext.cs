@@ -1,27 +1,23 @@
 ﻿using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BookHub.Storage.PostgreSQL;
 
+/// <summary>
+/// Контекст для репозиториев.
+/// </summary>
 public sealed class RepositoryContext : IRepositoryContext
 {
-    public RepositoryContext(
-        BooksContext context, 
-        ILogger<RepositoryContext> logger)
+    public DbSet<Book> Books => _context.Books;
+
+    public DbSet<BookGenre> Genres => _context.Genres;
+
+    public RepositoryContext(BooksContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public void SaveChanges()
-    {
-        _logger.LogDebug("Save intermediate changes");
-
-        _ = _context.SaveChanges();
-
-        _logger.LogDebug("Intermediate changes sent to DB");
-    }
-
-    private readonly ILogger<RepositoryContext> _logger;
     private readonly BooksContext _context;
 }
