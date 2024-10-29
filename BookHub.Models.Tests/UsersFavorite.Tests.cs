@@ -21,7 +21,7 @@ public class UsersFavoriteTests
         useFavoriteBookLink.Links.Should().BeEquivalentTo(links);
     }
 
-    [Fact(DisplayName = "Cannot create without id.")]
+    [Fact(DisplayName = "Cannot create without user id.")]
     [Trait("Category", "Unit")]
     public void CanNotCreateWithoutUserId()
     {
@@ -38,7 +38,7 @@ public class UsersFavoriteTests
         exception.Should().BeOfType<ArgumentNullException>();
     }
 
-    [Fact(DisplayName = "Cannot create without name.")]
+    [Fact(DisplayName = "Cannot create without links.")]
     [Trait("Category", "Unit")]
     public void CanNotCreateWithoutLinks()
     {
