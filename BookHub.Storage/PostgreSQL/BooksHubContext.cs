@@ -37,6 +37,9 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<User>()
             .Property(x => x.Id)
             .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<User>()
+            .ToTable("users");
     }
 
     private static void CreateBook(ModelBuilder modelBuilder)

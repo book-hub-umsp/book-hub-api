@@ -21,7 +21,7 @@ public class User
 
     public UserStatus Status { get; set; }
 
-    public UserPermission UserPermission { get; set; }
+    public UserPermission Permission { get; set; }
 
     public string About { get; set; } = null!;
 }

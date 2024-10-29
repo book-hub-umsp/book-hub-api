@@ -35,7 +35,7 @@ public sealed class UsersRepository : IUsersRepository
             Name = user.Name.Value,
             Email = user.Email.Address,
             Status = UserStatus.Active,
-            UserPermission = UserPermission.None
+            Permission = UserPermission.None
         });
 
         return Task.CompletedTask;
