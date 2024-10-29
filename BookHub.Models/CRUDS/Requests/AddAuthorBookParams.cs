@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры команды добавления новой книги с автором.
@@ -15,9 +15,9 @@ public sealed class AddAuthorBookParams : AddBookParams
 
     public AddAuthorBookParams(
         Id<User> authorId,
-        BookGenre genre, 
-        Name<Book> title, 
-        BookAnnotation annotation) 
+        BookGenre genre,
+        Name<Book> title,
+        BookAnnotation annotation)
         : base(genre, title, annotation)
     {
         AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));

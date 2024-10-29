@@ -1,5 +1,5 @@
-﻿using ContractBookParams = BookHub.Contracts.CRUDS.BookParamsBase;
-using DomainBookParams = BookHub.Models.CRUDS.BookParamsBase;
+﻿using ContractBookParams = BookHub.Contracts.CRUDS.Requests.BookParamsBase;
+using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 
 namespace Abstractions.Logic.Converters;
 

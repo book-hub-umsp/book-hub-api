@@ -2,7 +2,7 @@
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению жанра книги.
@@ -12,7 +12,7 @@ public sealed class UpdateBookGenreParams : UpdateBookParamsBase
     public BookGenre NewGenre { get; }
 
     public UpdateBookGenreParams(
-        Id<Book> bookId, 
+        Id<Book> bookId,
         BookGenre newGenre)
         : base(bookId)
     {

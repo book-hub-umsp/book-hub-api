@@ -2,7 +2,7 @@
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Базовая модель параметров книги с идентификатором.

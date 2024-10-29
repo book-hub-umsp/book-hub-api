@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BookHub.Contracts.CRUDS;
+namespace BookHub.Contracts.CRUDS.Requests;
 
 /// <summary>
 /// Параметры команды добавления новой книги с автором.

@@ -1,7 +1,9 @@
 ﻿using Abstractions.Logic.Converters;
+using Abstractions.Logic.CrudServices;
 
 using BookHub.API.Authentification;
 using BookHub.Logic.Converters;
+using BookHub.Logic.CrudServices;
 
 using Google.Apis.Auth;
 
@@ -29,6 +31,8 @@ internal static class LogicExtensions
     public static IServiceCollection AddRequestsHandling(
         this IServiceCollection services)
         => services
+            .AddSingleton<IScopedBookTopLevelDescriptionService, ScopedBookTopLevelDescriptionService>()
+            .AddScoped<IBookTopLevelDescriptionService, BookTopLevelDescriptionService>()
             .AddSingleton<IBookParamsDeserializer, BookParamsDeserializer>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

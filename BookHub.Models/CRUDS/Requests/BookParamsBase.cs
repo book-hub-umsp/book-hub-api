@@ -1,4 +1,4 @@
-﻿namespace BookHub.Models.CRUDS;
+﻿namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Маркерная базовая модель параметров.

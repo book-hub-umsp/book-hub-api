@@ -5,6 +5,7 @@ using BookHub.Models.Users;
 using DomainBook = BookHub.Models.Books.Book;
 using DomainKeyWord = BookHub.Models.Books.KeyWord;
 using DomainBookGenre = BookHub.Models.Books.BookGenre;
+using BookHub.Models.CRUDS.Requests;
 
 namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 
@@ -14,7 +15,7 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        DomainBook book,
+        AddBookParams addBookParams,
         CancellationToken token);
 
     public Task<DomainBook> GetBookAsync(

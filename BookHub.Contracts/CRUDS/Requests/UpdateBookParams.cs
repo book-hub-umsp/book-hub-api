@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.CRUDS;
+namespace BookHub.Contracts.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению параметров книги.

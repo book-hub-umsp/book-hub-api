@@ -2,7 +2,7 @@
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению аннотации книги.
@@ -16,7 +16,7 @@ public sealed class UpdateBookAnnotationParams : UpdateBookParamsBase
         BookAnnotation newBookAnnotation)
         : base(bookId)
     {
-        NewBookAnnotation = newBookAnnotation 
+        NewBookAnnotation = newBookAnnotation
             ?? throw new ArgumentNullException(nameof(newBookAnnotation));
     }
 }

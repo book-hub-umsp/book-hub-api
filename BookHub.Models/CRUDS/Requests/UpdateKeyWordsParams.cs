@@ -4,7 +4,7 @@ using System.Linq;
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению ключевых слов книги.

@@ -1,7 +1,8 @@
 ﻿using BookHub.Models.Books;
+
 using System.Collections.Generic;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению параметров книги.

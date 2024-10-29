@@ -1,4 +1,4 @@
-﻿using BookHub.Contracts.CRUDS;
+﻿using BookHub.Contracts.CRUDS.Requests;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

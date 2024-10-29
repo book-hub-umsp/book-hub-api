@@ -1,4 +1,4 @@
-﻿using DomainBookParams = BookHub.Models.CRUDS.BookParamsBase;
+﻿using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 
 namespace Abstractions.Logic.Converters;
 

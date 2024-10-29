@@ -2,7 +2,7 @@
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры запроса по обновлению заголовка книги.
@@ -12,7 +12,7 @@ public sealed class UpdateBookTitleParams : UpdateBookParamsBase
     public Name<Book> NewTitle { get; }
 
     public UpdateBookTitleParams(
-        Id<Book> bookId, 
+        Id<Book> bookId,
         Name<Book> newTitle)
         : base(bookId)
     {

@@ -11,7 +11,7 @@ public sealed class Book
 
     public required string Title { get; set; }
 
-    public required long AuthorId { get; set; }
+    public long AuthorId { get; set; } = 0;
 
     public required long BookGenreId { get; set; }
 

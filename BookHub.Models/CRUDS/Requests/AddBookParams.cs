@@ -4,7 +4,7 @@ using System.Linq;
 
 using BookHub.Models.Books;
 
-namespace BookHub.Models.CRUDS;
+namespace BookHub.Models.CRUDS.Requests;
 
 /// <summary>
 /// Параметры команды добавления новой книги.
@@ -20,8 +20,8 @@ public class AddBookParams : BookParamsBase
     public IReadOnlySet<KeyWord>? Keywords { get; }
 
     public AddBookParams(
-        BookGenre genre,  
-        Name<Book> title, 
+        BookGenre genre,
+        Name<Book> title,
         BookAnnotation annotation)
     {
         Genre = genre ?? throw new ArgumentNullException(nameof(genre));

@@ -4,8 +4,8 @@ using Abstractions.Logic.Converters;
 
 using Newtonsoft.Json;
 
-using DomainBookParams = BookHub.Models.CRUDS.BookParamsBase;
-using ContractBookParams = BookHub.Contracts.CRUDS.BookParamsBase;
+using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
+using ContractBookParams = BookHub.Contracts.CRUDS.Requests.BookParamsBase;
 using BookHub.Contracts;
 
 namespace BookHub.Logic.Converters;
