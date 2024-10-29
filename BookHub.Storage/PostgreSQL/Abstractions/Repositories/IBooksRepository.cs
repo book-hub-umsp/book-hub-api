@@ -27,9 +27,9 @@ public interface IBooksRepository
         Id<User> authorId,
         CancellationToken token);
 
-    public Task UpdateBookDescriptionAsync(
+    public Task UpdateBookTitleAsync(
         Id<DomainBook> bookId, 
-        BookDescription newBookDescription,
+        Name<DomainBook> newBookTitle,
         CancellationToken token);
 
     public Task UpdateBookStatusAsync(
