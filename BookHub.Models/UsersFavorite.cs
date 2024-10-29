@@ -11,7 +11,6 @@ namespace BookHub.Models;
 public sealed class UsersFavorite
 {
     public Id<User> UserId { get; }
-
     public HashSet<UserFavoriteBookLink> Links { get; private set; } = [];
 
     public UsersFavorite(
@@ -20,6 +19,7 @@ public sealed class UsersFavorite
     {
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
 
-        //AddLinks(userId, links);
+        ArgumentNullException.ThrowIfNull(links);
+        Links.UnionWith(links);
     }
 }
