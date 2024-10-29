@@ -10,7 +10,7 @@ CREATE TABLE users (
     email BIGINT DEFAULT NULL,
     status user_status NOT NULL DEFAULT 'active',
 	premission user_permission NOT NULL DEFAULT 'none',
-    about TEXT NOT NULL
+    about TEXT NOT NULL DEFAULT 'about'
 );
 
 
