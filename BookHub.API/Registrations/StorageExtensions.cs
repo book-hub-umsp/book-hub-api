@@ -1,12 +1,13 @@
-﻿using BookHub.Storage.PostgreSQL;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Repositories;
+using BookHub.Models.Books;
+using BookHub.Storage.PostgreSQL;
+using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Repositories;
 
 using Microsoft.EntityFrameworkCore;
-using BookHub.Storage.PostgreSQL.Abstractions;
-using StackExchange.Redis;
+
 using Npgsql;
-using BookHub.Models.Books;
-using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
-using BookHub.Storage.PostgreSQL.Repositories;
 
 namespace BooksService.Registrations;
 
@@ -16,11 +17,12 @@ public static class StorageExtensions
         this IServiceCollection services,
         IConfiguration configuration)
         => services
-            .AddDbContext<BooksContext>((sp, dbOpt) =>
+            .AddDbContext<BooksHubContext>((sp, dbOpt) =>
                 dbOpt.UseNpgsql(CreateDataSource(configuration)))
             .AddScoped<IRepositoryContext, RepositoryContext>()
-            .AddScoped<IBooksUnitOfWork, BooksUnitOfWork>()
+            .AddScoped<IBooksHubUnitOfWork, BooksHubUnitOfWork>()
             .AddScoped<IBooksRepository, BooksRepository>()
+            .AddScoped<IUsersRepository, UsersRepository>()
 
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 
