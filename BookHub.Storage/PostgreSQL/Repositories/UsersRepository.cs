@@ -14,23 +14,17 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Хранилище пользователей.
 /// </summary>
-public sealed class UsersRepository : IUsersRepository
+public sealed class UsersRepository : RepositoryBase, IUsersRepository
 {
     private const string NOT_EXISTS_MESSAGE = "User is not exists.";
 
-    private readonly IRepositoryContext _context;
-
-    public UsersRepository(IRepositoryContext context)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        _context = context;
-    }
+    public UsersRepository(IRepositoryContext context) : base(context) { }
 
     public Task AddUserAsync(RegisteringUser user, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(user);
 
-        _context.Users.Add(new()
+        Context.Users.Add(new()
         {
             Name = user.Name.Value,
             Email = user.Email.Address,
@@ -45,7 +39,7 @@ public sealed class UsersRepository : IUsersRepository
     {
         ArgumentNullException.ThrowIfNull(updated);
 
-        var storageUser = await _context.Users.FindAsync([updated.Id.Value], token)
+        var storageUser = await Context.Users.FindAsync([updated.Id.Value], token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         switch (updated)
@@ -57,6 +51,9 @@ public sealed class UsersRepository : IUsersRepository
             case Updated<About> update:
                 storageUser.About = update.Attribute.Content;
                 break;
+
+            default:
+                throw new InvalidOperationException($"Update type: {updated.GetType().Name} is not supported.");
         }
     }
 
@@ -66,7 +63,7 @@ public sealed class UsersRepository : IUsersRepository
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        var storageUser = await _context.Users
+        var storageUser = await Context.Users
             .AsNoTracking()
             .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
@@ -85,7 +82,7 @@ public sealed class UsersRepository : IUsersRepository
     {
         ArgumentNullException.ThrowIfNull(mailAddress);
 
-        var storageUser = await _context.Users
+        var storageUser = await Context.Users
             .AsNoTracking()
             .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token)

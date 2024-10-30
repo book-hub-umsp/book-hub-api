@@ -13,5 +13,4 @@ CREATE TABLE users (
     about TEXT NOT NULL DEFAULT 'about'
 );
 
-
 COMMIT;
