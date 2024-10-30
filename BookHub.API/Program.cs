@@ -5,15 +5,54 @@ using BooksService.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.OpenApi.Models;
+
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddNewtonsoftJson(
+        opt => opt.SerializerSettings.Converters.Add(
+            new StringEnumConverter(new SnakeCaseNamingStrategy())));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
+
+builder.Services.AddSwaggerGen(c =>
+    {
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
+                }
+            });
+    })
+    .AddSwaggerGenNewtonsoftSupport();
 
 builder.Services
     .AddCors(options => options
@@ -68,11 +107,14 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseSwagger().UseSwaggerUI();
+
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseRouting();
 app.UseHealthChecks("/hc");
 
 app.Run();
