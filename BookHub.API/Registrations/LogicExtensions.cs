@@ -33,6 +33,5 @@ internal static class LogicExtensions
         => services
             .AddSingleton<IScopedBookTopLevelDescriptionService, ScopedBookTopLevelDescriptionService>()
             .AddScoped<IBookTopLevelDescriptionService, BookTopLevelDescriptionService>()
-            .AddSingleton<IBookParamsDeserializer, BookParamsDeserializer>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

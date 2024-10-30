@@ -28,4 +28,10 @@ public sealed class BookContent
 
     [JsonProperty("keywords", Required = Required.Always)]
     public IReadOnlyCollection<KeyWord> Keywords { get; set; } = null!;
+
+    [JsonProperty("creation_date", Required = Required.Always)]
+    public required DateTimeOffset CreationDate { get; init; }
+
+    [JsonProperty("last_edit_time", Required = Required.Always)]
+    public required DateTimeOffset LastEditTime { get; init; }
 }
