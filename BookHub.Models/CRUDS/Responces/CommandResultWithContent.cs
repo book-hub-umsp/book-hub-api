@@ -8,9 +8,9 @@ public sealed class CommandResultWithContent : CommandExecutionResult
     public object? Content { get; }
 
     public CommandResultWithContent(
-        CommandResult commandResult, 
-        string? failureMessage,
-        object? content = null) 
+        CommandResult commandResult,
+        object? content = null,
+        string? failureMessage = null) 
         : base(commandResult, failureMessage)
     {
         Content = content;

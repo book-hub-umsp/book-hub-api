@@ -32,28 +32,77 @@ public sealed class BookTopLevelDescriptionService : IBookTopLevelDescriptionSer
 
         try
         {
+            _logger.LogInformation("Trying adding book to storage");
+
             await _unitOfWork.Books.AddBookAsync(addBookParams, token);
+
+            _logger.LogInformation("New book has been succesfully added");
 
             return new(CommandResult.Success);
         }
         catch (Exception ex)
         {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
             return new(CommandResult.Failed, ex.Message);
         }
     }
 
-    public Task<CommandResultWithContent> GetBookAsync(
+    public async Task<CommandResultWithContent> GetBookAsync(
         GetBookParams getBookParams,
         CancellationToken token)
     {
+        ArgumentNullException.ThrowIfNull(getBookParams);
 
+        try
+        {
+            _logger.LogInformation(
+                "Trying get book {BookId} content from storage", 
+                getBookParams.BookId.Value);
+
+            var content = 
+                await _unitOfWork.Books.GetBookAsync(getBookParams.BookId, token);
+
+            _logger.LogInformation(
+                "Information about book {BookId} has been received", 
+                getBookParams.BookId.Value);
+
+            return new(CommandResult.Success, content);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            return new(CommandResult.Failed, content: null, ex.Message);
+        }
     }
 
-    public Task<CommandExecutionResult> UpdateBookAsync(
+    public async Task<CommandExecutionResult> UpdateBookAsync(
         UpdateBookParamsBase updateBookParams,
         CancellationToken token)
     {
+        ArgumentNullException.ThrowIfNull(updateBookParams);
 
+        try
+        {
+            _logger.LogInformation(
+                "Trying update book {BookId} content on storage",
+                updateBookParams.BookId.Value);
+
+            await _unitOfWork.Books.UpdateBookContentAsync(updateBookParams, token);
+
+            _logger.LogInformation(
+                "Book {BookId} content has been updated",
+                updateBookParams.BookId.Value);
+
+            return new(CommandResult.Success);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            return new(CommandResult.Failed, ex.Message);
+        }
     }
 
     private readonly IBooksUnitOfWork _unitOfWork;

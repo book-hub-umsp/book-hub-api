@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+using BookHub.Contracts;
 using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
@@ -10,8 +11,6 @@ using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 using DomainBook = BookHub.Models.Books.Book;
-using DomainBookGenre = BookHub.Models.Books.BookGenre;
-using DomainKeyWord = BookHub.Models.Books.KeyWord;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -126,98 +125,61 @@ public sealed class BooksRepository :
             : storageBook.AuthorId == authorId.Value;
     }
 
-    public async Task UpdateBookAnnotationAsync(
-        Id<DomainBook> bookId,
-        BookAnnotation newBookAnnotation,
+    public async Task UpdateBookContentAsync(
+        UpdateBookParamsBase updateBookParams, 
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(newBookAnnotation);
+        ArgumentNullException.ThrowIfNull(updateBookParams);
 
         var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
-
-        storageBook.BookAnnotation = newBookAnnotation.Content;
-    }
-
-    public async Task UpdateBookTitleAsync(
-        Id<DomainBook> bookId,
-        Name<DomainBook> newBookTitle,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(newBookTitle);
-
-        var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
-
-        storageBook.Title = newBookTitle.Value;
-    }
-
-    public async Task UpdateBookStatusAsync(
-        Id<DomainBook> bookId,
-        BookStatus newBookStatus,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-
-        if (!Enum.IsDefined(newBookStatus))
-        {
-            throw new InvalidEnumArgumentException(
-                nameof(newBookStatus),
-                (int)newBookStatus,
-                typeof(BookStatus));
-        }
-
-        var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
-
-        storageBook.BookStatus = newBookStatus;
-    }
-
-    public async Task UpdateBookGenreAsync(
-        Id<DomainBook> bookId,
-        DomainBookGenre newBookGenre,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(newBookGenre);
-
-        var relatedBookGenre =
-            await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Value == newBookGenre.Value)
+            .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token) 
                     ?? throw new InvalidOperationException(
-                        $"Book genre {newBookGenre} is not exists.");
+                        $"No such book with id {updateBookParams.BookId.Value}.");
 
-        var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
+        switch (updateBookParams)
+        {
+            case UpdateBookGenreParams genreParams:
 
-        storageBook.BookGenreId = relatedBookGenre.Id;
-    }
+                var newGenre = genreParams.NewGenre;
 
-    public async Task UpdateKeyWordsForBookAsync(
-        Id<DomainBook> bookId,
-        IReadOnlySet<DomainKeyWord> keyWords,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(keyWords);
+                var relatedBookGenre =
+                    await Context.Genres.AsNoTracking()
+                        .SingleOrDefaultAsync(x => x.Value == newGenre.Value)
+                            ?? throw new InvalidOperationException(
+                                $"Book genre {newGenre} is not exists.");
 
-        var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
+                storageBook.BookGenreId = relatedBookGenre.Id;
 
-        storageBook.KeyWordsContent =
-            _keyWordsConverter.ConvertToStorage(keyWords);
+                break;
+
+            case UpdateBookTitleParams titleParams:
+
+                storageBook.Title = titleParams.NewTitle.Value;
+
+                break;
+
+            case UpdateBookAnnotationParams annotationParams:
+
+                storageBook.BookAnnotation = annotationParams.NewBookAnnotation.Content;
+
+                break;
+
+            case UpdateBookStatusParams statusParams:
+
+                storageBook.BookStatus = statusParams.NewBookStatus;
+
+                break;
+
+            case UpdateKeyWordsParams keyWordsParams:
+
+                storageBook.KeyWordsContent =
+                    _keyWordsConverter.ConvertToStorage(keyWordsParams.UpdatedKeyWords);
+
+                break;
+
+            default: throw new InvalidOperationException(
+                $"Not supported params type {updateBookParams.GetType().Name}.");
+        }
     }
 
     private readonly IKeyWordsConverter _keyWordsConverter;

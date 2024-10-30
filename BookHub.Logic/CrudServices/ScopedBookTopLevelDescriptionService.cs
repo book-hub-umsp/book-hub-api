@@ -12,7 +12,8 @@ namespace BookHub.Logic.CrudServices;
 /// </summary>
 public sealed class ScopedBookTopLevelDescriptionService : IScopedBookTopLevelDescriptionService
 {
-    public ScopedBookTopLevelDescriptionService(IServiceScopeFactory scopeFactory)
+    public ScopedBookTopLevelDescriptionService(
+        IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
     }
