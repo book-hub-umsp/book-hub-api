@@ -1,14 +1,18 @@
+using BookHub.API;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
 using BooksService.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .Configure<TestConfig>(builder.Configuration.GetRequiredSection(nameof(TestConfig)))
+    .AddSingleton<IValidateOptions<TestConfig>, TestConfigValidator>()
     .AddScoped<IAuthorizationHandler, CustomAuthorizationHandler>();
 
 builder.Services.AddControllers();
