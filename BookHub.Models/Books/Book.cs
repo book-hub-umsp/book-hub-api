@@ -15,12 +15,7 @@ public sealed class Book
 
     public Id<User> AuthorId { get; }
 
-    public BookDescription Description
-    {
-        get => Description;
-
-        private set => LastEditDate = DateTimeOffset.UtcNow;
-    }
+    public BookDescription Description { get; private set; }
 
     public BookStatus Status { get; private set; }
 
@@ -59,6 +54,12 @@ public sealed class Book
     {
         ArgumentNullException.ThrowIfNull(newDescription);
 
+        if (Description == newDescription)
+        {
+            return;
+        }
+
         Description = newDescription;
+        LastEditDate = DateTimeOffset.UtcNow;
     }
 }

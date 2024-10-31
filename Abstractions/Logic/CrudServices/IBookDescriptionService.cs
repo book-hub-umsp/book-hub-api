@@ -6,7 +6,7 @@ namespace Abstractions.Logic.CrudServices;
 /// <summary>
 /// Описывает сервис обработки crud запросов к верхнеуровневому описанию книги.
 /// </summary>
-public interface IBookTopLevelDescriptionService
+public interface IBookDescriptionService
 {
     public Task<CommandExecutionResult> AddBookAsync(
         AddBookParams addBookParams,

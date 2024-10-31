@@ -10,9 +10,9 @@ namespace BookHub.Logic.CrudServices;
 /// <summary>
 /// Прокси для сервиса обработки crud запросов к верхнеуровневому описанию книги.
 /// </summary>
-public sealed class ScopedBookTopLevelDescriptionService : IScopedBookTopLevelDescriptionService
+public sealed class ScopedBookDescriptionService : IScopedBookDescriptionService
 {
-    public ScopedBookTopLevelDescriptionService(
+    public ScopedBookDescriptionService(
         IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
@@ -27,7 +27,7 @@ public sealed class ScopedBookTopLevelDescriptionService : IScopedBookTopLevelDe
         using var scope = _scopeFactory.CreateScope();
 
         return scope.ServiceProvider
-            .GetRequiredService<IBookTopLevelDescriptionService>()
+            .GetRequiredService<IBookDescriptionService>()
             .AddBookAsync(addBookParams, token);
     }
 
@@ -40,7 +40,7 @@ public sealed class ScopedBookTopLevelDescriptionService : IScopedBookTopLevelDe
         using var scope = _scopeFactory.CreateScope();
 
         return scope.ServiceProvider
-            .GetRequiredService<IBookTopLevelDescriptionService>()
+            .GetRequiredService<IBookDescriptionService>()
             .GetBookAsync(getBookParams, token);
     }
 
@@ -53,7 +53,7 @@ public sealed class ScopedBookTopLevelDescriptionService : IScopedBookTopLevelDe
         using var scope = _scopeFactory.CreateScope();
 
         return scope.ServiceProvider
-            .GetRequiredService<IBookTopLevelDescriptionService>()
+            .GetRequiredService<IBookDescriptionService>()
             .UpdateBookAsync(updateBookParams, token);
     }
 

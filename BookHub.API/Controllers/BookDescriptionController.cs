@@ -27,12 +27,12 @@ namespace BookHub.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("books")]
-public class BookTopLevelDescriptionController : Controller
+public class BookDescriptionController : Controller
 {
-    public BookTopLevelDescriptionController(
-        IBookTopLevelDescriptionService service,
+    public BookDescriptionController(
+        IBookDescriptionService service,
         IBookParamsConverter converter,
-        ILogger<BookTopLevelDescriptionController> logger)
+        ILogger<BookDescriptionController> logger)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));
@@ -40,7 +40,7 @@ public class BookTopLevelDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/addBook")]
+    [Route("/add")]
     public async Task<IActionResult> AddNewBookAsync(
         [Required][NotNull] ContractAddBookParams addParams,
         CancellationToken token)
@@ -66,7 +66,7 @@ public class BookTopLevelDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/addAuthorBook")]
+    [Route("/addForAuthor")]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)
@@ -94,7 +94,7 @@ public class BookTopLevelDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/getBook")]
+    [Route("/get")]
     public async Task<IActionResult> GetBookContentAsync(
         [Required][NotNull] ContractGetBookParams getParams,
         CancellationToken token)
@@ -125,7 +125,7 @@ public class BookTopLevelDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/updateBook")]
+    [Route("/update")]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)
@@ -152,7 +152,7 @@ public class BookTopLevelDescriptionController : Controller
             });
     }
 
-    private readonly IBookTopLevelDescriptionService _service;
+    private readonly IBookDescriptionService _service;
     private readonly IBookParamsConverter _converter;
     private readonly ILogger _logger;
 }

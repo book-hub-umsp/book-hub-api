@@ -15,11 +15,11 @@ namespace BookHub.Logic.CrudServices;
 /// <summary>
 /// Сервис обработки crud запросов к верхнеуровневому описанию книги.
 /// </summary>
-public sealed class BookTopLevelDescriptionService : IBookTopLevelDescriptionService
+public sealed class BookDescriptionService : IBookDescriptionService
 {
-    public BookTopLevelDescriptionService(
+    public BookDescriptionService(
         IBooksUnitOfWork unitOfWork,
-        ILogger<BookTopLevelDescriptionService> logger)
+        ILogger<BookDescriptionService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

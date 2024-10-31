@@ -8,7 +8,7 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Описание книги.
 /// </summary>
-public sealed class BookDescription
+public sealed record class BookDescription
 {
     public BookGenre Genre { get; private set; }
 
