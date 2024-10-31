@@ -43,7 +43,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
             return new(CommandResult.Success);
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -89,7 +89,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
             return new(CommandResult.Success, contractContent);
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -119,7 +119,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
             return new(CommandResult.Success);
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
