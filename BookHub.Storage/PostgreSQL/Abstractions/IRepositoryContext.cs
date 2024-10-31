@@ -9,6 +9,8 @@ namespace BookHub.Storage.PostgreSQL.Abstractions;
 /// </summary>
 public interface IRepositoryContext
 {
+    public DbSet<User> Users { get;}
+
     public DbSet<Book> Books { get; }
 
     public DbSet<BookGenre> Genres { get; }
