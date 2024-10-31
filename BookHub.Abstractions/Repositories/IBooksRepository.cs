@@ -1,13 +1,8 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
-using BookHub.Storage.PostgreSQL.Models;
 
-using DomainBook = BookHub.Models.Books.Book;
-using DomainKeyWord = BookHub.Models.Books.KeyWord;
-using DomainBookGenre = BookHub.Models.Books.BookGenre;
-
-namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+namespace BookHub.Abstractions.Repositories;
 
 /// <summary>
 /// Описывает репозиторий для книги.
@@ -15,40 +10,40 @@ namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        DomainBook book,
+        Book book,
         CancellationToken token);
 
-    public Task<DomainBook> GetBookAsync(
-        Id<DomainBook> id,
+    public Task<Book> GetBookAsync(
+        Id<Book> id,
         CancellationToken token);
 
     public Task<bool> IsBookRelatedForCurrentAuthorAsync(
-        Id<DomainBook> bookId, 
+        Id<Book> bookId,
         Id<User> authorId,
         CancellationToken token);
 
     public Task UpdateBookDescriptionAsync(
-        Id<DomainBook> bookId, 
+        Id<Book> bookId,
         BookDescription newBookDescription,
         CancellationToken token);
 
     public Task UpdateBookStatusAsync(
-        Id<DomainBook> bookId, 
+        Id<Book> bookId,
         BookStatus newBookStatus,
         CancellationToken token);
 
     public Task UpdateBookGenreAsync(
-        Id<DomainBook> bookId,
-        DomainBookGenre newBookGenre, 
+        Id<Book> bookId,
+        BookGenre newBookGenre,
         CancellationToken token);
 
     public Task UpdateBookAnnotationAsync(
-        Id<DomainBook> bookId, 
+        Id<Book> bookId,
         BookAnnotation newBookAnnotation,
         CancellationToken token);
 
     public Task UpdateKeyWordsForBookAsync(
-        Id<DomainBook> bookId, 
-        IReadOnlySet<DomainKeyWord> keyWords,
+        Id<Book> bookId,
+        IReadOnlySet<KeyWord> keyWords,
         CancellationToken token);
 }

@@ -12,12 +12,9 @@ public sealed class User
 
     public UserStatus Status { get; }
 
-    public UserPermission Permission { get; }
-
     public User(
         UserProfileInfo profileInfo,
-        UserStatus status,
-        UserPermission premission)
+        UserStatus status)
     {
         ArgumentNullException.ThrowIfNull(profileInfo);
         ProfileInfo = profileInfo;
@@ -30,14 +27,5 @@ public sealed class User
                 typeof(UserStatus));
         }
         Status = status;
-
-        if (!Enum.IsDefined(premission))
-        {
-            throw new InvalidEnumArgumentException(
-                nameof(premission),
-                (int)premission,
-                typeof(UserPermission));
-        }
-        Permission = premission;
     }
 }

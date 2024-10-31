@@ -1,13 +1,15 @@
-﻿using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+﻿using BookHub.Abstractions.Repositories;
 
-namespace BookHub.Storage.PostgreSQL.Abstractions;
+namespace BookHub.Abstractions;
 
 /// <summary>
 /// Описывает единицу работы с хранилищем книг.
 /// </summary>
-public interface IBooksUnitOfWork
+public interface IBooksHubUnitOfWork
 {
     public IBooksRepository Books { get; }
+
+    public IUsersRepository Users { get; }
 
     public Task SaveChangesAsync(CancellationToken token);
 }

@@ -1,30 +1,35 @@
-﻿using BookHub.Storage.PostgreSQL.Abstractions;
-using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+﻿using System.Data;
+
+using BookHub.Abstractions;
+using BookHub.Abstractions.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Data;
 
 namespace BookHub.Storage.PostgreSQL;
 
 /// <summary>
 /// Представляет единицу работы с хранилищем книг
 /// </summary>
-public sealed class BooksUnitOfWork : 
-    IBooksUnitOfWork, 
+public sealed class BooksHubUnitOfWork :
+    IBooksHubUnitOfWork,
     IAsyncDisposable
 {
+    public IUsersRepository Users { get; }
+
     public IBooksRepository Books { get; }
 
-    public BooksContext Context { get; }
+    public BooksHubContext Context { get; }
 
-    public BooksUnitOfWork(
-        IBooksRepository books, 
-        BooksContext context)
+    public BooksHubUnitOfWork(
+        IBooksRepository books,
+        IUsersRepository users,
+        BooksHubContext context)
     {
+        Users = users ?? throw new ArgumentNullException(nameof(users));
         Books = books ?? throw new ArgumentNullException(nameof(books));
         Context = context ?? throw new ArgumentNullException(nameof(context));
-        _dbContextTransaction = 
+        _dbContextTransaction =
             Context.Database.BeginTransaction(IsolationLevel.ReadCommitted);
     }
 
@@ -35,10 +40,7 @@ public sealed class BooksUnitOfWork :
         await _dbContextTransaction.CommitAsync(token);
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await _dbContextTransaction.DisposeAsync();
-    }
+    public async ValueTask DisposeAsync() => await _dbContextTransaction.DisposeAsync();
 
     private readonly IDbContextTransaction _dbContextTransaction;
 }
