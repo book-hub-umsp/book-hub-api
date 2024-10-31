@@ -31,7 +31,6 @@ internal static class LogicExtensions
     public static IServiceCollection AddRequestsHandling(
         this IServiceCollection services)
         => services
-            .AddSingleton<IScopedBookDescriptionService, ScopedBookDescriptionService>()
             .AddScoped<IBookDescriptionService, BookDescriptionService>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }
