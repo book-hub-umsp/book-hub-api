@@ -20,9 +20,19 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
 
     public UsersRepository(IRepositoryContext context) : base(context) { }
 
-    public Task AddUserAsync(RegisteringUser user, CancellationToken token)
+    public async Task AddUserAsync(RegisteringUser user, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(user);
+
+        var existingEmail = await Context.Users
+            .AsNoTracking()
+            .Select(x => x.Email)
+            .SingleOrDefaultAsync(email => email == user.Email.Address, token);
+
+        if (existingEmail is not null)
+        {
+            throw new InvalidOperationException("User with such email is alredy exists.");
+        }
 
         Context.Users.Add(new()
         {
@@ -30,8 +40,6 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
             Email = user.Email.Address,
             Status = UserStatus.Active,
         });
-
-        return Task.CompletedTask;
     }
 
     public async Task UpdateUserAsync(UpdatedBase<User> updated, CancellationToken token)
@@ -54,6 +62,24 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
             default:
                 throw new InvalidOperationException($"Update type: {updated.GetType().Name} is not supported.");
         }
+    }
+
+    public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
+        MailAddress mailAddress, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(mailAddress);
+
+        var storageUser = await Context.Users
+            .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
+
+        return storageUser is not null
+            ? new UserProfileInfo(
+                new(storageUser.Id),
+                new(storageUser.Name),
+                new(storageUser.Email),
+                new(storageUser.About))
+            : null;
     }
 
     public async Task<UserProfileInfo> GetUserProfileInfoByIdAsync(
