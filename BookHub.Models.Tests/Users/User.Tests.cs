@@ -18,15 +18,13 @@ public class UserTests
             new("email@gmail.com"), 
             new("about"));
         var userStatus = UserStatus.Blocked;
-        var userPermission = UserPermission.Moderation;
 
         // Act
-        var user = new User(profileInfo, userStatus, userPermission);
+        var user = new User(profileInfo, userStatus);
 
         // Assert
         user.ProfileInfo.Should().Be(profileInfo);
         user.Status.Should().Be(userStatus);
-        user.Permission.Should().Be(userPermission);
     }
 
     [Fact(DisplayName = "Cannot create without profile info.")]
@@ -37,8 +35,7 @@ public class UserTests
         var exception = Record.Exception(() =>
             new User(
                 null!,
-                UserStatus.Blocked,
-                UserPermission.Moderation));
+                UserStatus.Blocked));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
@@ -56,27 +53,7 @@ public class UserTests
                     new("name"),
                     new("email@gmail.com"), 
                     new("about")),
-                (UserStatus)int.MaxValue,
-                UserPermission.Moderation));
-
-        // Assert
-        exception.Should().BeOfType<InvalidEnumArgumentException>();
-    }
-
-    [Fact(DisplayName = "Cannot create when user premission is invalid.")]
-    [Trait("Category", "Unit")]
-    public void CanNotCreateWhenUserPremissionIsInvalid()
-    {
-        // Act
-        var exception = Record.Exception(() =>
-            new User(
-                new UserProfileInfo(
-                    new(123), 
-                    new("name"), 
-                    new("email@gmail.com"), 
-                    new("about")),
-                UserStatus.Blocked,
-                (UserPermission)int.MaxValue));
+                (UserStatus)int.MaxValue));
 
         // Assert
         exception.Should().BeOfType<InvalidEnumArgumentException>();

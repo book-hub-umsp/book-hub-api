@@ -1,6 +1,7 @@
 ﻿using BookHub.Abstractions;
 using BookHub.Abstractions.Repositories;
 using BookHub.Models.Books;
+using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Repositories;
@@ -32,7 +33,8 @@ public static class StorageExtensions
             configuration.GetConnectionString("DefaultConnection"));
 
         _ = dataSourceBuilder
-            .MapEnum<BookStatus>();
+            .MapEnum<BookStatus>()
+            .MapEnum<UserStatus>();
 
         return dataSourceBuilder.Build();
     }

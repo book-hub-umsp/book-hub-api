@@ -29,7 +29,6 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
             Name = user.Name.Value,
             Email = user.Email.Address,
             Status = UserStatus.Active,
-            Permission = UserPermission.None
         });
 
         return Task.CompletedTask;
