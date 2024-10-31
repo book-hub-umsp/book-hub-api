@@ -124,7 +124,7 @@ public class BookDescriptionController : Controller
             });
     }
 
-    [HttpPost]
+    [HttpPut]
     [Route("/update")]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,

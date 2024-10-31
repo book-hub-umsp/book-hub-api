@@ -27,5 +27,5 @@ public sealed class UpdateBookParams : BookParamsWithIdBase
 
 
     [JsonProperty("keywords", Required = Required.Always)]
-    public IReadOnlyCollection<KeyWord> UpdatedKeywords { get; set; } = null!;
+    public IReadOnlyCollection<KeyWord>? UpdatedKeywords { get; init; }
 }

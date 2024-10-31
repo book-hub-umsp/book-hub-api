@@ -37,6 +37,8 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
             await _unitOfWork.Books.AddBookAsync(addBookParams, token);
 
+            await _unitOfWork.SaveChangesAsync(token);
+
             _logger.LogInformation("New book has been succesfully added");
 
             return new(CommandResult.Success);
@@ -68,7 +70,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
                 "Information about book {BookId} has been received",
                 getBookParams.BookId.Value);
 
-            var contractContent = new BookContent
+            var contractContent = new BookDescriptionResponse
             {
                 AuthorId = content.AuthorId.Value,
                 Title = content.Description.Title.Value,
@@ -108,6 +110,8 @@ public sealed class BookDescriptionService : IBookDescriptionService
                 updateBookParams.BookId.Value);
 
             await _unitOfWork.Books.UpdateBookContentAsync(updateBookParams, token);
+
+            await _unitOfWork.SaveChangesAsync(token);
 
             _logger.LogInformation(
                 "Book {BookId} content has been updated",

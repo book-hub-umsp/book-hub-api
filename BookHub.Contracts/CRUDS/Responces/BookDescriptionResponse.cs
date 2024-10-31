@@ -8,7 +8,7 @@ namespace BookHub.Contracts.CRUDS.Responces;
 /// <summary>
 /// Транспортная модель контента книги.
 /// </summary>
-public sealed class BookContent
+public sealed class BookDescriptionResponse
 {
     [JsonProperty("author_id", Required = Required.Always)]
     public required long AuthorId { get; init; }

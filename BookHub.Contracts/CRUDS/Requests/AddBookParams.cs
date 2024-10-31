@@ -18,5 +18,5 @@ public class AddBookParams : BookParamsBase
     public required string Annotation { get; init; }
 
     [JsonProperty("keywords", Required = Required.Always)]
-    public IReadOnlyCollection<KeyWord> Keywords { get; set; } = null!;
+    public IReadOnlyCollection<KeyWord>? Keywords { get; init; }
 }
