@@ -2,8 +2,6 @@ BEGIN;
 
 CREATE TYPE user_status as ENUM ('active', 'blocked');
 
-CREATE TYPE user_permission as ENUM ('none', 'moderation');
-
 CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     name TEXT NOT NULL,
