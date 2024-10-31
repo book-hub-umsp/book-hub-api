@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace BookHub.API.Controllers;
 
@@ -13,18 +14,27 @@ namespace BookHub.API.Controllers;
 [Route("[controller]")]
 public class TestAuthController : ControllerBase
 {
+    private readonly TestConfig _config;
+
+    public TestAuthController(
+        IOptions<TestConfig> options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        _config = options.Value;
+    }   
+
     [HttpGet]
     [AllowAnonymous]
     [Route("any")]
-    public IActionResult AnyAllowEndpoint() => Ok("Any allow endpoint is works!");
+    public IActionResult AnyAllowEndpoint() => Ok($"Any allow endpoint is works! Config: {_config.Content}");
 
     [HttpGet]
     [Authorize]
     [Route("jwt")]
-    public IActionResult AnyJWTEndpoint() => Ok("Any JWT endpoint is works!");
+    public IActionResult AnyJWTEndpoint() => Ok($"Any JWT endpoint is works! Config: {_config.Content}");
 
     [HttpGet]
     [Authorize(Policy = "SpecialJWT")]
     [Route("special")]
-    public IActionResult SpecialJWTEndpoint() => Ok("Special JWT endpoint is works!");
+    public IActionResult SpecialJWTEndpoint() => Ok($"Special JWT endpoint is works! Config: {_config.Content}");
 }
