@@ -1,5 +1,6 @@
-﻿using BookHub.Abstractions;
-using BookHub.Abstractions.Repositories;
+﻿using Abstractions.Storage.Repositories;
+
+using BookHub.Abstractions;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL;

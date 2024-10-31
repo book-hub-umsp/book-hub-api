@@ -1,11 +1,10 @@
 ﻿using BookHub.Models;
-using BookHub.Models.Books;
+using BookHub.Models.CRUDS.Requests;
 using BookHub.Models.Users;
 
 using DomainBook = BookHub.Models.Books.Book;
-using BookHub.Models.CRUDS.Requests;
 
-namespace BookHub.Storage.PostgreSQL.Abstractions.Repositories;
+namespace Abstractions.Storage.Repositories;
 
 /// <summary>
 /// Описывает репозиторий для книги.
@@ -21,7 +20,7 @@ public interface IBooksRepository
         CancellationToken token);
 
     public Task<bool> IsBookRelatedForCurrentAuthorAsync(
-        Id<DomainBook> bookId, 
+        Id<DomainBook> bookId,
         Id<User> authorId,
         CancellationToken token);
 

@@ -1,5 +1,6 @@
 ﻿using Abstractions.Logic.CrudServices;
 
+using BookHub.Abstractions;
 using BookHub.Contracts.CRUDS.Responces;
 using BookHub.Models.CRUDS;
 using BookHub.Models.CRUDS.Requests;
@@ -18,7 +19,7 @@ namespace BookHub.Logic.CrudServices;
 public sealed class BookDescriptionService : IBookDescriptionService
 {
     public BookDescriptionService(
-        IBooksUnitOfWork unitOfWork,
+        IBooksHubUnitOfWork unitOfWork,
         ILogger<BookDescriptionService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -127,6 +128,6 @@ public sealed class BookDescriptionService : IBookDescriptionService
         }
     }
 
-    private readonly IBooksUnitOfWork _unitOfWork;
+    private readonly IBooksHubUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
 }

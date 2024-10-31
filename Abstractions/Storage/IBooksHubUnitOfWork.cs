@@ -1,4 +1,4 @@
-﻿using BookHub.Abstractions.Repositories;
+﻿using Abstractions.Storage.Repositories;
 
 namespace BookHub.Abstractions;
 

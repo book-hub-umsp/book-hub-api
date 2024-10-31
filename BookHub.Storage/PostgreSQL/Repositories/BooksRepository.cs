@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Abstractions.Storage.Repositories;
 
-using BookHub.Contracts;
 using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
-using BookHub.Storage.PostgreSQL.Abstractions.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -126,13 +124,13 @@ public sealed class BooksRepository :
     }
 
     public async Task UpdateBookContentAsync(
-        UpdateBookParamsBase updateBookParams, 
+        UpdateBookParamsBase updateBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
 
         var storageBook = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token) 
+            .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token)
                     ?? throw new InvalidOperationException(
                         $"No such book with id {updateBookParams.BookId.Value}.");
 
@@ -177,7 +175,8 @@ public sealed class BooksRepository :
 
                 break;
 
-            default: throw new InvalidOperationException(
+            default:
+                throw new InvalidOperationException(
                 $"Not supported params type {updateBookParams.GetType().Name}.");
         }
     }
