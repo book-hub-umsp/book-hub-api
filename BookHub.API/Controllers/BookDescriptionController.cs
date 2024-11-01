@@ -69,22 +69,23 @@ public class BookDescriptionController : Controller
         }
     }
 
-    [HttpPost]
-    [Route("/get")]
+    [HttpGet]
+    [Route("/get/{bookId}")]
     public async Task<IActionResult> GetBookContentAsync(
-        [Required][NotNull] ContractGetBookParams getParams,
+        [Required][NotNull] long bookId,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         _logger.LogInformation(
-            "Start processing book {BookId} getting request",
-            getParams.BookId);
+            "Start processing book {BookId} getting request", 
+            bookId);
 
         try
         {
             var content = await _service.GetBookAsync(
-                (DomainGetBookParams)_converter.Convert(getParams),
+                (DomainGetBookParams)_converter.Convert(
+                    new ContractGetBookParams { BookId = bookId }),
                 token);
 
             _logger.LogInformation("Request was processed with succesfull result");
