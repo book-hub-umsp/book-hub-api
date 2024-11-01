@@ -47,7 +47,7 @@ public sealed class UserService : IUserService
                 .FindUserProfileInfoByEmailAsync(registeringUser.Email, token);
 
             _logger.LogInformation(
-                "New user registered with email: {EmailPatter}",
+                "New user registered with email: {EmailPattern}",
                 $"{existingUser!.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***");
         }
 
