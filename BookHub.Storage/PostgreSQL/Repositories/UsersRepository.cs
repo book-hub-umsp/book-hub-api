@@ -9,6 +9,8 @@ using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace BookHub.Storage.PostgreSQL.Repositories;
 
 /// <summary>
@@ -71,6 +73,7 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
         ArgumentNullException.ThrowIfNull(mailAddress);
 
         var storageUser = await Context.Users
+            .AsNoTracking()
             .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
 
