@@ -32,7 +32,7 @@ public interface IUsersRepository
     public Task AddUserAsync(RegisteringUser user, CancellationToken token);
 
     /// <summary>
-    /// Обновляют информацию о пользователе.
+    /// Обновляет информацию о пользователе.
     /// </summary>
     /// <param name="updated">
     /// Событие, несущее информацию об обновлении.
@@ -64,27 +64,7 @@ public interface IUsersRepository
     public Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(MailAddress mailAddress, CancellationToken token);
 
     /// <summary>
-    /// Возвращет информацию о профиле пользователя по его email. 
-    /// </summary>
-    /// <param name="mailAddress">
-    /// Email.
-    /// </param>
-    /// <param name="token">
-    /// Токен отмены.
-    /// </param>
-    /// <returns>
-    /// <see cref="Task{TResult}"/>.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="mailAddress"/> был <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Если пользователя с таким email не существует в хранилище.
-    /// </exception>
-    public Task<UserProfileInfo> GetUserProfileInfoByEmailAsync(MailAddress mailAddress, CancellationToken token);
-
-    /// <summary>
-    /// Возвращет информацию о профиле пользователя по его идентификатору.
+    /// Возвращает информацию о профиле пользователя по его идентификатору.
     /// </summary>
     /// <param name="userId">
     /// Идентификатор пользователя.

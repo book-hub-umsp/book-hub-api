@@ -47,19 +47,14 @@ public class UserServiceTests
             registeringUser.Email,
             new("about"));
 
-        var findCallback = 0;
         var addCallback = 0;
-        var getProfileCallback = 0;
         var userRepo = new Mock<IUsersRepository>(MockBehavior.Strict);
-        userRepo.Setup(x => x.FindUserProfileInfoByEmailAsync(registeringUser.Email, cts.Token))
+        userRepo.SetupSequence(x => x.FindUserProfileInfoByEmailAsync(registeringUser.Email, cts.Token))
             .ReturnsAsync((UserProfileInfo?)null)
-            .Callback(() => findCallback++);
+            .ReturnsAsync(expectedProfileInfo);
         userRepo.Setup(x => x.AddUserAsync(registeringUser, cts.Token))
             .Returns(Task.CompletedTask)
             .Callback(() => addCallback++);
-        userRepo.Setup(x => x.GetUserProfileInfoByEmailAsync(registeringUser.Email, cts.Token))
-            .ReturnsAsync(expectedProfileInfo)
-            .Callback(() => getProfileCallback++);
 
         var saveCallback = 0;
         var uow = new Mock<IBooksHubUnitOfWork>(MockBehavior.Strict);
@@ -78,9 +73,7 @@ public class UserServiceTests
 
         // Assert
         actual.Should().BeEquivalentTo(expectedProfileInfo);
-        findCallback.Should().Be(1);
         addCallback.Should().Be(1);
-        getProfileCallback.Should().Be(1);
         saveCallback.Should().Be(1);
     }
 

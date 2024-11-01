@@ -71,6 +71,7 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
         ArgumentNullException.ThrowIfNull(mailAddress);
 
         var storageUser = await Context.Users
+            .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
 
         return storageUser is not null
@@ -92,25 +93,6 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
             .AsNoTracking()
             .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
-            ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
-
-        return new UserProfileInfo(
-            new(storageUser.Id),
-            new(storageUser.Name),
-            new(storageUser.Email),
-            new(storageUser.About));
-    }
-
-    public async Task<UserProfileInfo> GetUserProfileInfoByEmailAsync(
-        MailAddress mailAddress,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(mailAddress);
-
-        var storageUser = await Context.Users
-            .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
-            .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         return new UserProfileInfo(

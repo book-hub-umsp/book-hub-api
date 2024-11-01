@@ -44,11 +44,11 @@ public sealed class UserService : IUserService
             await _booksHubUnitOfWork.SaveChangesAsync(token);
 
             existingUser = await _booksHubUnitOfWork.Users
-                .GetUserProfileInfoByEmailAsync(registeringUser.Email, token);
+                .FindUserProfileInfoByEmailAsync(registeringUser.Email, token);
 
             _logger.LogInformation(
                 "New user registered with email: {EmailPatter}",
-                $"{existingUser.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***");
+                $"{existingUser!.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***");
         }
 
         return existingUser;
