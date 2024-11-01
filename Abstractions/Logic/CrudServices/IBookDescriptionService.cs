@@ -1,5 +1,6 @@
-﻿using BookHub.Models.CRUDS.Requests;
-using BookHub.Models.CRUDS.Responces;
+﻿using BookHub.Contracts.CRUDS.Responces;
+using BookHub.Models.Books;
+using BookHub.Models.CRUDS.Requests;
 
 namespace Abstractions.Logic.CrudServices;
 
@@ -8,15 +9,15 @@ namespace Abstractions.Logic.CrudServices;
 /// </summary>
 public interface IBookDescriptionService
 {
-    public Task<CommandExecutionResult> AddBookAsync(
+    public Task AddBookAsync(
         AddAuthorBookParams addBookParams,
         CancellationToken token);
 
-    public Task<CommandExecutionResult> UpdateBookAsync(
+    public Task UpdateBookAsync(
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);
 
-    public Task<CommandResultWithContent> GetBookAsync(
+    public Task<Book> GetBookAsync(
         GetBookParams getBookParams,
         CancellationToken token);
 }

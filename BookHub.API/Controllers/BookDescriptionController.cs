@@ -5,17 +5,15 @@ using Abstractions.Logic.Converters;
 using Abstractions.Logic.CrudServices;
 
 using BookHub.Contracts.CRUDS.Responces;
-using BookHub.Models.CRUDS;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ContractAddAuthorBookParams = BookHub.Contracts.CRUDS.Requests.AddAuthorBookParams;
-using ContractAddBookParams = BookHub.Contracts.CRUDS.Requests.AddBookParams;
 using ContractGetBookParams = BookHub.Contracts.CRUDS.Requests.GetBookParams;
+using ContractKeyWord = BookHub.Contracts.KeyWord;
 using ContractUpdateBookParams = BookHub.Contracts.CRUDS.Requests.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
-using DomainAddBookParams = BookHub.Models.CRUDS.Requests.AddBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
 
@@ -51,20 +49,24 @@ public class BookDescriptionController : Controller
             "Start processing new book adding request for author {AuthorId}",
             addAuthorBookParams.AuthorId);
 
-        var result = await _service.AddBookAsync(
-            (DomainAddAuthorBookParams)_converter.Convert(addAuthorBookParams),
-            token);
+        try
+        {
+            await _service.AddBookAsync(
+                (DomainAddAuthorBookParams)_converter.Convert(addAuthorBookParams),
+                token);
 
-        _logger.LogInformation(
-            "Request was processed with '{ResultType}' result",
-            result.CommandResult);
+            _logger.LogInformation("Request was processed with succesfull result");
 
-        return result.CommandResult == CommandResult.Success
-            ? Ok()
-            : BadRequest(new FailureCommandResult
-            {
-                FailureMessage = result.FailureMessage!
-            });
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+        }
     }
 
     [HttpPost]
@@ -79,23 +81,41 @@ public class BookDescriptionController : Controller
             "Start processing book {BookId} getting request",
             getParams.BookId);
 
-        var result = await _service.GetBookAsync(
-            (DomainGetBookParams)_converter.Convert(getParams),
-            token);
+        try
+        {
+            var content = await _service.GetBookAsync(
+                (DomainGetBookParams)_converter.Convert(getParams),
+                token);
 
-        _logger.LogInformation(
-            "Request was processed with '{ResultType}' result",
-            result.CommandResult);
+            _logger.LogInformation("Request was processed with succesfull result");
 
-        return result.CommandResult == CommandResult.Success
-            ? Ok(new SuccesfullCommandResult
+            var contractContent = new BookDescriptionResponse
             {
-                Content = result.Content
-            })
-            : BadRequest(new FailureCommandResult
-            {
-                FailureMessage = result.FailureMessage!
-            });
+                AuthorId = content.AuthorId.Value,
+                Title = content.Description.Title.Value,
+                Genre = content.Description.Genre.Value,
+                Annotation = content.Description.BookAnnotation.Content,
+                BookStatus = content.Status,
+                CreationDate = content.CreationDate,
+                LastEditTime = content.LastEditDate,
+                Keywords = content.Description.KeyWords
+                    .Select(x => new ContractKeyWord
+                    {
+                        Content = x.Content.Value
+                    })
+                    .ToList()
+            };
+
+            return Ok(new SuccesfullCommandResult { Content = contractContent });
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+        }
     }
 
     [HttpPut]
@@ -110,20 +130,24 @@ public class BookDescriptionController : Controller
             "Start processing book {BookId} updating request",
             updateParams.BookId);
 
-        var result = await _service.UpdateBookAsync(
-            (DomainUpdateBookParams)_converter.Convert(updateParams),
-            token);
+        try
+        {
+            await _service.UpdateBookAsync(
+                (DomainUpdateBookParams)_converter.Convert(updateParams),
+                token);
 
-        _logger.LogInformation(
-            "Request was processed with '{ResultType}' result",
-            result.CommandResult);
+            _logger.LogInformation("Request was processed with succesfull result");
 
-        return result.CommandResult == CommandResult.Success
-            ? Ok()
-            : BadRequest(new FailureCommandResult
-            {
-                FailureMessage = result.FailureMessage!
-            });
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+        }
     }
 
     private readonly IBookDescriptionService _service;
