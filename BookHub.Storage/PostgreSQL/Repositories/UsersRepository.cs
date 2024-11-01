@@ -9,8 +9,6 @@ using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
 namespace BookHub.Storage.PostgreSQL.Repositories;
 
 /// <summary>
@@ -67,7 +65,7 @@ public sealed class UsersRepository : RepositoryBase, IUsersRepository
     }
 
     public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
-        MailAddress mailAddress, 
+        MailAddress mailAddress,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(mailAddress);
