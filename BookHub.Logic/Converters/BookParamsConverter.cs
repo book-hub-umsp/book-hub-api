@@ -27,28 +27,15 @@ public sealed class BookParamsConverter : IBookParamsConverter
 
         return contractParams switch
         {
-            ContractAddAuthorBookParams addAuthorBookParams =>
-                addAuthorBookParams.Keywords is null
-                ? new DomainAddAuthorBookParams(
-                    new(addAuthorBookParams.AuthorId),
-                    new(addAuthorBookParams.Genre),
-                    new(addAuthorBookParams.Title),
-                    new(addAuthorBookParams.Annotation))
-                : new DomainAddAuthorBookParams(
-                    new(addAuthorBookParams.AuthorId),
-                    new(addAuthorBookParams.Genre),
-                    new(addAuthorBookParams.Title),
-                    new(addAuthorBookParams.Annotation),
-                    addAuthorBookParams.Keywords.Select(
-                        x => new KeyWord(new(x.Content))).ToList()),
-
-            ContractAddBookParams addBookParams =>
+            ContractAddAuthorBookParams addBookParams =>
                 addBookParams.Keywords is null
-                ? new DomainAddBookParams(
+                ? new DomainAddAuthorBookParams(
+                    new(addBookParams.AuthorId),
                     new(addBookParams.Genre),
                     new(addBookParams.Title),
                     new(addBookParams.Annotation))
-                : new DomainAddBookParams(
+                : new DomainAddAuthorBookParams(
+                    new(addBookParams.AuthorId),
                     new(addBookParams.Genre),
                     new(addBookParams.Title),
                     new(addBookParams.Annotation),

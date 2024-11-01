@@ -27,7 +27,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
     }
 
     public async Task<CommandExecutionResult> AddBookAsync(
-        AddBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);

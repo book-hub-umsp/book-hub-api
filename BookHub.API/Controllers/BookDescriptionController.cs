@@ -41,32 +41,6 @@ public class BookDescriptionController : Controller
 
     [HttpPost]
     [Route("/add")]
-    public async Task<IActionResult> AddNewBookAsync(
-        [Required][NotNull] ContractAddBookParams addParams,
-        CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-
-        _logger.LogInformation("Start processing new book adding request");
-
-        var result = await _service.AddBookAsync(
-            (DomainAddBookParams)_converter.Convert(addParams),
-            token);
-
-        _logger.LogInformation(
-            "Request was processed with '{ResultType}' result",
-            result.CommandResult);
-
-        return result.CommandResult == CommandResult.Success
-            ? Ok()
-            : BadRequest(new FailureCommandResult
-            {
-                FailureMessage = result.FailureMessage!
-            });
-    }
-
-    [HttpPost]
-    [Route("/addForAuthor")]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)

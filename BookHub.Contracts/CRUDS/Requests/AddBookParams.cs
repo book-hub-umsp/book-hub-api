@@ -5,7 +5,7 @@ namespace BookHub.Contracts.CRUDS.Requests;
 /// <summary>
 /// Параметры команды добавления новой книги.
 /// </summary>
-public class AddBookParams : BookParamsBase
+public abstract class AddBookParams : BookParamsBase
 {
     [JsonProperty("genre", Required = Required.Always)]
 

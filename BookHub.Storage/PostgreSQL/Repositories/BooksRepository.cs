@@ -30,7 +30,7 @@ public sealed class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        AddBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
@@ -43,26 +43,16 @@ public sealed class BooksRepository :
 
         var now = DateTimeOffset.UtcNow;
 
-        var storageBook = addBookParams is AddAuthorBookParams authorBookParams
-            ? new StorageBook
-            {
-                AuthorId = authorBookParams.AuthorId.Value,
-                Title = addBookParams.Title.Value,
-                BookGenreId = relatedBookGenre.Id,
-                BookAnnotation = addBookParams.Annotation.Content,
-                BookStatus = BookStatus.Published,
-                CreationDate = now,
-                LastEditDate = now
-            }
-            : new StorageBook
-            {
-                Title = addBookParams.Title.Value,
-                BookGenreId = relatedBookGenre.Id,
-                BookAnnotation = addBookParams.Annotation.Content,
-                BookStatus = BookStatus.Published,
-                CreationDate = now,
-                LastEditDate = now
-            };
+        var storageBook = new StorageBook
+        {
+            AuthorId = addBookParams.AuthorId.Value,
+            Title = addBookParams.Title.Value,
+            BookGenreId = relatedBookGenre.Id,
+            BookAnnotation = addBookParams.Annotation.Content,
+            BookStatus = BookStatus.Published,
+            CreationDate = now,
+            LastEditDate = now
+        };
 
         if (addBookParams.Keywords is not null)
         {

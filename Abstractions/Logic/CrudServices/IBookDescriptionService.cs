@@ -9,7 +9,7 @@ namespace Abstractions.Logic.CrudServices;
 public interface IBookDescriptionService
 {
     public Task<CommandExecutionResult> AddBookAsync(
-        AddBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token);
 
     public Task<CommandExecutionResult> UpdateBookAsync(

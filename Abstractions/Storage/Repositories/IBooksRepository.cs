@@ -12,7 +12,7 @@ namespace Abstractions.Storage.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        AddBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token);
 
     public Task<DomainBook> GetBookAsync(
