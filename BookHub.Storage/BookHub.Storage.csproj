@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BookHub.Abstractions\BookHub.Abstractions.csproj" />
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\BookHub.Contracts\BookHub.Contracts.csproj" />
     <ProjectReference Include="..\BookHub.Models\BookHub.Models.csproj" />
   </ItemGroup>
