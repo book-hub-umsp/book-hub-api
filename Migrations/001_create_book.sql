@@ -6,8 +6,8 @@ CREATE TYPE book_status as ENUM ('draft', 'published', 'hiden', 'removed');
 
 CREATE TABLE genres (
     id bigint GENERATED ALWAYS AS IDENTITY,
-    value text NOT NULL
-);
+    value text NOT NULL,
+	CONSTRAINT pk_genres PRIMARY KEY (id));
 
 CREATE TABLE books (
     id bigint GENERATED ALWAYS AS IDENTITY,

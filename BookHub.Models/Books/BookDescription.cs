@@ -8,7 +8,7 @@ namespace BookHub.Models.Books;
 /// <summary>
 /// Описание книги.
 /// </summary>
-public sealed class BookDescription
+public sealed class BookDescription : IEquatable<BookDescription>
 {
     public BookGenre Genre { get; private set; }
 
@@ -68,5 +68,35 @@ public sealed class BookDescription
         {
             _ = KeyWords.Add(keyWord);
         }
+    }
+
+    public bool Equals(BookDescription? other) => 
+        other is not null
+        && other.Genre == Genre
+        && other.Title == Title
+        && other.BookAnnotation == BookAnnotation
+        && other.KeyWords.SetEquals(KeyWords);
+
+    public override bool Equals(object? obj) => Equals(obj as BookDescription);
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(
+            Genre,
+            Title,
+            BookAnnotation,
+            GetHashSetCode(KeyWords));
+    }
+
+    private static int GetHashSetCode(HashSet<KeyWord> hashSet)
+    {
+        var hashCode = new HashCode();
+
+        foreach (var item in hashSet)
+        {
+            hashCode.Add(hashSet.Comparer.GetHashCode(item));
+        }
+
+        return hashCode.ToHashCode();
     }
 }

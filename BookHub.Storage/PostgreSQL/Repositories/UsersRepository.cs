@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 
-using BookHub.Abstractions.Repositories;
+using Abstractions.Storage.Repositories;
+
 using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Users;
@@ -14,7 +15,9 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Хранилище пользователей.
 /// </summary>
-public sealed class UsersRepository : RepositoryBase, IUsersRepository
+public sealed class UsersRepository : 
+    RepositoryBase, 
+    IUsersRepository
 {
     private const string NOT_EXISTS_MESSAGE = "User is not exists.";
 
