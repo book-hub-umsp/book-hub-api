@@ -1,6 +1,6 @@
-﻿using BookHub.Abstractions.Repositories;
+﻿using BookHub.Abstractions.Storage.Repositories;
 
-namespace BookHub.Abstractions;
+namespace BookHub.Abstractions.Storage;
 
 /// <summary>
 /// Описывает единицу работы с хранилищем книг.

@@ -1,7 +1,7 @@
-﻿using ContractBookParams = BookHub.Contracts.CRUDS.Requests.BookParamsBase;
+﻿using ContractBookParams = BookHub.Contracts.REST.Requests.BookParamsBase;
 using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 
-namespace Abstractions.Logic.Converters;
+namespace BookHub.Abstractions.Logic.Converters;
 
 /// <summary>
 /// Описывает конвертер параметров запроса к книгам.

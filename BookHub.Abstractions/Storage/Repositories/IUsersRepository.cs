@@ -4,7 +4,7 @@ using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;
 
-namespace BookHub.Abstractions.Repositories;
+namespace BookHub.Abstractions.Storage.Repositories;
 
 /// <summary>
 /// Описывает хранилище пользователей.

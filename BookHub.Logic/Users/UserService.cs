@@ -1,4 +1,4 @@
-﻿using BookHub.Abstractions;
+﻿using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;

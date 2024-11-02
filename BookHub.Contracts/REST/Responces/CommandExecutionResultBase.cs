@@ -1,4 +1,4 @@
-﻿namespace BookHub.Contracts.CRUDS.Responces;
+﻿namespace BookHub.Contracts.REST.Responces;
 
 /// <summary>
 /// Маркерный базовый класс, отвечающий за результат исполнения команды.

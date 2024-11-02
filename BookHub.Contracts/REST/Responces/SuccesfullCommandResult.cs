@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BookHub.Contracts.CRUDS.Responces;
+namespace BookHub.Contracts.REST.Responces;
 
 /// <summary>
 /// Класс, отвечающий за успешный результат исполнения команды.

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace BookHub.Contracts.CRUDS.Requests;
+namespace BookHub.Contracts.REST.Requests;
 
 /// <summary>
 /// Базовые параметры запроса для книги.

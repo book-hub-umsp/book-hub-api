@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-
-using Newtonsoft.Json;
-
-namespace BookHub.Contracts.CRUDS.Requests;
+﻿namespace BookHub.Contracts.REST.Requests;
 
 /// <summary>
 /// Маркерная базовая модель параметров.

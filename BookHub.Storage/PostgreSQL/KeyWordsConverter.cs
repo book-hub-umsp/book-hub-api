@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Text;
 
+using BookHub.Abstractions.Storage;
 using BookHub.Contracts;
-using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Newtonsoft.Json;
 

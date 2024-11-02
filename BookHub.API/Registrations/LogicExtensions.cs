@@ -1,6 +1,5 @@
-﻿using Abstractions.Logic.Converters;
-using Abstractions.Logic.CrudServices;
-
+﻿using BookHub.Abstractions.Logic.Converters;
+using BookHub.Abstractions.Logic.Services;
 using BookHub.API.Authentification;
 using BookHub.Logic.Converters;
 using BookHub.Logic.CrudServices;

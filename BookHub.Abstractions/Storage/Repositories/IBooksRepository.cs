@@ -4,7 +4,7 @@ using BookHub.Models.Users;
 
 using DomainBook = BookHub.Models.Books.Book;
 
-namespace Abstractions.Storage.Repositories;
+namespace BookHub.Abstractions.Storage.Repositories;
 
 /// <summary>
 /// Описывает репозиторий для книги.

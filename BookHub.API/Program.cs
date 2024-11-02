@@ -2,8 +2,6 @@ using BookHub.API;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
-using BooksService.Registrations;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -25,7 +23,6 @@ builder.Services
         opt => opt.SerializerSettings.Converters.Add(
             new StringEnumConverter(new SnakeCaseNamingStrategy())));
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 
 builder.Services.AddSwaggerGen(c =>
@@ -78,7 +75,7 @@ builder.Services
         //opt.TokenValidationParameters.ValidAudience = "bookhub";
 
         // Validate signature
-        
+
         //opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
         //{
         //    OnTokenValidated = async (context) =>
@@ -97,9 +94,9 @@ builder.Services
         //    }
         //};
 
-        //opt.TokenValidationParameters.ValidateAudience = false;
+        opt.TokenValidationParameters.ValidateAudience = false;
 
-        // opt.TokenValidationParameters.ValidateIssuer = false;
+        opt.TokenValidationParameters.ValidateIssuer = false;
 
         opt.TokenValidationParameters.SignatureValidator =
             (token, _) => new JsonWebToken(token);
@@ -140,10 +137,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseRouting();
 app.UseHealthChecks("/hc");
 
 app.Run();

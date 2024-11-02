@@ -1,6 +1,6 @@
 ﻿using DomainKeyWord = BookHub.Models.Books.KeyWord;
 
-namespace BookHub.Storage.PostgreSQL.Abstractions;
+namespace BookHub.Abstractions.Storage;
 
 /// <summary>
 /// Описывает конвертер ключевых слов.

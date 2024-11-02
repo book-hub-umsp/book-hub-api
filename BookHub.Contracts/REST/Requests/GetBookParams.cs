@@ -1,4 +1,4 @@
-﻿namespace BookHub.Contracts.CRUDS.Requests;
+﻿namespace BookHub.Contracts.REST.Requests;
 
 /// <summary>
 /// Параметры запроса получения книги.
