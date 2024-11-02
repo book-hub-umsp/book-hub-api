@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-using Abstractions.Logic.Converters;
-using Abstractions.Logic.CrudServices;
-
-using BookHub.Contracts.CRUDS.Responces;
+using BookHub.Abstractions.Logic.Converters;
+using BookHub.Abstractions.Logic.Services;
+using BookHub.Contracts.REST.Responces;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using ContractAddAuthorBookParams = BookHub.Contracts.CRUDS.Requests.AddAuthorBookParams;
-using ContractGetBookParams = BookHub.Contracts.CRUDS.Requests.GetBookParams;
+using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.AddAuthorBookParams;
+using ContractGetBookParams = BookHub.Contracts.REST.Requests.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using ContractUpdateBookParams = BookHub.Contracts.CRUDS.Requests.UpdateBookParams;
+using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
@@ -78,7 +77,7 @@ public class BookDescriptionController : Controller
         token.ThrowIfCancellationRequested();
 
         _logger.LogInformation(
-            "Start processing book {BookId} getting request", 
+            "Start processing book {BookId} getting request",
             bookId);
 
         try

@@ -1,7 +1,6 @@
 ﻿using System.Net.Mail;
 
-using Abstractions.Storage.Repositories;
-
+using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Users;
@@ -15,17 +14,27 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Хранилище пользователей.
 /// </summary>
-public sealed class UsersRepository : 
-    RepositoryBase, 
+public sealed class UsersRepository :
+    RepositoryBase,
     IUsersRepository
 {
     private const string NOT_EXISTS_MESSAGE = "User is not exists.";
 
     public UsersRepository(IRepositoryContext context) : base(context) { }
 
-    public Task AddUserAsync(RegisteringUser user, CancellationToken token)
+    public async Task AddUserAsync(RegisteringUser user, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(user);
+
+        var existingEmail = await Context.Users
+            .AsNoTracking()
+            .Select(x => x.Email)
+            .SingleOrDefaultAsync(email => email == user.Email.Address, token);
+
+        if (existingEmail is not null)
+        {
+            throw new InvalidOperationException("User with such email is alredy exists.");
+        }
 
         Context.Users.Add(new()
         {
@@ -33,8 +42,6 @@ public sealed class UsersRepository :
             Email = user.Email.Address,
             Status = UserStatus.Active,
         });
-
-        return Task.CompletedTask;
     }
 
     public async Task UpdateUserAsync(UpdatedBase<User> updated, CancellationToken token)
@@ -59,6 +66,26 @@ public sealed class UsersRepository :
         }
     }
 
+    public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
+        MailAddress mailAddress,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(mailAddress);
+
+        var storageUser = await Context.Users
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.Name, x.Email, x.About })
+            .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
+
+        return storageUser is not null
+            ? new UserProfileInfo(
+                new(storageUser.Id),
+                new(storageUser.Name),
+                new(storageUser.Email),
+                new(storageUser.About))
+            : null;
+    }
+
     public async Task<UserProfileInfo> GetUserProfileInfoByIdAsync(
         Id<User> userId,
         CancellationToken token)
@@ -69,25 +96,6 @@ public sealed class UsersRepository :
             .AsNoTracking()
             .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
-            ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
-
-        return new UserProfileInfo(
-            new(storageUser.Id),
-            new(storageUser.Name),
-            new(storageUser.Email),
-            new(storageUser.About));
-    }
-
-    public async Task<UserProfileInfo> GetUserProfileInfoByEmailAsync(
-        MailAddress mailAddress,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(mailAddress);
-
-        var storageUser = await Context.Users
-            .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
-            .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         return new UserProfileInfo(

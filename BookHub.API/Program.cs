@@ -2,8 +2,6 @@ using BookHub.API;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
-using BooksService.Registrations;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -25,7 +23,6 @@ builder.Services
         opt => opt.SerializerSettings.Converters.Add(
             new StringEnumConverter(new SnakeCaseNamingStrategy())));
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 
 builder.Services.AddSwaggerGen(c =>
@@ -75,6 +72,28 @@ builder.Services
 
         //opt.TokenValidationParameters.ValidIssuer = "https://accounts.google.com";
 
+        //opt.TokenValidationParameters.ValidAudience = "bookhub";
+
+        // Validate signature
+
+        //opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+        //{
+        //    OnTokenValidated = async (context) =>
+        //    {
+        //        try
+        //        {
+        //            var payload = await Google.Apis.Auth.GoogleJsonWebSignature
+        //                .ValidateAsync(((JsonWebToken)context.SecurityToken).EncodedToken);
+
+        //            context.Success();
+        //        }
+        //        catch (Google.Apis.Auth.InvalidJwtException)
+        //        {
+        //            context.Fail("Invalid token.");
+        //        }
+        //    }
+        //};
+
         opt.TokenValidationParameters.ValidateAudience = false;
 
         opt.TokenValidationParameters.ValidateIssuer = false;
@@ -118,10 +137,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseRouting();
 app.UseHealthChecks("/hc");
 
 app.Run();

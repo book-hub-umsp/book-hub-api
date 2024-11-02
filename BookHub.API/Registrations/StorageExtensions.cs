@@ -1,6 +1,5 @@
-﻿using Abstractions.Storage.Repositories;
-
-using BookHub.Abstractions;
+﻿using BookHub.Abstractions.Storage;
+using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models.Books;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL;
@@ -11,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Npgsql;
 
-namespace BooksService.Registrations;
+namespace BookHub.API.Registrations;
 
 public static class StorageExtensions
 {
