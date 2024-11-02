@@ -2,6 +2,7 @@
 using BookHub.Abstractions.Logic.Converters;
 using BookHub.Abstractions.Logic.Services;
 using BookHub.Logic.Converters;
+using BookHub.Logic.Converters.Users;
 using BookHub.Logic.Services;
 using BookHub.Logic.Services.Users;
 
@@ -25,6 +26,7 @@ internal static class LogicExtensions
         => services
             .AddHttpContextAccessor()
             .AddSingleton<IHttpUserIdentityFacade, HttpUserIdentityFacade>()
+            .AddSingleton<IUserRequestConverter, UserRequestConverter>()
             .AddScoped<IUserService, UserService>();
 
     private static IServiceCollection AddBookDescriptionHandling(
