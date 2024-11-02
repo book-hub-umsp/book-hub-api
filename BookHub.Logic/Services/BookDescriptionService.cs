@@ -5,7 +5,7 @@ using BookHub.Models.CRUDS.Requests;
 
 using Microsoft.Extensions.Logging;
 
-namespace BookHub.Logic.CrudServices;
+namespace BookHub.Logic.Services;
 
 /// <summary>
 /// Сервис обработки crud запросов к верхнеуровневому описанию книги.

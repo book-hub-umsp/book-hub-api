@@ -5,7 +5,7 @@ using BookHub.Models.Users;
 
 using Microsoft.Extensions.Logging;
 
-namespace BookHub.Logic.Users;
+namespace BookHub.Logic.Services.Users;
 
 /// <summary>
 /// Сервис по обработке пользователей.

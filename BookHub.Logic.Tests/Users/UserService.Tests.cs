@@ -1,6 +1,6 @@
 using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Logic.Users;
+using BookHub.Logic.Services.Users;
 using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;

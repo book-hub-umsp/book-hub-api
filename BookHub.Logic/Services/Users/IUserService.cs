@@ -2,7 +2,7 @@
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;
 
-namespace BookHub.Logic.Users;
+namespace BookHub.Logic.Services.Users;
 
 /// <summary>
 /// Описывает сервис пользователей.
@@ -36,7 +36,7 @@ public interface IUserService
     /// <see cref="Task"/>.
     /// </returns>
     Task<UserProfileInfo> RegisterNewUserOrGetExistingAsync(
-        RegisteringUser registeringUser, 
+        RegisteringUser registeringUser,
         CancellationToken token);
 
     /// <summary>
