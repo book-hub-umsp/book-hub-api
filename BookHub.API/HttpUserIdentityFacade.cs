@@ -7,10 +7,19 @@ using BookHub.Models.Users;
 
 namespace BookHub.API;
 
-public class HttpUserIdentityFacade : IHttpUserIdentityFacade
+/// <summary>
+/// Фасад для получения информации об авторизованном пользователе.
+/// </summary>
+public sealed class HttpUserIdentityFacade : IHttpUserIdentityFacade
 {
     private readonly IHttpContextAccessor _contextAccessor;
 
+    /// <summary>
+    /// Идентификатор пользователя.
+    /// </summary>
+    /// <remarks>
+    /// Вне контекста авторизации имеет значение <see langword="null"/>.
+    /// </remarks>
     public Id<User>? Id { get; }
 
     public HttpUserIdentityFacade(IHttpContextAccessor contextAccessor)
