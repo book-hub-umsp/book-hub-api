@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookHub.Logic\BookHub.Logic.csproj" />
-    <ProjectReference Include="..\BookHub.Models\BookHub.Models.csproj" />
     <ProjectReference Include="..\BookHub.Storage\BookHub.Storage.csproj" />
   </ItemGroup>
 
