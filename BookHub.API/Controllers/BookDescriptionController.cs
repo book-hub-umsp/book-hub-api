@@ -15,6 +15,7 @@ using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.UpdateBookParam
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
+using ContractPreview = BookHub.Contracts.REST.Responces.BookPreview;
 
 namespace BookHub.API.Controllers;
 
@@ -123,22 +124,72 @@ public class BookDescriptionController : Controller
     [AllowAnonymous]
     [Route("getAll")]
     public async Task<IActionResult> GetAllBooksAsync(
-        [Required][NotNull] long pageNumber,
-        [Required][NotNull] long elementsInPage,
         CancellationToken token)
     {
+        _logger.LogInformation("Start processing get all books request");
 
+        var booksPreviews = await _service.GetAllBooksPreviews(token);
+
+        var content = new GetBooksResponse
+        {
+            Previews = booksPreviews.Select(
+                x => new ContractPreview
+                {
+                    Id = x.Id.Value,
+                    AuthorId = x.AuthorId.Value,
+                    Genre = x.Genre.Value,
+                    Title = x.Title.Value
+                }).ToList()
+        };
+
+        _logger.LogInformation("Request was processed with succesfull result");
+
+        return Ok(new SuccesfullCommandResult { Content = content });
     }
 
     [HttpGet]
     [AllowAnonymous]
     [Route("get/pageNumber={pageNumber}&elementsInPage={elementsInPage}")]
     public async Task<IActionResult> GetPaginedBooksAsync(
-        [Required][NotNull] long pageNumber,
-        [Required][NotNull] long elementsInPage,
+        [Required][NotNull] int pageNumber,
+        [Required][NotNull] int elementsInPage,
         CancellationToken token)
     {
+        _logger.LogInformation("Start processing get pagined books request");
 
+        try
+        {
+            var (booksPaginedPreviews, pagination) =
+                await _service.GetPaginedBooksPreviews(new(pageNumber, elementsInPage), token);
+
+            var content = new GetPaginedBooksResponse
+            {
+                ElementsTotal = pagination.ElementsTotal,
+
+                PagesTotal = pagination.PagesTotal,
+
+                Previews = booksPaginedPreviews.Select(
+                    x => new ContractPreview
+                    {
+                        Id = x.Id.Value,
+                        AuthorId = x.AuthorId.Value,
+                        Genre = x.Genre.Value,
+                        Title = x.Title.Value
+                    }).ToList()
+            };
+
+            _logger.LogInformation("Request was processed with succesfull result");
+
+            return Ok(new SuccesfullCommandResult { Content = content });
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+        }
     }
 
     [HttpPut]

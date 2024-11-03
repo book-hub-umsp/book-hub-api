@@ -88,7 +88,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
         return bookPreviews;
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetPaginedBooksPreviews(
+    public async Task<(IReadOnlyCollection<BookPreview>, Pagination)> GetPaginedBooksPreviews(
         GetPaginedBooks getPaginedBooks, 
         CancellationToken token)
     {
@@ -113,7 +113,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
         _logger.LogInformation("Pagined books previews were received");
 
-        return booksPreviews;
+        return (booksPreviews, pagination);
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
