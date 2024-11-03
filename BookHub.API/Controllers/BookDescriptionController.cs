@@ -24,7 +24,7 @@ namespace BookHub.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("books")]
-public class BookDescriptionController : Controller
+public class BookDescriptionController : ControllerBase
 {
     public BookDescriptionController(
         IBookDescriptionService service,
@@ -37,7 +37,7 @@ public class BookDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/add")]
+    [Route("add")]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)
@@ -64,12 +64,12 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
     [HttpGet]
-    [Route("/get/{bookId}")]
+    [Route("get/{bookId}")]
     public async Task<IActionResult> GetBookContentAsync(
         [Required][NotNull] long bookId,
         CancellationToken token)
@@ -114,12 +114,12 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
     [HttpPut]
-    [Route("/update")]
+    [Route("update")]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)
@@ -146,7 +146,7 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
