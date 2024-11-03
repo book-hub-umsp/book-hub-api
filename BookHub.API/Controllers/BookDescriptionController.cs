@@ -37,7 +37,7 @@ public class BookDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/add")]
+    [Route("add")]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)
@@ -69,7 +69,8 @@ public class BookDescriptionController : Controller
     }
 
     [HttpGet]
-    [Route("/get/{bookId}")]
+    [AllowAnonymous]
+    [Route("get/{bookId}")]
     public async Task<IActionResult> GetBookContentAsync(
         [Required][NotNull] long bookId,
         CancellationToken token)
@@ -118,8 +119,30 @@ public class BookDescriptionController : Controller
         }
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("getAll")]
+    public async Task<IActionResult> GetAllBooksAsync(
+        [Required][NotNull] long pageNumber,
+        [Required][NotNull] long elementsInPage,
+        CancellationToken token)
+    {
+
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("get/pageNumber={pageNumber}&elementsInPage={elementsInPage}")]
+    public async Task<IActionResult> GetPaginedBooksAsync(
+        [Required][NotNull] long pageNumber,
+        [Required][NotNull] long elementsInPage,
+        CancellationToken token)
+    {
+
+    }
+
     [HttpPut]
-    [Route("/update")]
+    [Route("update")]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)

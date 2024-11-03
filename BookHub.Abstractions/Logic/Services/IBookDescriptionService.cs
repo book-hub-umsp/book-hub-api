@@ -19,4 +19,11 @@ public interface IBookDescriptionService
     public Task<Book> GetBookAsync(
         GetBookParams getBookParams,
         CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviews(
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetPaginedBooksPreviews(
+        GetPaginedBooks getPaginedBooks,
+        CancellationToken token);
 }

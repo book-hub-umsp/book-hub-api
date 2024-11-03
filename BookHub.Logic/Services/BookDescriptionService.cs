@@ -1,7 +1,9 @@
-﻿using BookHub.Abstractions.Logic.Services;
+﻿
+using BookHub.Abstractions.Logic.Services;
 using BookHub.Abstractions.Storage;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 
 using Microsoft.Extensions.Logging;
 
@@ -73,6 +75,45 @@ public sealed class BookDescriptionService : IBookDescriptionService
             "Book {BookId} content has been updated",
             updateBookParams.BookId.Value);
 
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviews(CancellationToken token)
+    {
+        _logger.LogInformation("Getting all books previews");
+
+        var bookPreviews = await _unitOfWork.Books.GetAllBooksPreviewsAsync(token);
+
+        _logger.LogInformation("All books previews were received");
+
+        return bookPreviews;
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetPaginedBooksPreviews(
+        GetPaginedBooks getPaginedBooks, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(getPaginedBooks);
+
+        var elementsTotalCount = await _unitOfWork.Books.GetBooksTotalCountAsync(token);
+
+        _logger.LogInformation(
+            "Trying to get pagined books from total" +
+            " books count {Total} with settins: page number {PageNumber}" +
+            " and elements in page {ElementsInPage}",
+            elementsTotalCount,
+            getPaginedBooks.PageNumber,
+            getPaginedBooks.ElementsInPage);
+
+        var pagination = new Pagination(
+            elementsTotalCount, 
+            getPaginedBooks.PageNumber, 
+            getPaginedBooks.ElementsInPage);
+
+        var booksPreviews = await _unitOfWork.Books.GetBooksByPaginationAsync(pagination, token);
+
+        _logger.LogInformation("Pagined books previews were received");
+
+        return booksPreviews;
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
