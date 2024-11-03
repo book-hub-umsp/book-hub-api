@@ -16,6 +16,8 @@ public sealed class RepositoryContext : IRepositoryContext
 
     public DbSet<BookGenre> Genres => _context.Genres;
 
+    public DbSet<FavoriteLink> FavoriteLinks => _context.FavoriteLinks;
+
     public RepositoryContext(BooksHubContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));

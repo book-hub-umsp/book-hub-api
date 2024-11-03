@@ -12,6 +12,8 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<User> Users { get; } = null!;
 
+    public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
+
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
         : base(options)
     {
@@ -26,6 +28,7 @@ public sealed class BooksHubContext : DbContext
 
         CreateBook(modelBuilder);
         CreateBookGenre(modelBuilder);
+        CreateFavoriteLink(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -51,6 +54,11 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<Book>()
             .Property(x => x.Id)
             .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<Book>()
+           .HasOne(x => x.Author)
+           .WithMany()
+           .HasForeignKey(x => x.AuthorId);
 
         _ = modelBuilder.Entity<Book>()
             .HasOne(x => x.BookGenre)
@@ -79,5 +87,26 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<BookGenre>()
             .ToTable("genres");
+    }
+
+    private static void CreateFavoriteLink(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .HasKey(l => new { l.UserId, l.BookId });
+
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .HasOne(l => l.User)
+            .WithMany(l => l.FavouriteBooksLinks)
+            .HasForeignKey(l => l.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .HasOne(l => l.Book)
+            .WithMany(l => l.UsersFavouritesLinks)
+            .HasForeignKey(l => l.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .ToTable("favourites");
     }
 }
