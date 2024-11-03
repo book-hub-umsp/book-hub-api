@@ -20,15 +20,14 @@ public sealed class HttpUserIdentityFacade : IHttpUserIdentityFacade
     /// <remarks>
     /// Вне контекста авторизации имеет значение <see langword="null"/>.
     /// </remarks>
-    public Id<User>? Id { get; }
+    public Id<User>? Id => 
+        _contextAccessor.HttpContext?.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME) is { } value
+            ? new(long.Parse(value))
+            : null;
 
     public HttpUserIdentityFacade(IHttpContextAccessor contextAccessor)
     {
         ArgumentNullException.ThrowIfNull(contextAccessor);
         _contextAccessor = contextAccessor;
-
-        Id = _contextAccessor.HttpContext?.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME) is { } value
-            ? new(long.Parse(value))
-            : null;
     }
 }
