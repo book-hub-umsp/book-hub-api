@@ -1,5 +1,7 @@
 ﻿using BookHub.Models;
+using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 using BookHub.Models.Users;
 
 using DomainBook = BookHub.Models.Books.Book;
@@ -26,5 +28,12 @@ public interface IBooksRepository
 
     public Task UpdateBookContentAsync(
         UpdateBookParamsBase updateBookParams,
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviewsAsync(
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksByPaginationAsync(
+        Pagination pagination,
         CancellationToken token);
 }

@@ -1,8 +1,12 @@
-﻿using BookHub.Abstractions.Storage;
+﻿
+using System.Linq.Expressions;
+
+using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
@@ -169,6 +173,48 @@ public sealed class BooksRepository :
                 throw new InvalidOperationException(
                 $"Not supported params type {updateBookParams.GetType().Name}.");
         }
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviewsAsync(CancellationToken token)
+    {
+        var booksShortModels = 
+            await Context.Books.AsNoTracking()
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
+                .ToListAsync();
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id), 
+                new(x.Title), 
+                new(x.BookGenre.Value), 
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksByPaginationAsync(
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var filter = CreateFilterWithLeftAndRightBound<StorageBook, long>(
+            book => book.Id, 
+            pagination.StartIndexNumber, 
+            pagination.EndIndexNumber);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .Where(filter)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync();
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
     }
 
     private readonly IKeyWordsConverter _keyWordsConverter;
