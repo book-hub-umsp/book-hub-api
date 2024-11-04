@@ -1,7 +1,4 @@
-﻿
-using System.Linq.Expressions;
-
-using BookHub.Abstractions.Storage;
+﻿using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books;
@@ -197,14 +194,9 @@ public sealed class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
-        var filter = CreateFilterWithLeftAndRightBound<StorageBook, long>(
-            book => book.Id, 
-            pagination.StartIndexNumber, 
-            pagination.EndIndexNumber);
-
         var booksShortModels =
             await Context.Books.AsNoTracking()
-                .Where(filter)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync();
 

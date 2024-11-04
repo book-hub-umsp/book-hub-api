@@ -108,7 +108,7 @@ public class BookDescriptionController : ControllerBase
                     .ToList()
             };
 
-            return Ok(new SuccesfullCommandResult { Content = contractContent });
+            return Ok(new SuccesfullCommandResultResponse { Content = contractContent });
         }
         catch (InvalidOperationException ex)
         {
@@ -144,7 +144,7 @@ public class BookDescriptionController : ControllerBase
 
         _logger.LogInformation("Request was processed with succesfull result");
 
-        return Ok(new SuccesfullCommandResult { Content = content });
+        return Ok(new SuccesfullCommandResultResponse { Content = content });
     }
 
     [HttpGet]
@@ -181,7 +181,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with succesfull result");
 
-            return Ok(new SuccesfullCommandResult { Content = content });
+            return Ok(new SuccesfullCommandResultResponse { Content = content });
         }
         catch (ArgumentException ex)
         {
@@ -189,7 +189,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
