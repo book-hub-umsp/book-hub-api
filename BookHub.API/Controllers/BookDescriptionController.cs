@@ -25,7 +25,7 @@ namespace BookHub.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("books")]
-public class BookDescriptionController : Controller
+public class BookDescriptionController : ControllerBase
 {
     public BookDescriptionController(
         IBookDescriptionService service,
@@ -65,7 +65,7 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
@@ -116,7 +116,7 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
@@ -220,7 +220,7 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
         }
     }
 
