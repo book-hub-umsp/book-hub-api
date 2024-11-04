@@ -149,7 +149,8 @@ public class BookDescriptionController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    [Route("get/pageNumber={pageNumber}&elementsInPage={elementsInPage}")]
+    [Route("getPagined")]
+    // /books/getPagined?pageNumber=x&elementsInPage=y
     public async Task<IActionResult> GetPaginedBooksAsync(
         [Required][NotNull] int pageNumber,
         [Required][NotNull] int elementsInPage,
