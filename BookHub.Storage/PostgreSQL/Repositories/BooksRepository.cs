@@ -172,10 +172,13 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviewsAsync(CancellationToken token)
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+        Id<User> authorId,
+        CancellationToken token)
     {
         var booksShortModels = 
             await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
                 .ToListAsync();
 
@@ -188,7 +191,8 @@ public sealed class BooksRepository :
             .ToList();
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetBooksByPaginationAsync(
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
+        Id<User> authorId,
         Pagination pagination,
         CancellationToken token)
     {
@@ -196,6 +200,7 @@ public sealed class BooksRepository :
 
         var booksShortModels =
             await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
                 .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync();

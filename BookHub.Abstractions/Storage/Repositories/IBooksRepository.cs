@@ -30,10 +30,12 @@ public interface IBooksRepository
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookPreview>> GetAllBooksPreviewsAsync(
+    public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+        Id<User> authorId,
         CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookPreview>> GetBooksByPaginationAsync(
+    public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
+        Id<User> authorId,
         Pagination pagination,
         CancellationToken token);
 

@@ -122,13 +122,16 @@ public class BookDescriptionController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    [Route("getAll")]
-    public async Task<IActionResult> GetAllBooksAsync(
+    [Route("get")]
+    public async Task<IActionResult> GetAuthorBooksAsync(
+        [Required][NotNull] long authorId,
         CancellationToken token)
     {
-        _logger.LogInformation("Start processing get all books request");
+        _logger.LogInformation("Start processing get author books request");
 
-        var booksPreviews = await _service.GetAllBooksPreviews(token);
+        var booksPreviews = await _service.GetAuthorBooksPreviewsAsync(
+            new(authorId), 
+            token);
 
         var content = new GetAllBooksPreviewsResponse
         {
@@ -150,18 +153,22 @@ public class BookDescriptionController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route("getPagined")]
-    // /books/getPagined?pageNumber=x&elementsInPage=y
-    public async Task<IActionResult> GetPaginedBooksAsync(
+    // /books/getPagined?authorId=1&pageNumber=x&elementsInPage=y
+    public async Task<IActionResult> GetAuthorPaginedBooksAsync(
+        [Required][NotNull] long authorId,
         [Required][NotNull] int pageNumber,
         [Required][NotNull] int elementsInPage,
         CancellationToken token)
     {
-        _logger.LogInformation("Start processing get pagined books request");
+        _logger.LogInformation("Start processing get author pagined books request");
 
         try
         {
             var (booksPaginedPreviews, pagination) =
-                await _service.GetPaginedBooksPreviews(new(pageNumber, elementsInPage), token);
+                await _service.GetAuthorPaginedBooksPreviewsAsync(
+                    new(authorId), 
+                    new(pageNumber, elementsInPage), 
+                    token);
 
             var content = new GetAllPaginedBooksPreviewsResponse
             {
