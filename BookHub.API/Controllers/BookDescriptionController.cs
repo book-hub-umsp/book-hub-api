@@ -130,7 +130,7 @@ public class BookDescriptionController : ControllerBase
 
         var booksPreviews = await _service.GetAllBooksPreviews(token);
 
-        var content = new GetBooksResponse
+        var content = new GetAllBooksPreviewsResponse
         {
             Previews = booksPreviews.Select(
                 x => new ContractPreview
@@ -163,7 +163,7 @@ public class BookDescriptionController : ControllerBase
             var (booksPaginedPreviews, pagination) =
                 await _service.GetPaginedBooksPreviews(new(pageNumber, elementsInPage), token);
 
-            var content = new GetPaginedBooksResponse
+            var content = new GetAllPaginedBooksPreviewsResponse
             {
                 ElementsTotal = pagination.ElementsTotal,
 

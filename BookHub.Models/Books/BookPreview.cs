@@ -1,4 +1,6 @@
-﻿using BookHub.Models.Users;
+﻿using System;
+
+using BookHub.Models.Users;
 
 namespace BookHub.Models.Books;
 
@@ -21,9 +23,9 @@ public sealed class BookPreview
         BookGenre genre, 
         Id<User> authorId)
     {
-        Id = id;
-        Title = title;
-        Genre = genre;
-        AuthorId = authorId;
+        Id = id ?? throw new ArgumentNullException(nameof(id));
+        Title = title ?? throw new ArgumentNullException(nameof(title));
+        Genre = genre ?? throw new ArgumentNullException(nameof(genre));
+        AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));
     }
 }

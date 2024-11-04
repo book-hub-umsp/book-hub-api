@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Newtonsoft.Json;
 
 namespace BookHub.Contracts.REST.Responces;
 
@@ -7,15 +9,19 @@ namespace BookHub.Contracts.REST.Responces;
 /// </summary>
 public sealed class BookPreview
 {
+    [Required]
     [JsonProperty("id", Required = Required.Always)]
     public required long Id { get; init; }
 
+    [Required]
     [JsonProperty("author_id", Required = Required.Always)]
     public required long AuthorId { get; init; }
 
+    [Required]
     [JsonProperty("title", Required = Required.Always)]
     public required string Title { get; init; }
 
+    [Required]
     [JsonProperty("genre", Required = Required.Always)]
     public required string Genre { get; init; }
 }
