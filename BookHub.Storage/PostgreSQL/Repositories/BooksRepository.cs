@@ -201,6 +201,7 @@ public sealed class BooksRepository :
         var booksShortModels =
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
+                .OrderBy(x => x.Id)
                 .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync();

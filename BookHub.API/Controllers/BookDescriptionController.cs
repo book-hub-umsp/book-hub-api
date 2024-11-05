@@ -16,6 +16,7 @@ using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookPar
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
 using ContractPreview = BookHub.Contracts.REST.Responces.BookPreview;
+using BookHub.Contracts.REST.Responces.Users;
 
 namespace BookHub.API.Controllers;
 
@@ -39,6 +40,9 @@ public class BookDescriptionController : ControllerBase
 
     [HttpPost]
     [Route("add")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)
@@ -72,6 +76,9 @@ public class BookDescriptionController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route("get/{bookId}")]
+    [ProducesResponseType<BookDescriptionResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetBookContentAsync(
         [Required][NotNull] long bookId,
         CancellationToken token)
@@ -123,6 +130,9 @@ public class BookDescriptionController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route("get")]
+    [ProducesResponseType<GetAllBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAuthorBooksAsync(
         [Required][NotNull] long authorId,
         CancellationToken token)
@@ -153,12 +163,15 @@ public class BookDescriptionController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route("getPagined")]
+    [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     // /books/getPagined?authorId=1&pageNumber=x&elementsInPage=y
     public async Task<IActionResult> GetAuthorPaginedBooksAsync(
         [Required][NotNull] long authorId,
-        [Required][NotNull] int pageNumber,
-        [Required][NotNull] int elementsInPage,
-        CancellationToken token)
+        CancellationToken token,
+        [Required][NotNull] int pageNumber = 1,
+        [Required][NotNull] int elementsInPage = 5)
     {
         _logger.LogInformation("Start processing get author pagined books request");
 
@@ -202,6 +215,9 @@ public class BookDescriptionController : ControllerBase
 
     [HttpPut]
     [Route("update")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)

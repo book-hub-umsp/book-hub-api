@@ -22,14 +22,9 @@ public sealed record class Pagination
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(elementsTotal, 0);
         ArgumentOutOfRangeException.ThrowIfLessThan(pageNumber, 1);
-        ArgumentOutOfRangeException.ThrowIfLessThan(elementsInPage, 1);
 
-        if (elementsInPage % DEFAULT_ELEMENTS_IN_PAGE_REMINDER != 0)
-        {
-            throw new ArgumentException(
-                $"Inconsitent elements in page number" +
-                $" not satisfied to hardcoded reminder {DEFAULT_ELEMENTS_IN_PAGE_REMINDER}.");
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(elementsInPage, ELEMENTS_IN_PAGE_MIN);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(elementsInPage, ELEMENTS_IN_PAGE_MAX);
 
         PagesTotal = (int)Math.Ceiling(elementsTotal / (double)elementsInPage);
 
@@ -40,5 +35,6 @@ public sealed record class Pagination
         ElementsInPage = elementsInPage;
     }
 
-    private const int DEFAULT_ELEMENTS_IN_PAGE_REMINDER = 5;
+    private const int ELEMENTS_IN_PAGE_MIN = 1;
+    private const int ELEMENTS_IN_PAGE_MAX = 50;
 }
