@@ -3,6 +3,7 @@ using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
@@ -170,6 +171,74 @@ public sealed class BooksRepository :
                 $"Not supported params type {updateBookParams.GetType().Name}.");
         }
     }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+        Id<User> authorId,
+        CancellationToken token)
+    {
+        var booksShortModels = 
+            await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id), 
+                new(x.Title), 
+                new(x.BookGenre.Value), 
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
+        Id<User> authorId,
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
+                .OrderBy(x => x.Id)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .OrderBy(x => x.Id)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
+        await Context.Books.AsNoTracking().LongCountAsync(token);
 
     private readonly IKeyWordsConverter _keyWordsConverter;
 }
