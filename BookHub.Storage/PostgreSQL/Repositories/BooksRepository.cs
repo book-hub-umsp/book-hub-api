@@ -180,7 +180,7 @@ public sealed class BooksRepository :
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
-                .ToListAsync();
+                .ToListAsync(token);
 
         return booksShortModels
             .Select(x => new BookPreview(
@@ -204,7 +204,29 @@ public sealed class BooksRepository :
                 .OrderBy(x => x.Id)
                 .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
-                .ToListAsync();
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .OrderBy(x => x.Id)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
 
         return booksShortModels
             .Select(x => new BookPreview(

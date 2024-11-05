@@ -31,4 +31,8 @@ public interface IBookDescriptionService
         Id<User> authorId,
         GetPaginedBooks getPaginedBooks,
         CancellationToken token);
+
+    public Task<(IReadOnlyCollection<BookPreview>, Pagination)> GetPaginedBooksPreviewsAsync(
+        GetPaginedBooks getPaginedBooks,
+        CancellationToken token);
 }

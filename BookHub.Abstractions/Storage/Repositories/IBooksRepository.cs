@@ -39,5 +39,9 @@ public interface IBooksRepository
         Pagination pagination,
         CancellationToken token);
 
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
+        Pagination pagination,
+        CancellationToken token);
+
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);
 }

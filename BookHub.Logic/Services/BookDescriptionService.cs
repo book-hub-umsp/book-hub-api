@@ -129,6 +129,37 @@ public sealed class BookDescriptionService : IBookDescriptionService
         return (booksPreviews, pagination);
     }
 
+    public async Task<(IReadOnlyCollection<BookPreview>, Pagination)> GetPaginedBooksPreviewsAsync(
+        GetPaginedBooks getPaginedBooks, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(getPaginedBooks);
+
+        var elementsTotalCount = await _unitOfWork.Books.GetBooksTotalCountAsync(token);
+
+        _logger.LogInformation(
+            "Trying to get pagined books from total" +
+            " books count {Total} with settings: page number {PageNumber}" +
+            " and elements in page {ElementsInPage}",
+            elementsTotalCount,
+            getPaginedBooks.PageNumber,
+            getPaginedBooks.ElementsInPage);
+
+        var pagination = new Pagination(
+            elementsTotalCount,
+            getPaginedBooks.PageNumber,
+            getPaginedBooks.ElementsInPage);
+
+        var booksPreviews =
+            await _unitOfWork.Books.GetBooksWithPaginationAsync(
+                pagination,
+                token);
+
+        _logger.LogInformation("Pagined books previews were received");
+
+        return (booksPreviews, pagination);
+    }
+
     private readonly IBooksHubUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
 }
