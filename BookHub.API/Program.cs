@@ -5,8 +5,6 @@ using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// мб ифнуть если prod среда
-builder.Configuration.AddEnvironmentVariables();
 
 builder.Services
     .AddControllers()
