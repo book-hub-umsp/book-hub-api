@@ -26,6 +26,9 @@ public interface IBooksRepository
         Id<User> authorId,
         CancellationToken token);
 
+    /// <exception cref="InvalidOperationException">
+    /// Если автор книги не соответствует указанному в запросе.
+    /// </exception>
     public Task UpdateBookContentAsync(
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);

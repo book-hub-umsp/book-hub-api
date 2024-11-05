@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BookHub.Models.Books;
+using BookHub.Models.Users;
 
 namespace BookHub.Models.CRUDS.Requests;
 
@@ -15,8 +16,9 @@ public sealed class UpdateKeyWordsParams : UpdateBookParamsBase
 
     public UpdateKeyWordsParams(
         Id<Book> bookId,
+        Id<User> authorId,
         IReadOnlyCollection<KeyWord> updatedKeyWords)
-        : base(bookId)
+        : base(bookId, authorId)
     {
         ArgumentNullException.ThrowIfNull(updatedKeyWords);
 

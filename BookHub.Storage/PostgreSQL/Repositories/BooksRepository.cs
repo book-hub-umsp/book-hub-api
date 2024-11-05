@@ -125,6 +125,12 @@ public sealed class BooksRepository :
                 ?? throw new InvalidOperationException(
                     $"No such book with id {updateBookParams.BookId.Value}.");
 
+        if (storageBook.AuthorId != updateBookParams.AuthorId.Value)
+        {
+            throw new InvalidOperationException(
+                $"Only author can update book {storageBook.Id} description.");
+        }
+
         switch (updateBookParams)
         {
             case UpdateBookGenreParams genreParams:
