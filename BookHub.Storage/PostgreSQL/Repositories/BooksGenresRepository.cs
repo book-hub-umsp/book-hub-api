@@ -22,7 +22,7 @@ public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresReposito
 
         var existedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Value == bookGenre.Value);
+                .SingleOrDefaultAsync(x => bookGenre.CompareTo(x.Value));
 
         if (existedBookGenre is not null)
         {
@@ -46,7 +46,7 @@ public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresReposito
 
         var existedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Value == bookGenre.Value)
+                .SingleOrDefaultAsync(x => bookGenre.CompareTo(x.Value))
                 ?? throw new InvalidOperationException(
                     $"Book genre '{bookGenre.Value}' is not already exists.");
 

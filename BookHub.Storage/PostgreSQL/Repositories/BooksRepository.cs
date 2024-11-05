@@ -37,7 +37,7 @@ public sealed class BooksRepository :
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Value == addBookParams.Genre.Value)
+                .SingleOrDefaultAsync(x => addBookParams.Genre.CompareTo(x.Value))
                 ?? throw new InvalidOperationException(
                     $"Book genre {addBookParams.Genre} is not exists.");
 
@@ -121,8 +121,8 @@ public sealed class BooksRepository :
 
         var storageBook = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token)
-                    ?? throw new InvalidOperationException(
-                        $"No such book with id {updateBookParams.BookId.Value}.");
+                ?? throw new InvalidOperationException(
+                    $"No such book with id {updateBookParams.BookId.Value}.");
 
         switch (updateBookParams)
         {
@@ -132,7 +132,7 @@ public sealed class BooksRepository :
 
                 var relatedBookGenre =
                     await Context.Genres.AsNoTracking()
-                        .SingleOrDefaultAsync(x => x.Value == newGenre.Value)
+                        .SingleOrDefaultAsync(x => newGenre.CompareTo(x.Value))
                             ?? throw new InvalidOperationException(
                                 $"Book genre {newGenre} is not exists.");
 
