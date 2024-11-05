@@ -9,7 +9,7 @@ public interface IBookGenresService
 {
     public Task AddBookGenreAsync(BookGenre bookGenre, CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookGenre>> GetBookGenresAsync(CancellationToken token);
+    public Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token);
 
     public Task RemoveBookGenreAsync(BookGenre bookGenre, CancellationToken token);
 }

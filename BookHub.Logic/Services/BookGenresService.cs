@@ -33,7 +33,7 @@ public sealed class BookGenresService : IBookGenresService
         _logger.LogInformation("Genre '{Genre}' was added", bookGenre.Value);
     }
 
-    public async Task<IReadOnlyCollection<BookGenre>> GetBookGenresAsync(CancellationToken token)
+    public async Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token)
     {
         _logger.LogInformation("Receiving all existed book genres");
 

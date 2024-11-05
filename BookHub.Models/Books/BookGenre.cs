@@ -16,17 +16,20 @@ public sealed class BookGenre : IEquatable<BookGenre>
     }
 
     public bool CompareTo(string value)
-        => value == GetLowerClearRepresentation(Value);
+        => GetLowerClearRepresentation(value) 
+        == GetLowerClearRepresentation(Value);
 
     public bool Equals(BookGenre? other) =>
-        other is not null 
-        && GetLowerClearRepresentation(Value) 
-        == GetLowerClearRepresentation(other.Value);
+        other is not null
+        && CompareTo(other.Value);
 
     public override bool Equals(object? obj) => Equals(obj as BookGenre);
 
-    public override int GetHashCode() => GetLowerClearRepresentation(Value).GetHashCode();
+    public override int GetHashCode() => 
+        GetLowerClearRepresentation(Value).GetHashCode();
 
     private static string GetLowerClearRepresentation(string value)
-        => value.Replace("_", string.Empty).ToLowerInvariant();
+        => value
+            .Replace("_", string.Empty)
+            .ToLowerInvariant();
 }
