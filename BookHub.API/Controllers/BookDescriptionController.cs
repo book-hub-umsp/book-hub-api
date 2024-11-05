@@ -65,7 +65,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
@@ -116,7 +116,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
@@ -196,7 +196,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
@@ -228,7 +228,7 @@ public class BookDescriptionController : ControllerBase
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResultResponse { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
