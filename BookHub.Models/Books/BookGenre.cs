@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace BookHub.Models.Books;
 
@@ -12,7 +13,11 @@ public sealed class BookGenre : IEquatable<BookGenre>
     public BookGenre(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
-        Value = value;
+
+        // converting to snake_case to store in db in unificate format
+        Value = Regex.Replace(
+            value.Trim(), 
+            "([a-z])([A-Z])", "$1_$2").ToLower(); ;
     }
 
     public bool CompareTo(string value)
