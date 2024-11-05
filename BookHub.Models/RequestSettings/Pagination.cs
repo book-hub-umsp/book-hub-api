@@ -7,7 +7,7 @@ namespace BookHub.Models.RequestSettings;
 /// </summary>
 public sealed record class Pagination
 {
-    public int ElementsTotal { get; }
+    public long ElementsTotal { get; }
 
     public int PagesTotal { get; }
 
@@ -16,7 +16,7 @@ public sealed record class Pagination
     public int ElementsInPage { get; }
 
     public Pagination(
-        int elementsTotal, 
+        long elementsTotal, 
         int pageNumber, 
         int elementsInPage)
     {
@@ -30,10 +30,6 @@ public sealed record class Pagination
                 $"Inconsitent elements in page number" +
                 $" not satisfied to hardcoded reminder {DEFAULT_ELEMENTS_IN_PAGE_REMINDER}.");
         }
-
-        PagesTotal = elementsTotal % elementsInPage == 0
-            ? elementsTotal / elementsInPage
-            : elementsTotal / elementsInPage + 1;
 
         PagesTotal = (int)Math.Ceiling(elementsTotal / (double)elementsInPage);
 

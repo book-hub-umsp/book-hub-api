@@ -214,8 +214,8 @@ public sealed class BooksRepository :
             .ToList();
     }
 
-    public async Task<int> GetBooksTotalCountAsync(CancellationToken token) =>
-        await Context.Books.AsNoTracking().CountAsync(token);
+    public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
+        await Context.Books.AsNoTracking().LongCountAsync(token);
 
     private readonly IKeyWordsConverter _keyWordsConverter;
 }

@@ -10,15 +10,11 @@ public static class QueryExtensions
         int pageNumber,
         int pageSize)
     {
-        if (pageNumber <= 0)
+        if (pageNumber-- <= 0)
         {
-            throw new ArgumentException("PageNumber should be greater than 0");
+            throw new ArgumentException("PageNumber should be greater than 0.");
         }
 
-        pageNumber--;
-
-        query = query.Skip(pageSize * pageNumber);
-
-        return query.Take(pageSize);
+        return query.Skip(pageSize * pageNumber).Take(pageSize);
     }
 }
