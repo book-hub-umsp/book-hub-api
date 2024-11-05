@@ -60,7 +60,7 @@ public sealed class BooksGenresController : ControllerBase
     [HttpGet]
     [Route("get")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<BooksGenresListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBooksGenresAsync(
         CancellationToken token)
@@ -77,7 +77,7 @@ public sealed class BooksGenresController : ControllerBase
 
             var contractContent = BooksGenresListResponse.FromDomainsList(genres);
 
-            return Ok(new SuccesfullCommandResult { Content = contractContent });
+            return Ok(contractContent);
         }
         catch (InvalidOperationException ex)
         {
