@@ -35,6 +35,8 @@ public sealed record class Pagination
             ? elementsTotal / elementsInPage
             : elementsTotal / elementsInPage + 1;
 
+        PagesTotal = (int)Math.Ceiling(elementsTotal / (double)elementsInPage);
+
         ArgumentOutOfRangeException.ThrowIfGreaterThan(pageNumber, PagesTotal);
 
         ElementsTotal = elementsTotal;
