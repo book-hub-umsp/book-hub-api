@@ -1,1 +1,1 @@
-CREATE DATABASE books_hub IF NOT EXISTS;
+CREATE DATABASE books_hub;
