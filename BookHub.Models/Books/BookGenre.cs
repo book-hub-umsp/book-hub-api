@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 namespace BookHub.Models.Books;
 
@@ -13,16 +12,12 @@ public sealed class BookGenre : IEquatable<BookGenre>
     public BookGenre(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
-
-        // converting to snake_case to store in db in unificate format
-        Value = Regex.Replace(
-            value.Trim(), 
-            "([a-z])([A-Z])", "$1_$2").ToLower(); ;
+        Value = value.Trim();
     }
 
     public bool CompareTo(string value)
-        => GetLowerClearRepresentation(value) 
-        == GetLowerClearRepresentation(Value);
+        => GetLowerCertainRepresentation(value) 
+        == GetLowerCertainRepresentation(Value);
 
     public bool Equals(BookGenre? other) =>
         other is not null
@@ -31,10 +26,11 @@ public sealed class BookGenre : IEquatable<BookGenre>
     public override bool Equals(object? obj) => Equals(obj as BookGenre);
 
     public override int GetHashCode() => 
-        GetLowerClearRepresentation(Value).GetHashCode();
+        GetLowerCertainRepresentation(Value).GetHashCode();
 
-    private static string GetLowerClearRepresentation(string value)
+    private static string GetLowerCertainRepresentation(string value)
         => value
+            .Trim()
             .Replace("_", string.Empty)
             .ToLowerInvariant();
 }
