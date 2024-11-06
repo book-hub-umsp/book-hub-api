@@ -8,7 +8,7 @@ WHERE table_name = 'books' AND constraint_type = 'FOREIGN KEY');
 ALTER TABLE books
 ADD CONSTRAINT fk_books_genre
 FOREIGN KEY (book_genre_id)
-REFERENCES genres (id);
+REFERENCES genres (id) ON DELETE SET DEFAULT 1;
 
 CREATE FUNCTION remove_books_genre()
 RETURNS trigger
