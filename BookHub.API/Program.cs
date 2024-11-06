@@ -5,6 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services
     .AddControllers()
     .AddNewtonsoftJson(
@@ -30,8 +31,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger().UseSwaggerUI();
+    // app.UseSwagger().UseSwaggerUI();
 }
+app.UseSwagger().UseSwaggerUI();
 
 app.UseCors();
 app.UseHttpsRedirection();
