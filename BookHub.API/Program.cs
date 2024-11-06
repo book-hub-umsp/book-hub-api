@@ -31,8 +31,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger().UseSwaggerUI();
+    // app.UseSwagger().UseSwaggerUI();
 }
+app.UseSwagger().UseSwaggerUI();
 
 app.UseCors();
 app.UseHttpsRedirection();
