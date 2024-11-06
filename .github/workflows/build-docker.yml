@@ -20,4 +20,11 @@ jobs:
       id-token: write
     uses: book-hub-umsp/bh-infrastructure/.github/workflows/docker-publish.yml@master
     secrets: inherit
-  
+  deploy:
+    needs: [docker-build]
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ needs.docker-build.outputs.version-value }}
+    steps:
+    - name: Echo tag
+      run: echo "version=${{ env.PR_NUMBER }}"
