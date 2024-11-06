@@ -17,7 +17,7 @@ internal static class LogicExtensions
         IConfiguration configuration)
         => services
             .AddUserHandling()
-            .AddBookDescriptionHandling()
+            .AddBooksActionsHandling()
             .Configure<TestConfig>(configuration.GetRequiredSection(nameof(TestConfig)))
             .AddSingleton<IValidateOptions<TestConfig>, TestConfigValidator>();
 
@@ -29,9 +29,10 @@ internal static class LogicExtensions
             .AddSingleton<IUserRequestConverter, UserRequestConverter>()
             .AddScoped<IUserService, UserService>();
 
-    private static IServiceCollection AddBookDescriptionHandling(
+    private static IServiceCollection AddBooksActionsHandling(
         this IServiceCollection services)
         => services
             .AddScoped<IBookDescriptionService, BookDescriptionService>()
+            .AddScoped<IBookGenresService, BookGenresService>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

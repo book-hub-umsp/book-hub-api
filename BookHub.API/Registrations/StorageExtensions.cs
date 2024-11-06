@@ -24,6 +24,7 @@ public static class StorageExtensions
             .AddScoped<IBooksHubUnitOfWork, BooksHubUnitOfWork>()
             .AddScoped<IBooksRepository, BooksRepository>()
             .AddScoped<IUsersRepository, UsersRepository>()
+            .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
 
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 

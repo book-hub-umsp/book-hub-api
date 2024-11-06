@@ -12,7 +12,7 @@ public partial class BookDescriptionController
 {
     [HttpGet]
     [AllowAnonymous]
-    [Route("getAllForAuthor")]
+    [Route("getBy/author")]
     [ProducesResponseType<GetAllBooksPreviewsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -45,7 +45,7 @@ public partial class BookDescriptionController
 
     [HttpGet]
     [AllowAnonymous]
-    [Route("getForAuthor")]
+    [Route("getBy/author/pagined")]
     [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -97,7 +97,7 @@ public partial class BookDescriptionController
 
     [HttpGet]
     [AllowAnonymous]
-    [Route("get")]
+    [Route("getBy/pagined")]
     [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
