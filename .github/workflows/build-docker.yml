@@ -28,4 +28,4 @@ jobs:
       PR_NUMBER: ${{ needs.docker-build.outputs.version-value }}
     steps:
     - name: Echo tag
-      run: echo '${{ toJSON(needs.docker-build.outputs) }}'
+      run: echo '${{  github.ref_name }}'
