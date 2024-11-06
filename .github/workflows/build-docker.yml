@@ -20,4 +20,23 @@ jobs:
       id-token: write
     uses: book-hub-umsp/bh-infrastructure/.github/workflows/docker-publish.yml@master
     secrets: inherit
-  
+    
+  deploy:
+    needs: [docker-build]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Extract tag
+      id: get-tag
+      run: |
+        tag=$(echo ${{  github.ref_name }} | cut -dv -f2)
+        echo "::set-output name=tag::$tag"
+    - name: Job reload
+      uses: appleboy/ssh-action@v1.1.0
+      with:
+        host: ${{ vars.ENV_SSH_HOST }}
+        username: ${{ secrets.ENV_SSH_USER }}
+        password: ${{ secrets.ENV_SSH_PASSWORD }}
+        script: |
+          cd ${{ vars.ENV_APP_PATH }}
+          nomad job run -token $(cat ${{ vars.ENV_NOMAD_TOKEN_FILE_PATH }}) -var-file ${{ vars.ENV_SECRET_FILE_PATH }} -var main-api-version="${{ steps.get-tag.outputs.tag }}" ${{ vars.ENV_JOB_FILE_PATH }}
