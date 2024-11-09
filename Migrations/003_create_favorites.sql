@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE favourites (
+CREATE TABLE favorites (
 	user_id BIGINT NOT NULL,
 	book_id BIGINT NOT NULL,
 	PRIMARY KEY (user_id, book_id),
