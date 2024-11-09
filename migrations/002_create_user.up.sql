@@ -1,6 +1,4 @@
-BEGIN;
-
-CREATE TYPE user_status as ENUM ('active', 'blocked');
+CREATE TYPE user_status as ENUM ('active', 'blocked', 'deleted');
 
 CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
@@ -9,5 +7,3 @@ CREATE TABLE users (
     status user_status NOT NULL DEFAULT 'active',
     about TEXT NOT NULL DEFAULT 'about'
 );
-
-COMMIT;
