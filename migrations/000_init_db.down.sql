@@ -1,1 +1,1 @@
-DROP DATABASE books_hub;
+DROP DATABASE books_hub WITH FORCE;
