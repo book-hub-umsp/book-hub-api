@@ -1,5 +1,6 @@
 ﻿using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
+using BookHub.API.Authentification.Configuration.Admin;
 using BookHub.API.Authentification.Configuration.JWT;
 
 using Microsoft.AspNetCore.Authorization;
@@ -141,5 +142,25 @@ public static class AuthentificationExtensions
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
+            .AddPolicy(
+                "Admin",
+                b => b.RequireClaim(
+                    JwtRegisteredClaimNames.Email,
+                    configuration.GetSection(nameof(AdminAuthorizationConfiguration))
+                        .Get<AdminAuthorizationConfiguration>()?.Admins ??
+                            throw new InvalidOperationException(
+                                "Admin authorization configuration is not found.")))
             .Services;
+
+    private static IServiceCollection AddAdminConfiguration(
+        this IServiceCollection services,
+        IConfiguration configuration)
+        => services
+            .AddSingleton<
+                IValidateOptions<AdminAuthorizationConfiguration>,
+                AdminAuthorizationConfigurationValidator>()
+            .AddOptions<AdminAuthorizationConfiguration>()
+                .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
+                .ValidateOnStart()
+                .Services;
 }
