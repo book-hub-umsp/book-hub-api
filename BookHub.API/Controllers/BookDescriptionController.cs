@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Converters;
@@ -44,7 +45,7 @@ public partial class BookDescriptionController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetBookContentAsync(
-        [Required][NotNull] long bookId,
+        [Required] long bookId,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -98,10 +99,10 @@ public partial class BookDescriptionController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAuthorPaginedBooksAsync(
-        CancellationToken token,
-        [Required][NotNull][FromRoute] long authorId,
-        [Required][NotNull][FromQuery] int pageNumber = 1,
-        [Required][NotNull][FromQuery] int elementsInPage = 5)
+        [Required][FromRoute] long authorId,
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int elementsInPage,
+        CancellationToken token)
     {
         _logger.LogInformation("Start processing get author pagined books request");
 
@@ -149,9 +150,9 @@ public partial class BookDescriptionController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetPaginedBooksAsync(
-        CancellationToken token,
-        [Required][NotNull][FromQuery] int pageNumber = 1,
-        [Required][NotNull][FromQuery] int elementsInPage = 5)
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int elementsInPage,
+        CancellationToken token)
     {
         _logger.LogInformation("Start processing get pagined books request");
 
