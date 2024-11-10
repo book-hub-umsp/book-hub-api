@@ -28,8 +28,7 @@ internal static class LogicExtensions
             .AddSingleton<IHttpUserIdentityFacade, HttpUserIdentityFacade>()
             .AddSingleton<IUserRequestConverter, UserRequestConverter>()
             .AddScoped<IUserService, UserService>()
-            .AddScoped<IAdminActionsService, AdminActionsService>()
-            .AddScoped<IModeratorActionsService, ModeratorActionsService>();
+            .AddScoped<IAdminActionsService, AdminActionsService>();
 
     private static IServiceCollection AddBooksActionsHandling(
         this IServiceCollection services)
