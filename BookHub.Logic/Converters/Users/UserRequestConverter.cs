@@ -1,4 +1,5 @@
-﻿using BookHub.Contracts.REST.Requests.Users;
+﻿using BookHub.Abstractions.Logic.Converters;
+using BookHub.Contracts.REST.Requests.Users;
 using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Users;

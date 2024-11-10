@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Converters;
+using BookHub.Abstractions.Logic.Services;
 using BookHub.Contracts.REST.Requests.Users;
 using BookHub.Contracts.REST.Responces;
 using BookHub.Contracts.REST.Responces.Users;

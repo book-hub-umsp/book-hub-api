@@ -1,9 +1,9 @@
 ﻿using BookHub.Contracts.REST.Requests.Users;
-using BookHub.Models;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;
+using BookHub.Models;
 
-namespace BookHub.Logic.Converters.Users;
+namespace BookHub.Abstractions.Logic.Converters;
 
 /// <summary>
 /// Описывает конвертер запросов, относящихся к пользователям.

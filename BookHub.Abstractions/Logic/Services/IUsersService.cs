@@ -1,8 +1,8 @@
-﻿using BookHub.Models;
-using BookHub.Models.DomainEvents;
+﻿using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;
+using BookHub.Models;
 
-namespace BookHub.Logic.Services.Users;
+namespace BookHub.Abstractions.Logic.Services;
 
 /// <summary>
 /// Описывает сервис пользователей.

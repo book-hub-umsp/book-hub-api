@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-using BookHub.Logic.Services.Users;
+using BookHub.Abstractions.Logic.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
