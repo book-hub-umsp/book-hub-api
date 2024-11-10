@@ -68,7 +68,7 @@ public static class AuthentificationExtensions
                         return new JsonWebToken(token);
                     };
 
-                opt.TokenValidationParameters.ValidateIssuer = false;
+                opt.TokenValidationParameters.ValidateIssuer = true;
 
                 opt.TokenValidationParameters.ValidIssuer =
                     configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
@@ -101,7 +101,7 @@ public static class AuthentificationExtensions
                         return new JsonWebToken(token);
                     };
 
-                opt.TokenValidationParameters.ValidateIssuer = false;
+                opt.TokenValidationParameters.ValidateIssuer = true;
 
                 opt.TokenValidationParameters.ValidIssuer =
                     configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
