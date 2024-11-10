@@ -18,11 +18,13 @@ public sealed class UserRequestConverter : IUserRequestConverter
         ArgumentNullException.ThrowIfNull(userId);
         ArgumentNullException.ThrowIfNull(request);
 
-        return (request.NewName, request.About) switch
+        return (request.NewName, request.About, request.Role) switch
         {
-            (not null, null) => new Updated<Name<User>>(userId, new(request.NewName)),
+            (not null, null, null) => new Updated<Name<User>>(userId, new(request.NewName)),
 
-            (null, not null) => new Updated<About>(userId, new(request.About)),
+            (null, not null, null) => new Updated<About>(userId, new(request.About)),
+
+            (null, null, not null) => new Updated<UserRole>(userId, request.Role.Value),
 
             _ => throw new InvalidOperationException("Update parameters is invalid.")
         };

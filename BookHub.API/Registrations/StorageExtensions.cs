@@ -35,7 +35,8 @@ public static class StorageExtensions
 
         _ = dataSourceBuilder
             .MapEnum<BookStatus>()
-            .MapEnum<UserStatus>();
+            .MapEnum<UserStatus>()
+            .MapEnum<UserRole>();
 
         return dataSourceBuilder.Build();
     }

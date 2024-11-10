@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net.Mail;
 
 namespace BookHub.Models.Users;
@@ -16,11 +17,14 @@ public sealed class UserProfileInfo
 
     public About About { get; }
 
+    public UserRole Role { get; }
+
     public UserProfileInfo(
         Id<User> id,
         Name<User> name,
         MailAddress email,
-        About about)
+        About about,
+        UserRole role)
     {
         ArgumentNullException.ThrowIfNull(id);
         Id = id;
@@ -33,5 +37,15 @@ public sealed class UserProfileInfo
 
         ArgumentNullException.ThrowIfNull(about);
         About = about;
+
+        if (!Enum.IsDefined(role))
+        {
+            throw new InvalidEnumArgumentException(
+                nameof(role),
+                (int)role,
+                typeof(UserRole));
+        }
+        Role = role;
+
     }
 }

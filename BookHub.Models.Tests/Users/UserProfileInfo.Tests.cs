@@ -16,15 +16,17 @@ public class UserProfileInfoTests
         var name = new Name<User>("name");
         var email = new MailAddress("email@gmail.com");
         var about = new About("some");
+        var userRole = UserRole.Moderator;
 
         // Act
-        var profileInfo = new UserProfileInfo(id, name, email, about);
+        var profileInfo = new UserProfileInfo(id, name, email, about, userRole);
 
         // Assert
         profileInfo.Id.Should().Be(id);
         profileInfo.Name.Should().Be(name);
         profileInfo.Email.Should().Be(email);
         profileInfo.About.Should().Be(about);
+        profileInfo.Role.Should().Be(userRole);
     }
 
     [Fact(DisplayName = "Cannot create without id.")]
@@ -37,7 +39,8 @@ public class UserProfileInfoTests
                 null!,
                 new("name"),
                 new("email@gmail.com"),
-                new("about")));
+                new("about"),
+                UserRole.Moderator));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
@@ -53,7 +56,8 @@ public class UserProfileInfoTests
                 new(123),
                 null!,
                 new("email@gmail.com"),
-                new("about")));
+                new("about"),
+                UserRole.Moderator));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
@@ -69,7 +73,8 @@ public class UserProfileInfoTests
                 new(123),
                 new("name"),
                 null!,
-                new("about")));
+                new("about"),
+                UserRole.Moderator));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
@@ -85,7 +90,25 @@ public class UserProfileInfoTests
                 new(123),
                 new("name"),
                 new("email@gmail.com"),
-                null!));
+                null!,
+                UserRole.Moderator));
+
+        // Assert
+        exception.Should().BeOfType<ArgumentNullException>();
+    }
+
+    [Fact(DisplayName = "Cannot create with invalid user role.")]
+    [Trait("Category", "Unit")]
+    public void CanNotCreateWithoInvalidRole()
+    {
+        // Act
+        var exception = Record.Exception(() =>
+            new UserProfileInfo(
+                new(123),
+                new("name"),
+                new("email@gmail.com"),
+                new("about"),
+                (UserRole)int.MaxValue));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();

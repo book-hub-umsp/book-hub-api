@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using BookHub.Models.Users;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace BookHub.Contracts.REST.Requests.Users;
 
@@ -12,4 +16,8 @@ public sealed class UpdateUserProfileInfoRequest
 
     [JsonProperty("about")]
     public string? About { get; init; }
+
+    [JsonProperty("role")]
+    [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]
+    public UserRole? Role { get; init; }
 }

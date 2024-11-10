@@ -41,6 +41,7 @@ public sealed class UsersRepository :
             Name = user.Name.Value,
             Email = user.Email.Address,
             Status = UserStatus.Active,
+            Role = UserRole.Default,
             About = "about"
         });
     }
@@ -62,6 +63,10 @@ public sealed class UsersRepository :
                 storageUser.About = update.Attribute.Content;
                 break;
 
+            case Updated<UserRole> update:
+                storageUser.Role = update.Attribute;
+                break;
+
             default:
                 throw new InvalidOperationException($"Update type: {updated.GetType().Name} is not supported.");
         }
@@ -75,7 +80,7 @@ public sealed class UsersRepository :
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
+            .Select(x => new { x.Id, x.Name, x.Email, x.About, x.Role })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
 
         return storageUser is not null
@@ -83,7 +88,8 @@ public sealed class UsersRepository :
                 new(storageUser.Id),
                 new(storageUser.Name),
                 new(storageUser.Email),
-                new(storageUser.About))
+                new(storageUser.About),
+                storageUser.Role)
             : null;
     }
 
@@ -95,7 +101,7 @@ public sealed class UsersRepository :
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
+            .Select(x => new { x.Id, x.Name, x.Email, x.About, x.Role })
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
@@ -103,6 +109,7 @@ public sealed class UsersRepository :
             new(storageUser.Id),
             new(storageUser.Name),
             new(storageUser.Email),
-            new(storageUser.About));
+            new(storageUser.About),
+            storageUser.Role);
     }
 }

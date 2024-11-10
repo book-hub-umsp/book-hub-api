@@ -13,6 +13,8 @@ public class User
 
     public string Email { get; set; } = null!;
 
+    public UserRole Role { get; set; }
+
     public UserStatus Status { get; set; }
 
     public string About { get; set; } = null!;
