@@ -28,7 +28,7 @@ public sealed class AdminActionsController : ControllerBase
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [HttpPatch("updateRole")]
+    [HttpPatch("user")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserRoleAsync(

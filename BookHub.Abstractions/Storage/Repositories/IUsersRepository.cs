@@ -84,22 +84,6 @@ public interface IUsersRepository
     public Task<UserProfileInfo> GetUserProfileInfoByIdAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>
-    /// Для пользователя выясняет, является ли он модератором в системе.
-    /// </summary>
-    /// <param name="userId">
-    /// Идентификатор пользователя.
-    /// </param>
-    /// <param name="token">
-    /// Токен отмены.
-    /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="userId"/> был <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Если пользователя с таким идентификатом не существует в хранилище.
-    /// </exception>
-    public Task<bool> HasModeratorOptions(Id<User> userId, CancellationToken token);
-
-    /// <summary>
     /// Для пользователя выясняет, является ли он администратором в системе.
     /// </summary>
     /// <param name="userId">
