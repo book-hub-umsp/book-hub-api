@@ -13,5 +13,4 @@ public interface IFavoriteLinkRepository
     public Task<UsersFavorite> GetUsersFavorite(Id<User> userId, CancellationToken token);
 
     public Task RemoveFavoriteLink(UserFavoriteBookLink favoriteLinkParams, CancellationToken token);
-
 }

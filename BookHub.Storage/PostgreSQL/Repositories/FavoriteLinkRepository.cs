@@ -44,15 +44,18 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
             BookId = favoriteLinkParams.BookId.Value,
             Book = book,
         });
-
     }
 
     public async Task<UsersFavorite> GetUsersFavorite(Id<User> userId, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
 
+        var user = await Context.Users
+            .SingleOrDefaultAsync(u => u.Id == userId.Value, token)
+            ?? throw new InvalidOperationException($"User with id {userId.Value} doesn't exist.");
+
         var storageFavLinks = await Context.FavoriteLinks
-            .Where(f => f.UserId == userId.Value)
+            .Where(f => f.UserId == user.Id)
             .ToListAsync();
 
         var favoriteLinks = storageFavLinks
