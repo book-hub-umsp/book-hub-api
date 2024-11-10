@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Converters;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.AddAuthorBookParams;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
+using ContractPreview = BookHub.Contracts.REST.Responces.BookPreview;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
@@ -36,49 +38,14 @@ public partial class BookDescriptionController : ControllerBase
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [HttpPost]
-    [Route("add")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> AddNewAuthorBookAsync(
-        [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
-        CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-
-        _logger.LogInformation(
-            "Start processing new book adding request for author {AuthorId}",
-            addAuthorBookParams.AuthorId);
-
-        try
-        {
-            await _service.AddBookAsync(
-                (DomainAddAuthorBookParams)_converter.Convert(addAuthorBookParams),
-                token);
-
-            _logger.LogInformation("Request was processed with succesfull result");
-
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
-
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
-    }
-
     [HttpGet]
     [AllowAnonymous]
-    [Route("get/{bookId}")]
+    [Route("{bookId}")]
     [ProducesResponseType<BookDescriptionResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetBookContentAsync(
-        [Required][NotNull] long bookId,
+        [Required] long bookId,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -125,12 +92,147 @@ public partial class BookDescriptionController : ControllerBase
         }
     }
 
-    [HttpPut]
-    [Route("update")]
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("author/{authorId}")]
+    [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAuthorPaginedBooksAsync(
+        [Required][FromRoute] long authorId,
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int elementsInPage,
+        CancellationToken token)
+    {
+        _logger.LogInformation("Start processing get author pagined books request");
+
+        try
+        {
+            var (booksPaginedPreviews, pagination) =
+                await _service.GetAuthorPaginedBooksPreviewsAsync(
+                    new(authorId),
+                    new(pageNumber, elementsInPage),
+                    token);
+
+            var content = new GetAllPaginedBooksPreviewsResponse
+            {
+                ElementsTotal = pagination.ElementsTotal,
+
+                PagesTotal = pagination.PagesTotal,
+
+                Previews = booksPaginedPreviews.Select(
+                    x => new ContractPreview
+                    {
+                        Id = x.Id.Value,
+                        AuthorId = x.AuthorId.Value,
+                        Genre = x.Genre.Value,
+                        Title = x.Title.Value
+                    }).ToList()
+            };
+
+            _logger.LogInformation("Request was processed with succesfull result");
+
+            return Ok(content);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetPaginedBooksAsync(
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int elementsInPage,
+        CancellationToken token)
+    {
+        _logger.LogInformation("Start processing get pagined books request");
+
+        try
+        {
+            var (booksPaginedPreviews, pagination) =
+                await _service.GetPaginedBooksPreviewsAsync(
+                    new(pageNumber, elementsInPage),
+                    token);
+
+            var content = new GetAllPaginedBooksPreviewsResponse
+            {
+                ElementsTotal = pagination.ElementsTotal,
+
+                PagesTotal = pagination.PagesTotal,
+
+                Previews = booksPaginedPreviews.Select(
+                    x => new ContractPreview
+                    {
+                        Id = x.Id.Value,
+                        AuthorId = x.AuthorId.Value,
+                        Genre = x.Genre.Value,
+                        Title = x.Title.Value
+                    }).ToList()
+            };
+
+            _logger.LogInformation("Request was processed with succesfull result");
+
+            return Ok(content);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
+    // Todo: will be accepted only for book author
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    // will be accepted only for book author
+    public async Task<IActionResult> AddNewAuthorBookAsync(
+        [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
+        CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+
+        _logger.LogInformation(
+            "Start processing new book adding request for author {AuthorId}",
+            addAuthorBookParams.AuthorId);
+
+        try
+        {
+            await _service.AddBookAsync(
+                (DomainAddAuthorBookParams)_converter.Convert(addAuthorBookParams),
+                token);
+
+            _logger.LogInformation("Request was processed with succesfull result");
+
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            _logger.LogInformation("Request was processed with failed result");
+
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
+    // Todo: will be accepted only for book author
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)

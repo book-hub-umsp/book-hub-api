@@ -1,5 +1,4 @@
-﻿using BookHub.Models;
-using BookHub.Models.Users;
+﻿using BookHub.API.Authentification;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +23,7 @@ public class TestAuthController : ControllerBase
     {
         ArgumentNullException.ThrowIfNull(options);
         _config = options.Value;
-    }   
+    }
 
     [HttpGet]
     [AllowAnonymous]
@@ -37,7 +36,12 @@ public class TestAuthController : ControllerBase
     public IActionResult AnyJWTEndpoint() => Ok($"Any JWT endpoint is works! Config: {_config.Content}");
 
     [HttpGet]
-    [Authorize(Policy = "SpecialJWT")]
-    [Route("special")]
-    public IActionResult SpecialJWTEndpoint() => Ok($"Special JWT endpoint is works! Config: {_config.Content}");
+    [Authorize(Policy = Auth.AuthProviders.GOOGLE)]
+    [Route("jwt/google")]
+    public IActionResult GoogleJWTEndpoint() => Ok($"Any JWT endpoint is works! Config: {_config.Content}");
+
+    [HttpGet]
+    [Authorize(Policy = Auth.AuthProviders.YANDEX)]
+    [Route("jwt/yandex")]
+    public IActionResult YandexJWTEndpoint() => Ok($"Any JWT endpoint is works! Config: {_config.Content}");
 }
