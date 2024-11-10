@@ -11,6 +11,8 @@ public sealed class Book
 
     public required string Title { get; set; }
 
+    public User Author { get; set; } = null!;
+
     public required long AuthorId { get; set; }
 
     public required long BookGenreId { get; set; }
@@ -26,4 +28,6 @@ public sealed class Book
     public required DateTimeOffset CreationDate { get; set; }
 
     public required DateTimeOffset LastEditDate { get; set; }
+
+    public ICollection<FavoriteLink> UsersFavouritesLinks { get; set; } = null!;
 }

@@ -18,4 +18,8 @@ public class User
     public UserStatus Status { get; set; }
 
     public string About { get; set; } = null!;
+
+    public ICollection<Book> WrittenBooks { get; set; } = null!;
+
+    public ICollection<FavoriteLink> FavouriteBooksLinks { get; set; } = null!;
 }

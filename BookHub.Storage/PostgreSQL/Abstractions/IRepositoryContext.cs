@@ -14,4 +14,6 @@ public interface IRepositoryContext
     public DbSet<Book> Books { get; }
 
     public DbSet<BookGenre> Genres { get; }
+
+    public DbSet<FavoriteLink> FavoriteLinks { get; }
 }
