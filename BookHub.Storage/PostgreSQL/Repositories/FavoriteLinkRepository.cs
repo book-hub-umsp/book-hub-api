@@ -18,14 +18,15 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
     {
         ArgumentNullException.ThrowIfNull(favoriteLinkParams);
 
-        var user = await Context.Users.SingleOrDefaultAsync(u => u.Id == favoriteLinkParams.UserId.Value, token)
+        var user = await Context.Users
+            .SingleOrDefaultAsync(u => u.Id == favoriteLinkParams.UserId.Value, token)
             ?? throw new InvalidOperationException($"User with id {favoriteLinkParams.UserId.Value} doesn't exist.");
 
-        var book = await Context.Books.SingleOrDefaultAsync(b => b.Id == favoriteLinkParams.BookId.Value, token)
+        var book = await Context.Books
+            .SingleOrDefaultAsync(b => b.Id == favoriteLinkParams.BookId.Value, token)
             ?? throw new InvalidOperationException($"Book with id {favoriteLinkParams.BookId.Value} doesn't exist.");
 
-        var userFavorite =
-            await Context.FavoriteLinks
+        var userFavorite = await Context.FavoriteLinks
             .SingleOrDefaultAsync(
                 u => u.UserId == user.Id && u.BookId == book.Id,
                 token);
