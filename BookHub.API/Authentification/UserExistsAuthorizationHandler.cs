@@ -7,6 +7,9 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace BookHub.API.Authentification;
 
+/// <summary>
+/// Промежуточный обработчик авторизации, проверяющий наличие пользовательского профиля на портале.
+/// </summary>
 public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsRequirementMarker>
 {
     private readonly IUserService _userService;
@@ -22,6 +25,7 @@ public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsReq
         _logger = logger;
     }
 
+    /// <inheritdoc/>
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         UserExistsRequirementMarker requirement)

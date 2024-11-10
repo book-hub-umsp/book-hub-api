@@ -1,6 +1,9 @@
 ﻿using BookHub.API.Authentification;
+using BookHub.API.Authentification.Configuration;
+using BookHub.API.Authentification.Configuration.JWT;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace BookHub.API.Registrations;
@@ -12,8 +15,15 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
+
             .AddAuthProviders(configuration)
-            .AddAuthorization(configuration);
+            .AddAuthorization(configuration)
+
+            .AddSingleton<IValidateOptions<AuthJWTConfiguration>, AuthJWTConfigurationValidator>()
+            .AddOptionsWithValidateOnStart<AuthJWTConfiguration>()
+            .Bind(configuration.GetRequiredSection(nameof(AuthJWTConfiguration)))
+
+            .Services;
 
     private static IServiceCollection AddAuthProviders(
         this IServiceCollection services,
@@ -28,9 +38,7 @@ public static class AuthentificationExtensions
 
                 //opt.TokenValidationParameters.ValidIssuer = "https://accounts.google.com";
 
-                //opt.TokenValidationParameters.ValidAudience = "bookhub";
-
-                // Validate signature
+                // Todo: validate sign #81
 
                 //opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 //{
@@ -50,18 +58,66 @@ public static class AuthentificationExtensions
                 //    }
                 //};
 
-                opt.TokenValidationParameters.ValidateAudience = false;
-
-                opt.TokenValidationParameters.ValidateIssuer = false;
+                //opt.TokenValidationParameters.SignatureValidator =
+                //    (token, _) => new JsonWebToken(token);
 
                 opt.TokenValidationParameters.SignatureValidator =
-                    (token, _) => new JsonWebToken(token);
+                    (token, _) =>
+                    {
+                        //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+                        return new JsonWebToken(token);
+                    };
 
-                //opt.TokenValidationParameters.ValidAudiences =
-                //    builder.Configuration.GetSection("GoogleJsonWebTokenConfiguration:Audience")
-                //        .AsEnumerable()
-                //        .Select(v => v.Value)
-                //        .Where(v => v is not null);
+                opt.TokenValidationParameters.ValidateIssuer = true;
+
+                opt.TokenValidationParameters.ValidIssuer =
+                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.Issuer))
+                        .Value
+                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
+
+                opt.TokenValidationParameters.ValidateAudience = true;
+
+                opt.TokenValidationParameters.ValidAudience =
+                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.Audience))
+                        .Value
+                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
+            })
+            .AddJwtBearer(Auth.AuthProviders.YANDEX, opt =>
+            {
+                opt.TokenHandlers.Clear();
+
+                opt.TokenHandlers.Add(new JsonWebTokenHandler());
+
+
+                // Todo: validate sign #81
+                opt.TokenValidationParameters.SignatureValidator =
+                    (token, _) =>
+                    {
+                        //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+                        return new JsonWebToken(token);
+                    };
+
+                opt.TokenValidationParameters.ValidateIssuer = true;
+
+                opt.TokenValidationParameters.ValidIssuer =
+                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex.Issuer))
+                        .Value
+                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
+
+                opt.TokenValidationParameters.ValidateAudience = true;
+
+                opt.TokenValidationParameters.ValidAudience =
+                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex.Audience))
+                        .Value
+                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
             })
             .Services;
 
@@ -70,34 +126,20 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddAuthorizationBuilder()
-            .AddDefaultPolicy("DefaultPolicy", opt => opt.AddRequirements(new UserExistsRequirementMarker()))
+            .AddDefaultPolicy(
+                "DefaultPolicy", 
+                opt => opt
+                    .AddRequirements(new UserExistsRequirementMarker())
+                    .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))
             .AddPolicy(
-                "SpecialJWT",
-                b => b
-                    .RequireClaim(JwtRegisteredClaimNames.Iss, "BookHub")
-                    .AddRequirements(new UserExistsRequirementMarker()))
-            //.AddPolicy(
-            //    "Admin",
-            //    b => b.RequireClaim(
-            //        JwtRegisteredClaimNames.Email,
-            //        configuration.GetSection(nameof(AdminAuthorizationConfiguration))
-            //            .Get<AdminAuthorizationConfiguration>()?.Admins ??
-            //                throw new InvalidOperationException(
-            //                    "Admin authorization configuration is not found.")))
+                Auth.AuthProviders.GOOGLE,
+                opt => opt
+                    .AddRequirements(new UserExistsRequirementMarker())
+                    .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE]))
+            .AddPolicy(
+                Auth.AuthProviders.YANDEX,
+                opt => opt
+                    .AddRequirements(new UserExistsRequirementMarker())
+                    .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
             .Services;
-
-    //private static IServiceCollection AddAuthorizationConfigs(
-    //    this IServiceCollection services,
-    //    IConfiguration configuration)
-    //    => services
-    //        .AddSingleton<IValidateOptions<GoogleJsonWebSignature.ValidationSettings>, GoogleJsonWebTokenConfigurationValidator>()
-    //        .AddOptions<GoogleJsonWebSignature.ValidationSettings>()
-    //            .Bind(configuration.GetSection("GoogleJsonWebTokenConfiguration"))
-    //            .ValidateOnStart()
-    //            .Services
-    //        .AddSingleton<IValidateOptions<AdminAuthorizationConfiguration>, AdminAuthorizationConfigurationValidator>()
-    //        .AddOptions<AdminAuthorizationConfiguration>()
-    //            .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
-    //            .ValidateOnStart()
-    //            .Services;
 }
