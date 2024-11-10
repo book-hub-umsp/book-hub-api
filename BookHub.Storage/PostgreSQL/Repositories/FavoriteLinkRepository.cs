@@ -56,7 +56,7 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
 
         var storageFavLinks = await Context.FavoriteLinks
             .Where(f => f.UserId == user.Id)
-            .ToListAsync();
+            .ToListAsync(token);
 
         var favoriteLinks = storageFavLinks
             .Select(f => new UserFavoriteBookLink(new(f.UserId), new(f.BookId)))
