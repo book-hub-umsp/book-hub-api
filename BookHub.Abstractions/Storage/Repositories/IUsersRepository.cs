@@ -1,7 +1,6 @@
 ﻿using System.Net.Mail;
 
 using BookHub.Models;
-using BookHub.Models.CRUDS.Requests.Admins;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.Users;
 
@@ -83,23 +82,6 @@ public interface IUsersRepository
     /// Если пользователя с таким идентификатом не существует в хранилище.
     /// </exception>
     public Task<UserProfileInfo> GetUserProfileInfoByIdAsync(Id<User> userId, CancellationToken token);
-
-    /// <summary>
-    /// Выполняет обновление для роли <see cref="UserRole"/>
-    /// у пользователя с указанным в модели идентификатором.
-    /// </summary>
-    /// <param name="updateUserRoleParams">
-    /// Параметры.
-    /// </param>
-    /// <param name="token">
-    /// Токен отмены.
-    /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="updateUserRoleParams"/> был <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Если пользователя c идентификатором в параметрах не существует в хранилище.
-    /// </exception>
-    public Task UpdateUserRoleAsync(UpdateUserRoleParams updateUserRoleParams, CancellationToken token);
 
     /// <summary>
     /// Для пользователя выясняет, является ли он модератором в системе.

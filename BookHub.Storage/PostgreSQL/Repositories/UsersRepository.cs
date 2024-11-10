@@ -2,7 +2,6 @@
 
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
-using BookHub.Models.CRUDS.Requests.Admins;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Users;
 using BookHub.Models.Users;
@@ -64,6 +63,10 @@ public sealed class UsersRepository :
                 storageUser.About = update.Attribute.Content;
                 break;
 
+            case Updated<UserRole> update:
+                storageUser.Role = update.Attribute;
+                break;
+
             default:
                 throw new InvalidOperationException(
                     $"Update type: {updated.GetType().Name} is not supported.");
@@ -107,19 +110,6 @@ public sealed class UsersRepository :
             new(storageUser.Name),
             new(storageUser.Email),
             new(storageUser.About));
-    }
-
-    public async Task UpdateUserRoleAsync(
-        UpdateUserRoleParams updateUserRoleParams,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(updateUserRoleParams);
-
-        var storageUser = await Context.Users
-            .SingleOrDefaultAsync(x => x.Id == updateUserRoleParams.ModifiedUserId.Value, token)
-            ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
-
-        storageUser.Role = updateUserRoleParams.NewRole;
     }
 
     public async Task<bool> HasModeratorOptions(Id<User> userId, CancellationToken token)

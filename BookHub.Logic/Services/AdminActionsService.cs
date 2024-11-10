@@ -1,6 +1,8 @@
 ﻿using BookHub.Abstractions.Logic.Services;
 using BookHub.Abstractions.Storage;
 using BookHub.Models.CRUDS.Requests.Admins;
+using BookHub.Models.DomainEvents.Users;
+using BookHub.Models.Users;
 
 using Microsoft.Extensions.Logging;
 
@@ -45,7 +47,11 @@ public sealed class AdminActionsService : IAdminActionsService
             "Trying update role for user {UserId}", 
             updateRoleParams.ModifiedUserId);
 
-        await _unitOfWork.Users.UpdateUserRoleAsync(updateRoleParams, cancellationToken);
+        await _unitOfWork.Users.UpdateUserAsync(
+            new Updated<UserRole>(
+                updateRoleParams.ModifiedUserId, 
+                updateRoleParams.NewRole), 
+            cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
