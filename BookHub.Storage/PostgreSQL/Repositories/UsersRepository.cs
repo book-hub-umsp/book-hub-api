@@ -112,4 +112,16 @@ public sealed class UsersRepository :
             new(storageUser.About),
             storageUser.Role);
     }
+
+    public async Task<bool> HasModeratorOptions(Id<User> userId, CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        var storageUser = await Context.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+            ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
+
+        return storageUser.Role == UserRole.Moderator;
+    }
 }
