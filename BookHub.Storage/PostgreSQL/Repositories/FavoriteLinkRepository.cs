@@ -62,7 +62,6 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
             .Select(f => new UserFavoriteBookLink(new(f.UserId), new(f.BookId)))
             .ToHashSet();
 
-
         return new UsersFavorite(new(userId.Value), favoriteLinks);
     }
 
