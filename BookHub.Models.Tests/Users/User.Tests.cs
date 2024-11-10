@@ -16,16 +16,17 @@ public class UserTests
             new(123),
             new("name"),
             new("email@gmail.com"), 
-            new("about"),
-            UserRole.Default);
+            new("about"));
+        var userRole = UserRole.Admin;
         var userStatus = UserStatus.Blocked;
 
         // Act
-        var user = new User(profileInfo, userStatus);
+        var user = new User(profileInfo, userRole, userStatus);
 
         // Assert
         user.ProfileInfo.Should().Be(profileInfo);
         user.Status.Should().Be(userStatus);
+        user.Role.Should().Be(userRole);
     }
 
     [Fact(DisplayName = "Cannot create without profile info.")]
@@ -36,10 +37,30 @@ public class UserTests
         var exception = Record.Exception(() =>
             new User(
                 null!,
+                UserRole.Admin,
                 UserStatus.Blocked));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();
+    }
+
+    [Fact(DisplayName = "Cannot create when user role is invalid.")]
+    [Trait("Category", "Unit")]
+    public void CanNotCreateWhenUserRoleIsInvalid()
+    {
+        // Act
+        var exception = Record.Exception(() =>
+            new User(
+                new UserProfileInfo(
+                    new(123),
+                    new("name"),
+                    new("email@gmail.com"),
+                    new("about")),
+                (UserRole)int.MaxValue,
+                UserStatus.Active));
+
+        // Assert
+        exception.Should().BeOfType<InvalidEnumArgumentException>();
     }
 
     [Fact(DisplayName = "Cannot create when user status is invalid.")]
@@ -53,8 +74,8 @@ public class UserTests
                     new(123),
                     new("name"),
                     new("email@gmail.com"), 
-                    new("about"),
-                    UserRole.Default),
+                    new("about")),
+                UserRole.Admin,
                 (UserStatus)int.MaxValue));
 
         // Assert

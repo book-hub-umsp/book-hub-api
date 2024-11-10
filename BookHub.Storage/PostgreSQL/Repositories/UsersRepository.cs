@@ -65,7 +65,8 @@ public sealed class UsersRepository :
                 break;
 
             default:
-                throw new InvalidOperationException($"Update type: {updated.GetType().Name} is not supported.");
+                throw new InvalidOperationException(
+                    $"Update type: {updated.GetType().Name} is not supported.");
         }
     }
 
@@ -77,7 +78,7 @@ public sealed class UsersRepository :
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About, x.Role })
+            .Select(x => new { x.Id, x.Name, x.Email, x.About })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
 
         return storageUser is not null
@@ -85,8 +86,7 @@ public sealed class UsersRepository :
                 new(storageUser.Id),
                 new(storageUser.Name),
                 new(storageUser.Email),
-                new(storageUser.About),
-                storageUser.Role)
+                new(storageUser.About))
             : null;
     }
 
@@ -106,8 +106,7 @@ public sealed class UsersRepository :
             new(storageUser.Id),
             new(storageUser.Name),
             new(storageUser.Email),
-            new(storageUser.About),
-            storageUser.Role);
+            new(storageUser.About));
     }
 
     public async Task UpdateUserRoleAsync(

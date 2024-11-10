@@ -45,8 +45,7 @@ public class UserServiceTests
             new(1),
             new("name"),
             registeringUser.Email,
-            new("about"),
-            UserRole.Default);
+            new("about"));
 
         var addCallback = 0;
         var userRepo = new Mock<IUsersRepository>(MockBehavior.Strict);
@@ -92,8 +91,7 @@ public class UserServiceTests
             new(1),
             new("name"),
             registeringUser.Email,
-            new("about"),
-            UserRole.Moderator);
+            new("about"));
 
         var findCallback = 0;
         var userRepo = new Mock<IUsersRepository>(MockBehavior.Strict);
@@ -149,8 +147,7 @@ public class UserServiceTests
             new(1),
             new("name"),
             new("somename@gmail.com"),
-            new("about"),
-            UserRole.Default);
+            new("about"));
 
         var getCallback = 0;
         var userRepo = new Mock<IUsersRepository>(MockBehavior.Strict);
