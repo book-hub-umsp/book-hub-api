@@ -1,5 +1,7 @@
 using BookHub.Models.Users;
 using FluentAssertions;
+
+using System.ComponentModel;
 using System.Net.Mail;
 using Xunit;
 
@@ -111,6 +113,6 @@ public class UserProfileInfoTests
                 (UserRole)int.MaxValue));
 
         // Assert
-        exception.Should().BeOfType<ArgumentNullException>();
+        exception.Should().BeOfType<InvalidEnumArgumentException>();
     }
 }
