@@ -37,7 +37,6 @@ public partial class BookDescriptionController : ControllerBase
     }
 
     [HttpPost]
-    [Route("add")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -125,8 +124,7 @@ public partial class BookDescriptionController : ControllerBase
         }
     }
 
-    [HttpPut]
-    [Route("update")]
+    [HttpPatch]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -121,7 +121,7 @@ public sealed class UserController : ControllerBase
     /// <returns>
     /// <see cref="IActionResult"/>.
     /// </returns>
-    [HttpPatch("update")]
+    [HttpPatch]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
