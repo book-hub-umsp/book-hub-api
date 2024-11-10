@@ -8,9 +8,9 @@ namespace BookHub.Abstractions.Storage.Repositories;
 /// </summary>
 public interface IFavoriteLinkRepository
 {
-    public Task AddFavoriteLink(UserFavoriteBookLink favoriteLinkParams, CancellationToken token);
+    public Task AddFavoriteLinkAsync(UserFavoriteBookLink favoriteLinkParams, CancellationToken token);
 
-    public Task<UsersFavorite> GetUsersFavorite(Id<User> userId, CancellationToken token);
+    public Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, CancellationToken token);
 
-    public Task RemoveFavoriteLink(UserFavoriteBookLink favoriteLinkParams, CancellationToken token);
+    public Task RemoveFavoriteLinkAsync(UserFavoriteBookLink favoriteLinkParams, CancellationToken token);
 }

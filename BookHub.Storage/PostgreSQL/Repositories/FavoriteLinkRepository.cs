@@ -14,7 +14,7 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
 {
     public FavoriteLinkRepository(IRepositoryContext context) : base(context) { }
 
-    public async Task AddFavoriteLink(UserFavoriteBookLink favoriteLinkParams, CancellationToken token)
+    public async Task AddFavoriteLinkAsync(UserFavoriteBookLink favoriteLinkParams, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLinkParams);
 
@@ -46,7 +46,7 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
         });
     }
 
-    public async Task<UsersFavorite> GetUsersFavorite(Id<User> userId, CancellationToken token)
+    public async Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
 
@@ -65,7 +65,7 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
         return new UsersFavorite(new(userId.Value), favoriteLinks);
     }
 
-    public async Task RemoveFavoriteLink(UserFavoriteBookLink favoriteLinkParams, CancellationToken token)
+    public async Task RemoveFavoriteLinkAsync(UserFavoriteBookLink favoriteLinkParams, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLinkParams);
 
