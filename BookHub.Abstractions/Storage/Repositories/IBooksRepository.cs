@@ -1,5 +1,7 @@
 ﻿using BookHub.Models;
+using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 using BookHub.Models.Users;
 
 using DomainBook = BookHub.Models.Books.Book;
@@ -24,7 +26,25 @@ public interface IBooksRepository
         Id<User> authorId,
         CancellationToken token);
 
+    /// <exception cref="InvalidOperationException">
+    /// Если автор книги не соответствует указанному в запросе.
+    /// </exception>
     public Task UpdateBookContentAsync(
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+        Id<User> authorId,
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
+        Id<User> authorId,
+        Pagination pagination,
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
+        Pagination pagination,
+        CancellationToken token);
+
+    public Task<long> GetBooksTotalCountAsync(CancellationToken token);
 }

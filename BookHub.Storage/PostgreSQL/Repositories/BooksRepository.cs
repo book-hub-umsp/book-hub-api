@@ -3,6 +3,7 @@ using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books;
 using BookHub.Models.CRUDS.Requests;
+using BookHub.Models.RequestSettings;
 using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
@@ -37,7 +38,7 @@ public sealed class BooksRepository :
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Value == addBookParams.Genre.Value)
+                .SingleOrDefaultAsync(x => addBookParams.Genre.CompareTo(x.Value))
                 ?? throw new InvalidOperationException(
                     $"Book genre {addBookParams.Genre} is not exists.");
 
@@ -121,8 +122,14 @@ public sealed class BooksRepository :
 
         var storageBook = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token)
-                    ?? throw new InvalidOperationException(
-                        $"No such book with id {updateBookParams.BookId.Value}.");
+                ?? throw new InvalidOperationException(
+                    $"No such book with id {updateBookParams.BookId.Value}.");
+
+        if (storageBook.AuthorId != updateBookParams.AuthorId.Value)
+        {
+            throw new InvalidOperationException(
+                $"Only author can update book {storageBook.Id} description.");
+        }
 
         switch (updateBookParams)
         {
@@ -132,7 +139,7 @@ public sealed class BooksRepository :
 
                 var relatedBookGenre =
                     await Context.Genres.AsNoTracking()
-                        .SingleOrDefaultAsync(x => x.Value == newGenre.Value)
+                        .SingleOrDefaultAsync(x => newGenre.CompareTo(x.Value))
                             ?? throw new InvalidOperationException(
                                 $"Book genre {newGenre} is not exists.");
 
@@ -170,6 +177,74 @@ public sealed class BooksRepository :
                 $"Not supported params type {updateBookParams.GetType().Name}.");
         }
     }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+        Id<User> authorId,
+        CancellationToken token)
+    {
+        var booksShortModels = 
+            await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id), 
+                new(x.Title), 
+                new(x.BookGenre.Value), 
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
+        Id<User> authorId,
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .Where(x => x.AuthorId == authorId.Value)
+                .OrderBy(x => x.Id)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
+        Pagination pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books.AsNoTracking()
+                .OrderBy(x => x.Id)
+                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
+    public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
+        await Context.Books.AsNoTracking().LongCountAsync(token);
 
     private readonly IKeyWordsConverter _keyWordsConverter;
 }

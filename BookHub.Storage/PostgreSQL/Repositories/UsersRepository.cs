@@ -41,6 +41,7 @@ public sealed class UsersRepository :
             Name = user.Name.Value,
             Email = user.Email.Address,
             Status = UserStatus.Active,
+            About = "about"
         });
     }
 

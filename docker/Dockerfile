@@ -27,4 +27,5 @@ RUN dotnet publish "./${DOCKER_DOTNET_MAIN_PROJECT}.csproj" -c $BUILD_CONFIGURAT
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "${DOCKER_DOTNET_MAIN_PROJECT}.dll"]
+
+ENTRYPOINT ["dotnet", "BookHub.API.dll"]

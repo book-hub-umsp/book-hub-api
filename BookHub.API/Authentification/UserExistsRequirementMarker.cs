@@ -2,6 +2,4 @@
 
 namespace BookHub.API.Authentification;
 
-public class CustomRequirementMarker : IAuthorizationRequirement
-{
-}
+public class UserExistsRequirementMarker : IAuthorizationRequirement;

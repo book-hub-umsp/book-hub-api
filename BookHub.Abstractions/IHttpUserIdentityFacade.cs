@@ -6,7 +6,7 @@ namespace BookHub.Abstractions;
 /// <summary>
 /// Фасад для получения информации о пользователе, в рамках HTTP запроса.
 /// </summary>
-public interface IHttpUserIdentityInfoFacade
+public interface IHttpUserIdentityFacade
 {
-    public Id<User> Id { get; }
+    public Id<User>? Id { get; }
 }

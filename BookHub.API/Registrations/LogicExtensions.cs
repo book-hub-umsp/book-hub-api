@@ -1,10 +1,10 @@
-﻿using BookHub.Abstractions.Logic.Converters;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Converters;
 using BookHub.Abstractions.Logic.Services;
-using BookHub.API.Authentification;
 using BookHub.Logic.Converters;
+using BookHub.Logic.Converters.Users;
 using BookHub.Logic.Services;
-
-using Google.Apis.Auth;
+using BookHub.Logic.Services.Users;
 
 using Microsoft.Extensions.Options;
 
@@ -12,24 +12,27 @@ namespace BookHub.API.Registrations;
 
 internal static class LogicExtensions
 {
-    public static IServiceCollection AddAuthorizationConfigs(
+    public static IServiceCollection AddLogic(
         this IServiceCollection services,
         IConfiguration configuration)
         => services
-            .AddSingleton<IValidateOptions<GoogleJsonWebSignature.ValidationSettings>, GoogleJsonWebTokenConfigurationValidator>()
-            .AddOptions<GoogleJsonWebSignature.ValidationSettings>()
-                .Bind(configuration.GetSection("GoogleJsonWebTokenConfiguration"))
-                .ValidateOnStart()
-                .Services
-            .AddSingleton<IValidateOptions<AdminAuthorizationConfiguration>, AdminAuthorizationConfigurationValidator>()
-            .AddOptions<AdminAuthorizationConfiguration>()
-                .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
-                .ValidateOnStart()
-                .Services;
+            .AddUserHandling()
+            .AddBooksActionsHandling()
+            .Configure<TestConfig>(configuration.GetRequiredSection(nameof(TestConfig)))
+            .AddSingleton<IValidateOptions<TestConfig>, TestConfigValidator>();
 
-    public static IServiceCollection AddRequestsHandling(
+    private static IServiceCollection AddUserHandling(
+        this IServiceCollection services)
+        => services
+            .AddHttpContextAccessor()
+            .AddSingleton<IHttpUserIdentityFacade, HttpUserIdentityFacade>()
+            .AddSingleton<IUserRequestConverter, UserRequestConverter>()
+            .AddScoped<IUserService, UserService>();
+
+    private static IServiceCollection AddBooksActionsHandling(
         this IServiceCollection services)
         => services
             .AddScoped<IBookDescriptionService, BookDescriptionService>()
+            .AddScoped<IBookGenresService, BookGenresService>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

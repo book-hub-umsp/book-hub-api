@@ -24,7 +24,7 @@ namespace BookHub.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("books")]
-public class BookDescriptionController : Controller
+public partial class BookDescriptionController : ControllerBase
 {
     public BookDescriptionController(
         IBookDescriptionService service,
@@ -37,7 +37,10 @@ public class BookDescriptionController : Controller
     }
 
     [HttpPost]
-    [Route("/add")]
+    [Route("add")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddNewAuthorBookAsync(
         [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
         CancellationToken token)
@@ -64,12 +67,16 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
     [HttpGet]
-    [Route("/get/{bookId}")]
+    [AllowAnonymous]
+    [Route("get/{bookId}")]
+    [ProducesResponseType<BookDescriptionResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetBookContentAsync(
         [Required][NotNull] long bookId,
         CancellationToken token)
@@ -106,7 +113,7 @@ public class BookDescriptionController : Controller
                     .ToList()
             };
 
-            return Ok(new SuccesfullCommandResult { Content = contractContent });
+            return Ok(contractContent);
         }
         catch (InvalidOperationException ex)
         {
@@ -114,12 +121,16 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 
     [HttpPut]
-    [Route("/update")]
+    [Route("update")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    // will be accepted only for book author
     public async Task<IActionResult> UpdateBookAsync(
         [Required][NotNull] ContractUpdateBookParams updateParams,
         CancellationToken token)
@@ -146,7 +157,7 @@ public class BookDescriptionController : Controller
 
             _logger.LogInformation("Request was processed with failed result");
 
-            return BadRequest(new FailureCommandResult { FailureMessage = ex.Message });
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
 

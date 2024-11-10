@@ -21,6 +21,12 @@ public interface IUserService
     /// <returns>
     /// <see cref="Task{TResult}"/>.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="userId"/> был равен <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если пользователя с таким идентификатором не существет.
+    /// </exception>
     Task<UserProfileInfo> GetUserProfileInfoAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>

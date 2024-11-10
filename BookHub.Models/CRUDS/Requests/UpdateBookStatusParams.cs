@@ -2,6 +2,7 @@
 using System;
 
 using BookHub.Models.Books;
+using BookHub.Models.Users;
 
 namespace BookHub.Models.CRUDS.Requests;
 
@@ -14,8 +15,9 @@ public sealed class UpdateBookStatusParams : UpdateBookParamsBase
 
     public UpdateBookStatusParams(
         Id<Book> bookId,
+        Id<User> authorId,
         BookStatus newBookStatus)
-        : base(bookId)
+        : base(bookId, authorId)
     {
         if (!Enum.IsDefined(newBookStatus))
             throw new InvalidEnumArgumentException(

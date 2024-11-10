@@ -6,11 +6,11 @@ namespace BookHub.Storage.PostgreSQL;
 
 public sealed class BooksHubContext : DbContext
 {
-    public DbSet<Book> Books { get; } = null!;
+    public DbSet<Book> Books { get; set; } = null!;
 
-    public DbSet<BookGenre> Genres { get; } = null!;
+    public DbSet<BookGenre> Genres { get; set; } = null!;
 
-    public DbSet<User> Users { get; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
     public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
 

@@ -11,5 +11,7 @@ public interface IBooksHubUnitOfWork
 
     public IUsersRepository Users { get; }
 
+    public IBooksGenresRepository BooksGenres { get; }
+
     public Task SaveChangesAsync(CancellationToken token);
 }
