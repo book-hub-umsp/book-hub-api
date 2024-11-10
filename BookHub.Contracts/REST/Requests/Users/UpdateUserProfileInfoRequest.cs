@@ -16,8 +16,4 @@ public sealed class UpdateUserProfileInfoRequest
 
     [JsonProperty("about")]
     public string? About { get; init; }
-
-    [JsonProperty("role")]
-    [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]
-    public UserRole? Role { get; init; }
 }
