@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Services;
+using BookHub.Contracts.REST.Requests.Admins;
 using BookHub.Contracts.REST.Responces;
 using BookHub.Models.CRUDS.Requests.Admins;
 
@@ -15,7 +16,7 @@ namespace BookHub.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("admin")]
-[Authorize(Policy = "Admin")]
+[Authorize]
 [Produces("application/json")]
 public sealed class AdminActionsController : ControllerBase
 {
@@ -31,15 +32,17 @@ public sealed class AdminActionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserRoleAsync(
-        [Required][NotNull] UpdateUserRoleParams roleParams,
+        [Required][NotNull] UpdateUserRoleRequest roleRequest,
         CancellationToken token)
     {
-        _logger.LogInformation("Start handling update user role request");
+        _logger.LogInformation("Start handling admin update user role request");
 
         try
         {
             await _service.UpdateUserRoleAsync(
-                new(new(roleParams.UserId.Value), roleParams.NewRole),
+                new(new(roleRequest.AdminId), 
+                    new(roleRequest.ModifiedUserId), 
+                    roleRequest.NewRole),
                 token);
 
             _logger.LogInformation("Request handled succesfully");

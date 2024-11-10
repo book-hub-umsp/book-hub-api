@@ -117,8 +117,7 @@ public sealed class UsersRepository :
         ArgumentNullException.ThrowIfNull(updateUserRoleParams);
 
         var storageUser = await Context.Users
-            .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.Id == updateUserRoleParams.UserId.Value, token)
+            .SingleOrDefaultAsync(x => x.Id == updateUserRoleParams.ModifiedUserId.Value, token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         storageUser.Role = updateUserRoleParams.NewRole;
@@ -134,5 +133,17 @@ public sealed class UsersRepository :
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         return storageUser.Role == UserRole.Moderator;
+    }
+
+    public async Task<bool> HasAdminOptions(Id<User> userId, CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        var storageUser = await Context.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+            ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
+
+        return storageUser.Role == UserRole.Admin;
     }
 }

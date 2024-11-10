@@ -18,7 +18,7 @@ public static class AuthentificationExtensions
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
-            .AddAuthorization(configuration)
+            .AddAuthorization()
 
             .AddSingleton<IValidateOptions<AuthJWTConfiguration>, AuthJWTConfigurationValidator>()
             .AddOptionsWithValidateOnStart<AuthJWTConfiguration>()
@@ -123,8 +123,7 @@ public static class AuthentificationExtensions
             .Services;
 
     private static IServiceCollection AddAuthorization(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
         => services
             .AddAuthorizationBuilder()
             .AddDefaultPolicy(
@@ -142,25 +141,5 @@ public static class AuthentificationExtensions
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
-            .AddPolicy(
-                "Admin",
-                b => b.RequireClaim(
-                    JwtRegisteredClaimNames.Email,
-                    configuration.GetSection(nameof(AdminAuthorizationConfiguration))
-                        .Get<AdminAuthorizationConfiguration>()?.Admins ??
-                            throw new InvalidOperationException(
-                                "Admin authorization configuration is not found.")))
             .Services;
-
-    private static IServiceCollection AddAdminConfiguration(
-        this IServiceCollection services,
-        IConfiguration configuration)
-        => services
-            .AddSingleton<
-                IValidateOptions<AdminAuthorizationConfiguration>,
-                AdminAuthorizationConfigurationValidator>()
-            .AddOptions<AdminAuthorizationConfiguration>()
-                .Bind(configuration.GetSection(nameof(AdminAuthorizationConfiguration)))
-                .ValidateOnStart()
-                .Services;
 }

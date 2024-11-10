@@ -1,5 +1,4 @@
-﻿
-using BookHub.Abstractions.Logic.Services;
+﻿using BookHub.Abstractions.Logic.Services;
 using BookHub.Abstractions.Storage;
 using BookHub.Models.CRUDS.Requests.Admins;
 
@@ -26,15 +25,35 @@ public sealed class AdminActionsService : IAdminActionsService
     {
         ArgumentNullException.ThrowIfNull(updateRoleParams);
 
-        _logger.LogInformation("Trying update role for user {UserId}", updateRoleParams.UserId);
+        _logger.LogInformation(
+            "Verifying admin actions existense for user {AdminId}", 
+            updateRoleParams.AdminId);
+
+        if (!await _unitOfWork.Users.HasAdminOptions(updateRoleParams.AdminId, cancellationToken))
+        {
+            throw new InvalidOperationException(
+                $"User with id {updateRoleParams.AdminId} has not admin options.");
+        }
+
+        if (updateRoleParams.AdminId == updateRoleParams.ModifiedUserId
+            && updateRoleParams.NewRole != Models.Users.UserRole.Admin) 
+        {
+            throw new InvalidOperationException("Administrator can not reset his role.");
+        }
+
+        _logger.LogInformation(
+            "Trying update role for user {UserId}", 
+            updateRoleParams.ModifiedUserId);
 
         await _unitOfWork.Users.UpdateUserRoleAsync(updateRoleParams, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Role synchronized in storage");
+        _logger.LogInformation(
+            "Role synchronized in storage for user {UserId}", 
+            updateRoleParams.ModifiedUserId);
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
-    private readonly ILogger _logger;
+    private readonly ILogger<AdminActionsService> _logger;
 }

@@ -11,15 +11,20 @@ namespace BookHub.Models.CRUDS.Requests.Admins;
 /// </summary>
 public sealed class UpdateUserRoleParams
 {
-    public Id<User> UserId { get; }
+    public Id<User> AdminId { get; init; }
+
+    public Id<User> ModifiedUserId { get; }
 
     public UserRole NewRole { get; }
 
     public UpdateUserRoleParams(
-        Id<User> userId, 
+        Id<User> adminId,
+        Id<User> modifiedUserId,    
         UserRole newRole)
     {
-        UserId = userId ?? throw new ArgumentNullException(nameof(userId));
+        AdminId = adminId ?? throw new ArgumentNullException(nameof(adminId));
+        ModifiedUserId = modifiedUserId 
+            ?? throw new ArgumentNullException(nameof(modifiedUserId));
 
         if (!Enum.IsDefined(newRole))
         {

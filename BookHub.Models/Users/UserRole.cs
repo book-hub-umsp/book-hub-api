@@ -7,5 +7,7 @@ public enum UserRole
 {
     Default = 0,
 
-    Moderator = 1
+    Moderator = 1,
+
+    Admin = 2
 }

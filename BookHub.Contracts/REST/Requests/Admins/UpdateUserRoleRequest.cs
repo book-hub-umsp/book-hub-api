@@ -14,8 +14,11 @@ namespace BookHub.Contracts.REST.Requests.Admins;
 /// </remarks>
 public sealed class UpdateUserRoleRequest
 {
-    [JsonProperty("user_id", Required = Required.Always)]
-    public required long UserId { get; init; }
+    [JsonProperty("admin_id", Required = Required.Always)]
+    public required long AdminId { get; init; }
+
+    [JsonProperty("modified_user_id", Required = Required.Always)]
+    public required long ModifiedUserId { get; init; }
 
     [JsonProperty("new_role", Required = Required.Always)]
     [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]
