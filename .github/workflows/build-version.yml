@@ -9,5 +9,5 @@ jobs:
   git-tag-create:
     permissions:
       contents: write
-    uses: book-hub-umsp/bh-infrastructure/.github/workflows/version.yml@master
+    uses: book-hub-umsp/bh-shared-actions/.github/workflows/version.yml@master
     secrets: inherit
