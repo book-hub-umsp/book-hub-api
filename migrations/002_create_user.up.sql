@@ -10,4 +10,9 @@ CREATE TABLE users (
     about TEXT NOT NULL DEFAULT 'about'
 );
 
+ALTER TABLE books 
+    ADD CONSTRAINT "fk_author_id" 
+	FOREIGN KEY (author_id) 
+	REFERENCES users (id);
+
 COMMIT;
