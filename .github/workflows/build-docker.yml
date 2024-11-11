@@ -53,7 +53,7 @@ jobs:
           -token ${{ secrets.ENV_NOMAD_TOKEN }} \
           -var ROOT_PASS ${{ secrets.ENV_VAR_ROOT_PASS }} \
           -var main-api-version ${{ steps.get-tag.outputs.tag }} \
-          ${{ vars.ENV_JOB_FILE_PATH }}
+          ${{ vars.ENV_JOB_PATH }}
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
@@ -62,5 +62,5 @@ jobs:
           -token ${{ secrets.ENV_NOMAD_TOKEN }} \
           -var ROOT_PASS ${{ secrets.ENV_VAR_ROOT_PASS }} \
           -var main-api-version ${{ steps.get-tag.outputs.tag }} \ 
-          ${{ vars.ENV_JOB_FILE_PATH }}
+          ${{ vars.ENV_JOB_PATH }}
       
