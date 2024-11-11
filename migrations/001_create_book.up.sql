@@ -26,11 +26,6 @@ ALTER TABLE books
         FOREIGN KEY (book_genre_id) 
         REFERENCES genres (id) ON DELETE SET DEFAULT;
 
-ALTER TABLE books 
-    ADD CONSTRAINT "fk_author_id" 
-	FOREIGN KEY (author_id) 
-	REFERENCES users (id);
-
 INSERT INTO genres (value) 
 VALUES 
     ('default'),
