@@ -1,24 +1,22 @@
 name: Docker build and push
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   push:
     # branches: [ "master" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
 
-
+env:
+  INFRO_REPO: book-hub-umsp/bh-infrastructure
+  TARGET_BRANCH: master
+  
 jobs:
   docker-build:
     permissions:
       contents: read
       packages: write
       id-token: write
-    uses: book-hub-umsp/bh-infrastructure/.github/workflows/docker-publish.yml@master
+    uses: book-hub-umsp/bh-shared-actions/.github/workflows/docker-publish.yml@master
     secrets: inherit
     
   deploy:
@@ -31,12 +29,25 @@ jobs:
       run: |
         tag=$(echo ${{  github.ref_name }} | cut -dv -f2)
         echo "::set-output name=tag::$tag"
-    - name: Job reload
-      uses: appleboy/ssh-action@v1.1.0
+    - name: Checkout Infro repo
+      uses: actions/checkout@v4
       with:
-        host: ${{ vars.ENV_SSH_HOST }}
-        username: ${{ secrets.ENV_SSH_USER }}
-        password: ${{ secrets.ENV_SSH_PASSWORD }}
-        script: |
-          cd ${{ vars.ENV_APP_PATH }}
-          nomad job run -token $(cat ${{ vars.ENV_NOMAD_TOKEN_FILE_PATH }}) -var-file ${{ vars.ENV_SECRET_FILE_PATH }} -var main-api-version="${{ steps.get-tag.outputs.tag }}" ${{ vars.ENV_JOB_FILE_PATH }}
+        repository: '${{ env.INFRO_REPO }}'
+        ref: '${{ env.TARGET_BRANCH }}'
+        token: '${{ secrets.WORKFLOW_TOKEN }}'
+    - name: Setup `nomad`
+      uses: hashicorp/setup-nomad@main
+      id: setup
+      with:
+        version: ${{ vars.ENV_NOMAD_VERSION }}
+    - name: Plan job
+      env:
+        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
+      run: |
+        nomad job plan -token ${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS ${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version ${{ steps.get-tag.outputs.tag }} ${{ vars.ENV_JOB_PATH }}
+    - name: Run job
+      env:
+        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
+      run: |
+        nomad job run -token ${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS ${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version ${{ steps.get-tag.outputs.tag }} ${{ vars.ENV_JOB_PATH }}
+      

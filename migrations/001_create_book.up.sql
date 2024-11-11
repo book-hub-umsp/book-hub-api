@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TYPE book_status as ENUM('draft', 'published', 'hiden', 'removed');
  
 CREATE TABLE genres (
@@ -23,11 +25,6 @@ ALTER TABLE books
     ADD CONSTRAINT "fk_books_genre"
         FOREIGN KEY (book_genre_id) 
         REFERENCES genres (id) ON DELETE SET DEFAULT;
-
-ALTER TABLE books 
-    ADD CONSTRAINT "fk_author_id" 
-	FOREIGN KEY (author_id) 
-	REFERENCES users (id);
 
 INSERT INTO genres (value) 
 VALUES 
@@ -64,3 +61,5 @@ CREATE TRIGGER tr_update_change_books
     BEFORE UPDATE ON books
 FOR EACH ROW EXECUTE PROCEDURE 
     update_change_books();
+
+COMMIT;
