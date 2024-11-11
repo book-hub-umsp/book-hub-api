@@ -1,3 +1,5 @@
+BEGIN;
+
 ALTER TABLE IF EXISTS books DROP CONSTRAINT IF EXISTS "fk_books_genre";
 ALTER TABLE IF EXISTS books DROP CONSTRAINT IF EXISTS "fk_author_id";
 
@@ -7,3 +9,5 @@ DROP TABLE IF EXISTS "genres";
 DROP TYPE IF EXISTS "book_status";
 
 DROP FUNCTION IF EXISTS "update_change_books";
+
+COMMIT;
