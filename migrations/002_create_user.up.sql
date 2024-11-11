@@ -8,6 +8,7 @@ CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     name TEXT NOT NULL,
     email TEXT DEFAULT NULL,
+    role user_role NOT NULL DEFAULT 'default',
     status user_status NOT NULL DEFAULT 'active',
     about TEXT NOT NULL DEFAULT 'about',
     CONSTRAINT "pk_users" PRIMARY KEY (id)
