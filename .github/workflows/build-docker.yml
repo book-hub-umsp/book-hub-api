@@ -33,13 +33,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: '${{ env.INFRO_REPO }}'
-        ref: '${{ env.TARGET_BRANCH }}'
+        ref: ${{ env.TARGET_BRANCH }}
         token: '${{ secrets.WORKFLOW_TOKEN }}'
     - name: Setup `nomad`
       uses: hashicorp/setup-nomad@main
       id: setup
       with:
         version: ${{ vars.ENV_NOMAD_VERSION }}
+    - run: ls -la
     - name: Plan job
       continue-on-error: true # becase nomad job plan can return 1 as exit code on allocation creation
       env:
