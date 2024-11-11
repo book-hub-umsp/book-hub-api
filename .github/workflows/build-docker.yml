@@ -50,11 +50,12 @@ jobs:
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
       run: |
+        ls -la
         nomad job plan \
-        -token ${{ secrets.ENV_NOMAD_TOKEN }} \
-        -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} \ 
-        -var main-api-version=${{ steps.get-tag.outputs.tag }} \ 
-        ${{ vars.ENV_JOB_PATH }}
+          -token ${{ secrets.ENV_NOMAD_TOKEN }} \
+          -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} \ 
+          -var main-api-version=${{ steps.get-tag.outputs.tag }} \ 
+          ${{ vars.ENV_JOB_PATH }}
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
