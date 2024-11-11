@@ -7,7 +7,8 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT DEFAULT NULL,
     status user_status NOT NULL DEFAULT 'active',
-    about TEXT NOT NULL DEFAULT 'about'
+    about TEXT NOT NULL DEFAULT 'about',
+    CONSTRAINT "pk_users" PRIMARY KEY (id)
 );
 
 ALTER TABLE books 
