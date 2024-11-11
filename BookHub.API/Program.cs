@@ -28,15 +28,18 @@ builder.Services
     .AddLogic(builder.Configuration)
     .AddPostgresStorage(builder.Configuration);
 
-builder.Host.UseSerilog((hc, lc) =>
-    lc.ReadFrom.Configuration(hc.Configuration));
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     // app.UseSwagger().UseSwaggerUI();
 }
+else
+{
+    builder.Host.UseSerilog((hc, lc) =>
+        lc.ReadFrom.Configuration(hc.Configuration));
+}
+
 app.UseSwagger().UseSwaggerUI();
 
 app.UseCors();
