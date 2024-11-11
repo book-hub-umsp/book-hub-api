@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TYPE book_status as ENUM('draft', 'published', 'hiden', 'removed');
  
 CREATE TABLE genres (
@@ -64,3 +66,5 @@ CREATE TRIGGER tr_update_change_books
     BEFORE UPDATE ON books
 FOR EACH ROW EXECUTE PROCEDURE 
     update_change_books();
+
+COMMIT;
