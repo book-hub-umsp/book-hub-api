@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Services;
-using BookHub.Contracts.REST.Requests.Admins;
 using BookHub.Contracts.REST.Responces;
-using BookHub.Models.CRUDS.Requests.Admins;
+using BookHub.Models.DomainEvents.Users;
+using BookHub.Models.Users;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +27,12 @@ public sealed class AdminActionsController : ControllerBase
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [HttpPatch("user")]
+    [HttpPatch("user/{userId}/role")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserRoleAsync(
-        [Required][NotNull] UpdateUserRoleRequest roleRequest,
+        [Required][FromRoute] long userId,
+        [FromQuery] UserRole newRole,
         CancellationToken token)
     {
         _logger.LogInformation("Start handling admin update user role request");
@@ -40,9 +40,7 @@ public sealed class AdminActionsController : ControllerBase
         try
         {
             await _service.UpdateUserRoleAsync(
-                new(new(roleRequest.AdminId), 
-                    new(roleRequest.ModifiedUserId), 
-                    roleRequest.NewRole),
+                new Updated<UserRole>(new(userId), newRole),
                 token);
 
             _logger.LogInformation("Request handled succesfully");

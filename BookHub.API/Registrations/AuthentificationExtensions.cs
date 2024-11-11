@@ -1,6 +1,5 @@
 ﻿using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
-using BookHub.API.Authentification.Configuration.Admin;
 using BookHub.API.Authentification.Configuration.JWT;
 
 using Microsoft.AspNetCore.Authorization;

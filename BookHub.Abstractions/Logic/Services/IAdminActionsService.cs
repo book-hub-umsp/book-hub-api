@@ -1,4 +1,5 @@
-﻿using BookHub.Models.CRUDS.Requests.Admins;
+﻿using BookHub.Models.DomainEvents.Users;
+using BookHub.Models.Users;
 
 namespace BookHub.Abstractions.Logic.Services;
 
@@ -23,10 +24,11 @@ public interface IAdminActionsService
     /// Если <paramref name="updateRoleParams"/> равен <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
+    /// Если в текущей сессии приложения нет информации о пользователе.
     /// Если пользователь, иницирующий запрос - не является администратором.
-    /// Или если администратор сам пытается сбросить свою роль.
+    /// Или если администратор пытается сбросить роль другого админа.
     /// </exception>
     public Task UpdateUserRoleAsync(
-        UpdateUserRoleParams updateRoleParams, 
+        Updated<UserRole> updateRoleParams, 
         CancellationToken cancellationToken);
 }
