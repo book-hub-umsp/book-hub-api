@@ -30,14 +30,12 @@ builder.Services
 
 var app = builder.Build();
 
+builder.Host.UseSerilog((hc, lc) =>
+    lc.ReadFrom.Configuration(hc.Configuration));
+
 if (app.Environment.IsDevelopment())
 {
     // app.UseSwagger().UseSwaggerUI();
-}
-else
-{
-    builder.Host.UseSerilog((hc, lc) =>
-        lc.ReadFrom.Configuration(hc.Configuration));
 }
 
 app.UseSwagger().UseSwaggerUI();
