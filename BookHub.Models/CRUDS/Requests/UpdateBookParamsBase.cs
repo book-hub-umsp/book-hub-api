@@ -1,8 +1,7 @@
-﻿using BookHub.Models.Books;
-using BookHub.Models.Users;
+﻿using System;
 
-using System;
-using System.Collections.Generic;
+using BookHub.Models.Account;
+using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
 
@@ -13,7 +12,7 @@ public abstract class UpdateBookParamsBase : BookParamsWithIdBase
 {
     public Id<User> AuthorId { get; }
 
-    protected UpdateBookParamsBase(Id<Book> bookId, Id<User> authorId) 
+    protected UpdateBookParamsBase(Id<Book> bookId, Id<User> authorId)
         : base(bookId)
     {
         AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));

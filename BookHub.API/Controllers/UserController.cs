@@ -2,11 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
-using BookHub.Contracts.REST.Requests.Users;
-using BookHub.Contracts.REST.Responces;
-using BookHub.Contracts.REST.Responces.Users;
-using BookHub.Logic.Converters.Users;
-using BookHub.Logic.Services.Users;
+using BookHub.Contracts;
+using BookHub.Contracts.REST.Requests.Account;
+using BookHub.Contracts.REST.Responces.Account;
+using BookHub.Logic.Converters.Account;
+using BookHub.Logic.Services.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

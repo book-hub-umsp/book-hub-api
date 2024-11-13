@@ -2,9 +2,9 @@
 
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
+using BookHub.Models.Account;
 using BookHub.Models.DomainEvents;
-using BookHub.Models.DomainEvents.Users;
-using BookHub.Models.Users;
+using BookHub.Models.DomainEvents.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;

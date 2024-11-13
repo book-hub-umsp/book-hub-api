@@ -1,5 +1,6 @@
 ﻿using BookHub.Models;
-using BookHub.Models.Users;
+using BookHub.Models.Account;
+using BookHub.Models.Favorite;
 
 namespace BookHub.Abstractions.Storage.Repositories;
 

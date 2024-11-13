@@ -8,7 +8,7 @@ using BookHub.Contracts;
 using Newtonsoft.Json;
 
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using DomainKeyWord = BookHub.Models.Books.KeyWord;
+using DomainKeyWord = BookHub.Models.Books.Repository.KeyWord;
 
 namespace BookHub.Storage.PostgreSQL;
 

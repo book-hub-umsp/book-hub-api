@@ -4,16 +4,17 @@ using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Converters;
 using BookHub.Abstractions.Logic.Services;
-using BookHub.Contracts.REST.Responces;
+using BookHub.Contracts;
+using BookHub.Contracts.REST.Responces.Book.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.AddAuthorBookParams;
-using ContractGetBookParams = BookHub.Contracts.REST.Requests.GetBookParams;
+using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
+using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using ContractPreview = BookHub.Contracts.REST.Responces.BookPreview;
-using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.UpdateBookParams;
+using ContractPreview = BookHub.Contracts.REST.Responces.Book.Repository.BookPreview;
+using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;

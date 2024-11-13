@@ -8,5 +8,5 @@ namespace BookHub.Contracts;
 public sealed class KeyWord
 {
     [JsonProperty("content", Required = Required.Always)]
-    public string Content { get; set; }
+    public required string Content { get; init; }
 }

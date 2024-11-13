@@ -127,7 +127,7 @@ public static class AuthentificationExtensions
         => services
             .AddAuthorizationBuilder()
             .AddDefaultPolicy(
-                "DefaultPolicy", 
+                "DefaultPolicy",
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))

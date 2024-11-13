@@ -1,4 +1,4 @@
-﻿using DomainKeyWord = BookHub.Models.Books.KeyWord;
+﻿using DomainKeyWord = BookHub.Models.Books.Repository.KeyWord;
 
 namespace BookHub.Abstractions.Storage;
 

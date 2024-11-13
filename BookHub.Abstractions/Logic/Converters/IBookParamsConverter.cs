@@ -1,4 +1,4 @@
-﻿using ContractBookParams = BookHub.Contracts.REST.Requests.BookParamsBase;
+﻿using ContractBookParams = BookHub.Contracts.REST.Requests.Books.Repository.BookParamsBase;
 using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 
 namespace BookHub.Abstractions.Logic.Converters;

@@ -2,8 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Services;
-using BookHub.Contracts.REST.Requests;
-using BookHub.Contracts.REST.Responces;
+using BookHub.Contracts;
+using BookHub.Contracts.REST.Requests.Books.Repository;
+using BookHub.Contracts.REST.Responces.Book.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace BookHub.API.Controllers;
 public sealed class BooksGenresController : ControllerBase
 {
     public BooksGenresController(
-        IBookGenresService service, 
+        IBookGenresService service,
         ILogger<BooksGenresController> logger)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));

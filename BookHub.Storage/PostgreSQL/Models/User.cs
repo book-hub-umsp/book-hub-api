@@ -1,4 +1,4 @@
-﻿using BookHub.Models.Users;
+﻿using BookHub.Models.Account;
 
 namespace BookHub.Storage.PostgreSQL.Models;
 

@@ -1,6 +1,4 @@
-﻿using BookHub.Models.Books;
-
-namespace BookHub.Storage.PostgreSQL.Models;
+﻿namespace BookHub.Storage.PostgreSQL.Models;
 
 /// <summary>
 /// Жанр книги.
