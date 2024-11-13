@@ -8,5 +8,5 @@ namespace BookHub.Contracts;
 public sealed class KeyWordsContainer
 {
     [JsonProperty("keywords", Required = Required.Always)]
-    public IReadOnlyCollection<KeyWord> Keywords { get; set; }
+    public required IReadOnlyCollection<KeyWord> Keywords { get; init; }
 }
