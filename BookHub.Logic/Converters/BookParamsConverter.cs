@@ -1,11 +1,11 @@
 ﻿using BookHub.Abstractions.Logic.Converters;
-using BookHub.Models.Books;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 
-using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.AddAuthorBookParams;
-using ContractBookParams = BookHub.Contracts.REST.Requests.BookParamsBase;
-using ContractGetBookParams = BookHub.Contracts.REST.Requests.GetBookParams;
-using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.UpdateBookParams;
+using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
+using ContractBookParams = BookHub.Contracts.REST.Requests.Books.Repository.BookParamsBase;
+using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
+using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;

@@ -10,8 +10,14 @@ public struct Auth
     /// </summary>
     public struct AuthProviders
     {
+        /// <summary>
+        /// Google.
+        /// </summary>
         public const string GOOGLE = "google";
 
+        /// <summary>
+        /// Yandex.
+        /// </summary>
         public const string YANDEX = "yandex";
     }
 
@@ -20,6 +26,9 @@ public struct Auth
     /// </summary>
     public struct ClaimTypes
     {
+        /// <summary>
+        /// Клейм идентификатора пользователя.
+        /// </summary>
         public const string USER_ID_CLAIM_NAME = "user_id";
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BookHub.Models.Books;
-using BookHub.Models.Users;
+using BookHub.Models.Account;
+using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
 

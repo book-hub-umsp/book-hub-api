@@ -3,7 +3,7 @@
 using BookHub.Abstractions;
 using BookHub.API.Authentification;
 using BookHub.Models;
-using BookHub.Models.Users;
+using BookHub.Models.Account;
 
 namespace BookHub.API;
 
@@ -20,7 +20,7 @@ public sealed class HttpUserIdentityFacade : IHttpUserIdentityFacade
     /// <remarks>
     /// Вне контекста авторизации имеет значение <see langword="null"/>.
     /// </remarks>
-    public Id<User>? Id => 
+    public Id<User>? Id =>
         _contextAccessor.HttpContext?.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME) is { } value
             ? new(long.Parse(value))
             : null;

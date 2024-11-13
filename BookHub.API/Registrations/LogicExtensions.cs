@@ -2,9 +2,9 @@
 using BookHub.Abstractions.Logic.Converters;
 using BookHub.Abstractions.Logic.Services;
 using BookHub.Logic.Converters;
-using BookHub.Logic.Converters.Users;
-using BookHub.Logic.Services;
-using BookHub.Logic.Services.Users;
+using BookHub.Logic.Converters.Account;
+using BookHub.Logic.Services.Account;
+using BookHub.Logic.Services.Books.Repository;
 
 using Microsoft.Extensions.Options;
 

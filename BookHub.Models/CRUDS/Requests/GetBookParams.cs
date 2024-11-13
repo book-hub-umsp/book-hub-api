@@ -1,4 +1,4 @@
-﻿using BookHub.Models.Books;
+﻿using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
 

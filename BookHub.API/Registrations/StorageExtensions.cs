@@ -1,7 +1,7 @@
 ﻿using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Models.Books;
-using BookHub.Models.Users;
+using BookHub.Models.Account;
+using BookHub.Models.Books.Repository;
 using BookHub.Storage.PostgreSQL;
 using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Repositories;

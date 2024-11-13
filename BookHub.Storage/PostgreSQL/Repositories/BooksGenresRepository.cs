@@ -1,5 +1,5 @@
 ﻿using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Models.Books;
+using BookHub.Models.Books.Repository;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +11,13 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// </summary>
 public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresRepository
 {
-    public BooksGenresRepository(IRepositoryContext context) 
+    public BooksGenresRepository(IRepositoryContext context)
         : base(context)
     {
     }
 
     public async Task AddNewGenreAsync(
-        BookGenre bookGenre, 
+        BookGenre bookGenre,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
@@ -44,7 +44,7 @@ public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresReposito
     }
 
     public async Task RemoveGenreAsync(
-        BookGenre bookGenre, 
+        BookGenre bookGenre,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(bookGenre);

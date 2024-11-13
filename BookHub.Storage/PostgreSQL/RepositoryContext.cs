@@ -1,7 +1,7 @@
 ﻿using BookHub.Storage.PostgreSQL.Abstractions;
 using BookHub.Storage.PostgreSQL.Models;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace BookHub.Storage.PostgreSQL;
 

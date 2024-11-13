@@ -16,8 +16,8 @@ public sealed record class Pagination
     public int ElementsInPage { get; }
 
     public Pagination(
-        long elementsTotal, 
-        int pageNumber, 
+        long elementsTotal,
+        int pageNumber,
         int elementsInPage)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(elementsTotal, 0);

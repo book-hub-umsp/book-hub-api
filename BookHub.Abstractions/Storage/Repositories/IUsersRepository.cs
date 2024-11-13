@@ -1,8 +1,8 @@
 ﻿using System.Net.Mail;
 
 using BookHub.Models;
+using BookHub.Models.Account;
 using BookHub.Models.DomainEvents;
-using BookHub.Models.Users;
 
 namespace BookHub.Abstractions.Storage.Repositories;
 

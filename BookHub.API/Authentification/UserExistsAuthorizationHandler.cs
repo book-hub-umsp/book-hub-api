@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-using BookHub.Logic.Services.Users;
+using BookHub.Logic.Services.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -46,7 +46,7 @@ public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsReq
         context.User.AddIdentity(new(
             [
                 new Claim(
-                    Auth.ClaimTypes.USER_ID_CLAIM_NAME, 
+                    Auth.ClaimTypes.USER_ID_CLAIM_NAME,
                     userInfo.Id.Value.ToString())
             ]));
 

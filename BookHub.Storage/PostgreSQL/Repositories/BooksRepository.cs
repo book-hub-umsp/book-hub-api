@@ -1,15 +1,15 @@
 ﻿using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
-using BookHub.Models.Books;
+using BookHub.Models.Account;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Models.RequestSettings;
-using BookHub.Models.Users;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
-using DomainBook = BookHub.Models.Books.Book;
+using DomainBook = BookHub.Models.Books.Repository.Book;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -182,17 +182,17 @@ public sealed class BooksRepository :
         Id<User> authorId,
         CancellationToken token)
     {
-        var booksShortModels = 
+        var booksShortModels =
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
-                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title})
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
         return booksShortModels
             .Select(x => new BookPreview(
-                new(x.Id), 
-                new(x.Title), 
-                new(x.BookGenre.Value), 
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
                 new(x.AuthorId)))
             .ToList();
     }

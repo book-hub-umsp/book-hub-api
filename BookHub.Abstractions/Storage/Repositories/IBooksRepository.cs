@@ -1,10 +1,10 @@
 ﻿using BookHub.Models;
-using BookHub.Models.Books;
+using BookHub.Models.Account;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Models.RequestSettings;
-using BookHub.Models.Users;
 
-using DomainBook = BookHub.Models.Books.Book;
+using DomainBook = BookHub.Models.Books.Repository.Book;
 
 namespace BookHub.Abstractions.Storage.Repositories;
 
