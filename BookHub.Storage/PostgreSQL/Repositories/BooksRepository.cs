@@ -2,9 +2,9 @@
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
-using BookHub.Models.RequestSettings;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
@@ -178,13 +178,17 @@ public sealed class BooksRepository :
         }
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksPreviewsAsync(
+    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
         Id<User> authorId,
+        PaginationBase pagination,
         CancellationToken token)
     {
+        ArgumentNullException.ThrowIfNull(pagination);
+
         var booksShortModels =
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
+                .WithPagging(pagination)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
@@ -197,40 +201,16 @@ public sealed class BooksRepository :
             .ToList();
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksWithPaginationAsync(
-        Id<User> authorId,
-        Pagination pagination,
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksAsync(
+        PaginationBase pagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
         var booksShortModels =
-            await Context.Books.AsNoTracking()
-                .Where(x => x.AuthorId == authorId.Value)
-                .OrderBy(x => x.Id)
-                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
-                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
-                .ToListAsync(token);
-
-        return booksShortModels
-            .Select(x => new BookPreview(
-                new(x.Id),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId)))
-            .ToList();
-    }
-
-    public async Task<IReadOnlyCollection<BookPreview>> GetBooksWithPaginationAsync(
-        Pagination pagination,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(pagination);
-
-        var booksShortModels =
-            await Context.Books.AsNoTracking()
-                .OrderBy(x => x.Id)
-                .GetPageElements(pagination.PageNumber, pagination.ElementsInPage)
+            await Context.Books
+                .AsNoTracking()
+                .WithPagging(pagination)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
@@ -244,7 +224,7 @@ public sealed class BooksRepository :
     }
 
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
-        await Context.Books.AsNoTracking().LongCountAsync(token);
+        await Context.Books.LongCountAsync(token);
 
     private readonly IKeyWordsConverter _keyWordsConverter;
 }

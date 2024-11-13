@@ -3,6 +3,7 @@
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -22,6 +23,26 @@ public sealed class UsersRepository :
 
     public UsersRepository(IRepositoryContext context) : base(context) { }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfileInfosAsync(
+        PaginationBase pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        token.ThrowIfCancellationRequested();
+
+        var storageUsers = await Context.Users
+            .WithPagging(pagination)
+            .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
+            .ToListAsync(token);
+
+        return storageUsers
+            .Select(ToUserProfileInfo)
+            .ToList();
+    }
+
+    /// <inheritdoc/>
     public async Task AddUserAsync(RegisteringUser user, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -45,6 +66,7 @@ public sealed class UsersRepository :
         });
     }
 
+    /// <inheritdoc/>
     public async Task UpdateUserAsync(UpdatedBase<User> updated, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updated);
@@ -67,6 +89,7 @@ public sealed class UsersRepository :
         }
     }
 
+    /// <inheritdoc/>
     public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
         MailAddress mailAddress,
         CancellationToken token)
@@ -75,18 +98,15 @@ public sealed class UsersRepository :
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
+            .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
             .SingleOrDefaultAsync(x => x.Email == mailAddress.Address, token);
 
         return storageUser is not null
-            ? new UserProfileInfo(
-                new(storageUser.Id),
-                new(storageUser.Name),
-                new(storageUser.Email),
-                new(storageUser.About))
+            ? ToUserProfileInfo(storageUser)
             : null;
     }
 
+    /// <inheritdoc/>
     public async Task<UserProfileInfo> GetUserProfileInfoByIdAsync(
         Id<User> userId,
         CancellationToken token)
@@ -95,14 +115,29 @@ public sealed class UsersRepository :
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Name, x.Email, x.About })
+            .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
-        return new UserProfileInfo(
-            new(storageUser.Id),
-            new(storageUser.Name),
-            new(storageUser.Email),
-            new(storageUser.About));
+        return ToUserProfileInfo(storageUser);
+    }
+
+    /// <inheritdoc/>
+    public async Task<long> GetUserCountAsync(CancellationToken token) => 
+        await Context.Users.LongCountAsync(token);
+
+    private static UserProfileInfo ToUserProfileInfo(PreviewUserInfo userInfo) =>
+        new UserProfileInfo(
+            new(userInfo.Id),
+            new(userInfo.Name),
+            new(userInfo.Email),
+            new(userInfo.About));
+
+    private sealed class PreviewUserInfo
+    {
+        public required long Id { get; init; }
+        public required string Name { get; init; }
+        public required string Email { get; init; }
+        public required string About { get; init; }
     }
 }
