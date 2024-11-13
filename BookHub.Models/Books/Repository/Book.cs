@@ -36,10 +36,12 @@ public sealed class Book
             ?? throw new ArgumentNullException(nameof(description));
 
         if (!Enum.IsDefined(status))
+        {
             throw new InvalidEnumArgumentException(
                 nameof(status),
                 (int)status,
                 typeof(BookStatus));
+        }
 
         Status = status;
 
@@ -52,7 +54,9 @@ public sealed class Book
         ArgumentNullException.ThrowIfNull(newDescription);
 
         if (Description == newDescription)
+        {
             return;
+        }
 
         Description = newDescription;
         LastEditDate = DateTimeOffset.UtcNow;

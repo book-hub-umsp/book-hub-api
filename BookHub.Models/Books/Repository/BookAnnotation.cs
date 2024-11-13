@@ -15,10 +15,14 @@ public sealed record class BookAnnotation
         content = content.Trim();
 
         if (content.Length > MAX_LENGHT)
+        {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols");
+        }
 
         if (content.Length < MIN_LENGHT)
+        {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols");
+        }
 
         Content = content;
     }

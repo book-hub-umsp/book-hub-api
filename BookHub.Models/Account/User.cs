@@ -20,10 +20,13 @@ public sealed class User
         ProfileInfo = profileInfo;
 
         if (!Enum.IsDefined(status))
+        {
             throw new InvalidEnumArgumentException(
                 nameof(status),
                 (int)status,
                 typeof(UserStatus));
+        }
+
         Status = status;
     }
 }

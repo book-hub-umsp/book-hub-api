@@ -16,10 +16,14 @@ public sealed record class KeyWord
         var stringContent = content.Value.Trim();
 
         if (stringContent.Length > MAX_LENGHT)
+        {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols.");
+        }
 
         if (stringContent.Length < MIN_LENGHT)
+        {
             throw new ArgumentException($"Content min lenght must be {MAX_LENGHT} symbols.");
+        }
 
         Content = new(stringContent);
     }

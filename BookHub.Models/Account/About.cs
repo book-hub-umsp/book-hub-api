@@ -15,7 +15,9 @@ public sealed class About
         content = content.Trim();
 
         if (content.Length > MAX_LENGHT)
+        {
             throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols");
+        }
 
         Content = content;
     }

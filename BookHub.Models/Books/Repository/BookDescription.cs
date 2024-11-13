@@ -63,7 +63,9 @@ public sealed class BookDescription : IEquatable<BookDescription>
         ArgumentNullException.ThrowIfNull(keyWords);
 
         foreach (var keyWord in keyWords)
+        {
             _ = KeyWords.Add(keyWord);
+        }
     }
 
     public bool Equals(BookDescription? other) =>
@@ -89,7 +91,9 @@ public sealed class BookDescription : IEquatable<BookDescription>
         var hashCode = new HashCode();
 
         foreach (var item in hashSet)
+        {
             hashCode.Add(hashSet.Comparer.GetHashCode(item));
+        }
 
         return hashCode.ToHashCode();
     }

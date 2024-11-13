@@ -20,10 +20,12 @@ public sealed class UpdateBookStatusParams : UpdateBookParamsBase
         : base(bookId, authorId)
     {
         if (!Enum.IsDefined(newBookStatus))
+        {
             throw new InvalidEnumArgumentException(
                 nameof(newBookStatus),
                 (int)newBookStatus,
                 typeof(BookStatus));
+        }
 
         NewBookStatus = newBookStatus;
     }
