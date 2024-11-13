@@ -3,8 +3,9 @@ using BookHub.API.Registrations;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddControllers()
@@ -29,10 +30,14 @@ builder.Services
 
 var app = builder.Build();
 
+builder.Host.UseSerilog((hc, lc) =>
+    lc.ReadFrom.Configuration(hc.Configuration));
+
 if (app.Environment.IsDevelopment())
 {
     // app.UseSwagger().UseSwaggerUI();
 }
+
 app.UseSwagger().UseSwaggerUI();
 
 app.UseCors();
