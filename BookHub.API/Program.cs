@@ -26,7 +26,7 @@ builder.Services
     .AddSwagger()
     .AddAuth(builder.Configuration)
     .AddLogic(builder.Configuration)
-    .AddPostgresStorage(builder.Configuration);
+    .AddPostgresStorage(builder.Environment, builder.Configuration);
 
 builder.Host.UseSerilog((hc, lc) =>
     lc.ReadFrom.Configuration(hc.Configuration));
