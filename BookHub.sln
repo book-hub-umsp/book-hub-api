@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Logic", "BookHub.Lo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookHub.Logic.Tests", "BookHub.Logic.Tests\BookHub.Logic.Tests.csproj", "{55E2EF0E-5049-4468-9D4C-AA1E64EB2D6B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{4E9F569E-4392-4D2F-ADF2-99F64B334F1B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{4E9F569E-4392-4D2F-ADF2-99F64B334F1B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
