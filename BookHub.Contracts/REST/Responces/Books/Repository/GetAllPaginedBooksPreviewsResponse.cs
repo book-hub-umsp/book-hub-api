@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responces.Book.Repository;
+namespace BookHub.Contracts.REST.Responces.Books.Repository;
 
 /// <summary>
 /// Транспортная модель ответа на запрос с пагинацией для книг.

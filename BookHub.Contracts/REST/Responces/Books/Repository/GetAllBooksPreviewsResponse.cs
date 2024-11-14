@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responces.Book.Repository;
+namespace BookHub.Contracts.REST.Responces.Books.Repository;
 
 /// <summary>
 /// Ответ на запрос о получении превью всех книг.
