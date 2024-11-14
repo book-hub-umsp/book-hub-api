@@ -2,6 +2,7 @@
 using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
@@ -78,71 +79,71 @@ public sealed class BookDescriptionService : IBookDescriptionService
 
     }
 
-    public async Task<(IReadOnlyCollection<BookPreview>, PagePagination)> GetAuthorBooksPreviewsAsync(
+    public async Task<NewsItems<BookPreview>> GetAuthorBooksPreviewsAsync(
         Id<User> authorId,
-        PagePagging getPaginedBooks,
+        PagePagging pagination,
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(getPaginedBooks);
+        ArgumentNullException.ThrowIfNull(pagination);
 
         var elementsTotalCount = await _unitOfWork.Books.GetBooksTotalCountAsync(token);
 
-        _logger.LogInformation(
-            "Trying to get pagined books from total" +
+        _logger.LogDebug(
+            "Trying to get paginated books from total" +
             " books count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage} for author {AuthorId}",
             elementsTotalCount,
-            getPaginedBooks.Page,
-            getPaginedBooks.PageSize,
+            pagination.Page,
+            pagination.PageSize,
             authorId.Value);
 
-        var pagination = new PagePagination(
+        var pagePagination = new PagePagination(
             elementsTotalCount,
-            getPaginedBooks.Page,
-            getPaginedBooks.PageSize);
+            pagination.Page,
+            pagination.PageSize);
 
         var booksPreviews =
             await _unitOfWork.Books.GetAuthorBooksAsync(
                 authorId,
-                pagination,
+                pagePagination,
                 token);
 
         _logger.LogInformation(
-            "Pagined books previews for author {AuthorId} were received",
+            "Paginated books previews for author {AuthorId} were received",
             authorId.Value);
 
-        return (booksPreviews, pagination);
+        return new(booksPreviews, pagePagination);
     }
 
-    public async Task<(IReadOnlyCollection<BookPreview>, PagePagination)> GetBooksPreviewsAsync(
-        PagePagging getPaginedBooks,
+    public async Task<NewsItems<BookPreview>> GetBooksPreviewsAsync(
+        PagePagging pagination,
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(getPaginedBooks);
+        ArgumentNullException.ThrowIfNull(pagination);
 
         var elementsTotalCount = await _unitOfWork.Books.GetBooksTotalCountAsync(token);
 
-        _logger.LogInformation(
-            "Trying to get pagined books from total" +
+        _logger.LogDebug(
+            "Trying to get paginated books from total" +
             " books count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage}",
             elementsTotalCount,
-            getPaginedBooks.Page,
-            getPaginedBooks.PageSize);
+            pagination.Page,
+            pagination.PageSize);
 
-        var pagination = new PagePagination(
+        var pagePagination = new PagePagination(
             elementsTotalCount,
-            getPaginedBooks.Page,
-            getPaginedBooks.PageSize);
+            pagination.Page,
+            pagination.PageSize);
 
         var booksPreviews =
             await _unitOfWork.Books.GetBooksAsync(
-                pagination,
+                pagePagination,
                 token);
 
-        _logger.LogInformation("Pagined books previews were received");
+        _logger.LogInformation("Paginated books previews were received");
 
-        return (booksPreviews, pagination);
+        return new(booksPreviews, pagePagination);
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;

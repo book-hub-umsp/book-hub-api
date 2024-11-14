@@ -1,5 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
@@ -23,12 +24,12 @@ public interface IBookDescriptionService
         GetBookParams getBookParams,
         CancellationToken token);
 
-    public Task<(IReadOnlyCollection<BookPreview>, PagePagination)> GetAuthorBooksPreviewsAsync(
+    public Task<NewsItems<BookPreview>> GetAuthorBooksPreviewsAsync(
         Id<User> authorId,
-        PagePagging getPaginedBooks,
+        PagePagging pagination,
         CancellationToken token);
 
-    public Task<(IReadOnlyCollection<BookPreview>, PagePagination)> GetBooksPreviewsAsync(
-        PagePagging getPaginedBooks,
+    public Task<NewsItems<BookPreview>> GetBooksPreviewsAsync(
+        PagePagging pagination,
         CancellationToken token);
 }

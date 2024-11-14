@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
@@ -93,11 +94,11 @@ public sealed class UserController : ControllerBase
     /// </response>
     [AllowAnonymous]
     [HttpGet]
-    //[ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> GetUserProfilesInfoAsync(
-        [FromQuery] int pageNumber,
-        [FromQuery] int pageSize,
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int pageSize,
         CancellationToken token)
     {
         _logger.LogInformation("Getting profiles info");
@@ -113,7 +114,7 @@ public sealed class UserController : ControllerBase
                     profilesInfo,
                     UserProfileInfoResponse.FromDomain));
         }
-        catch (InvalidOperationException ex)
+        catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }

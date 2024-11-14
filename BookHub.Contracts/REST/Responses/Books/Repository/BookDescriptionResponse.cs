@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 namespace BookHub.Contracts.REST.Responses.Books.Repository;
 
 /// <summary>
-/// Транспортная модель контента книги.
+/// Транспортная модель описания книги.
 /// </summary>
 public sealed class BookDescriptionResponse
 {
