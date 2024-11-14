@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using DomainModels = BookHub.Models.API.Pagination;
-
 using Newtonsoft.Json;
+
+using DomainModels = BookHub.Models.API.Pagination;
 
 namespace BookHub.Contracts.REST.Responses.Pagination;
 
