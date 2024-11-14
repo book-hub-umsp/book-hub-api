@@ -75,6 +75,49 @@ public sealed class UserController : ControllerBase
     /// <summary>
     /// Возвращает информацию о профиле запрашиваемого пользователя.
     /// </summary>
+    /// <param name="pageNumber">
+    /// Номер страницы.
+    /// </param>
+    /// <param name="pageSize">
+    /// Размер страницы.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// <see cref="ActionResult{TValue}"/> с данными профиля пользователя.
+    /// </returns>
+    /// <response code="400">
+    /// Когда пользователя с таким идентификатором не удалось найти.
+    /// </response>
+    [AllowAnonymous]
+    [HttpGet]
+    //[ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserProfileInfoResponse>> GetUserProfileInfosAsync(
+        [FromQuery] int pageNumber,
+        [FromQuery] int pageSize,
+        CancellationToken token)
+    {
+        _logger.LogInformation("Getting profile infos");
+
+        try
+        {
+            var paginagedProfileInfos = await _userService.GetUserProfileInfosAsync(
+                new(pageNumber, pageSize), 
+                token);
+
+            return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
+    /// <summary>
+    /// Возвращает информацию о профиле запрашиваемого пользователя.
+    /// </summary>
     /// <param name="userId">
     /// Идентификатор пользователя.
     /// </param>

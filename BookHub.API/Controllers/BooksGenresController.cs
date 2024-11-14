@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using BookHub.Abstractions.Logic.Services;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Books.Repository;
-using BookHub.Contracts.REST.Responces.Book.Repository;
+using BookHub.Contracts.REST.Responces.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

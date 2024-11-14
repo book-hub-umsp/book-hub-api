@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using BookHub.Abstractions.Logic.Converters;
 using BookHub.Abstractions.Logic.Services;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Responces.Book.Repository;
+using BookHub.Contracts.REST.Responces.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using ContractPreview = BookHub.Contracts.REST.Responces.Book.Repository.BookPreview;
+using ContractPreview = BookHub.Contracts.REST.Responces.Books.Repository.BookPreview;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
@@ -110,14 +110,14 @@ public partial class BookDescriptionController : ControllerBase
         try
         {
             var (booksPaginedPreviews, pagination) =
-                await _service.GetAuthorPaginedBooksPreviewsAsync(
+                await _service.GetAuthorBooksPreviewsAsync(
                     new(authorId),
                     new(pageNumber, elementsInPage),
                     token);
 
             var content = new GetAllPaginedBooksPreviewsResponse
             {
-                ElementsTotal = pagination.ElementsTotal,
+                ElementsTotal = pagination.ItemsTotal,
 
                 PagesTotal = pagination.PagesTotal,
 
@@ -160,13 +160,13 @@ public partial class BookDescriptionController : ControllerBase
         try
         {
             var (booksPaginedPreviews, pagination) =
-                await _service.GetPaginedBooksPreviewsAsync(
+                await _service.GetBooksPreviewsAsync(
                     new(pageNumber, elementsInPage),
                     token);
 
             var content = new GetAllPaginedBooksPreviewsResponse
             {
-                ElementsTotal = pagination.ElementsTotal,
+                ElementsTotal = pagination.ItemsTotal,
 
                 PagesTotal = pagination.PagesTotal,
 
