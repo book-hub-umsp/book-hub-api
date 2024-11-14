@@ -3,7 +3,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace BookHub.Contracts.REST.Responces.Books.Repository;
+namespace BookHub.Contracts.REST.Responses.Books.Repository;
 
 /// <summary>
 /// Транспортная модель контента книги.

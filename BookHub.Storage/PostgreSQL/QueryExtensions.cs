@@ -8,7 +8,7 @@ namespace BookHub.Storage.PostgreSQL;
 /// </summary>
 public static class QueryExtensions
 {
-    public static IQueryable<T> WithPagging<T>(this IQueryable<T> items, PaginationBase pagination)
+    public static IQueryable<T> WithPaging<T>(this IQueryable<T> items, PaginationBase pagination)
         where T : IKeyable
     {
         ArgumentNullException.ThrowIfNull(items);
@@ -16,12 +16,15 @@ public static class QueryExtensions
 
         return pagination switch
         {
+            WithoutPagination withoutPagination => items,
+
             PagePagination pagePagination => items
                 .OrderBy(x => x.Id)
                 .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
                 .Take(pagePagination.PageSize),
 
             OffsetPagination offsetPagination => items
+                .OrderBy(x => x.Id)
                 .Where(x => x.Id > offsetPagination.Offset)
                 .Take(offsetPagination.PageSize),
 

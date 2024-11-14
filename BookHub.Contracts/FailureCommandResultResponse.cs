@@ -10,9 +10,13 @@ public sealed class FailureCommandResultResponse
     [JsonProperty("failure_message", Required = Required.Always)]
     public required string FailureMessage { get; init; }
 
-    public static FailureCommandResultResponse FromException(Exception exception) =>
-        new()
+    public static FailureCommandResultResponse FromException(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        return new()
         {
             FailureMessage = exception.Message,
         };
+    }
 }

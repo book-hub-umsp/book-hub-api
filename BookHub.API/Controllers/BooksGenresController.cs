@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-using BookHub.Abstractions.Logic.Services;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Books.Repository;
-using BookHub.Contracts.REST.Responces.Books.Repository;
+using BookHub.Contracts.REST.Responses.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

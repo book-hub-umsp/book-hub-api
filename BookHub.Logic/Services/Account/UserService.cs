@@ -1,6 +1,7 @@
 ﻿using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 
@@ -28,7 +29,7 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<PaginatedItems<PagePagination, UserProfileInfo>> GetUserProfileInfosAsync(
+    public async Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
         PagePagging pagination, 
         CancellationToken token)
     {
@@ -39,11 +40,11 @@ public sealed class UserService : IUserService
             pagination.Page,
             pagination.PageSize);
 
-        var profileInfos = await _booksHubUnitOfWork.Users.GetUserProfileInfosAsync(
+        var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
             pagePagination,
             token);
 
-        return new(pagePagination, profileInfos);
+        return new(profilesInfo, pagePagination);
     }
 
     /// <inheritdoc/>

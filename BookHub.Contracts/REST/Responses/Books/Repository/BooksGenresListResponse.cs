@@ -4,7 +4,7 @@ using BookHub.Models.Books.Repository;
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responces.Books.Repository;
+namespace BookHub.Contracts.REST.Responses.Books.Repository;
 
 /// <summary>
 /// Ответ на запрос о получении всех жанров.

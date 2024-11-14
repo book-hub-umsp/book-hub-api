@@ -1,6 +1,6 @@
 ﻿using BookHub.Models.Books.Repository;
 
-namespace BookHub.Abstractions.Logic.Services;
+namespace BookHub.Abstractions.Logic.Services.Books.Repository;
 
 /// <summary>
 /// Описывает сервис для работы с жанрами книг.

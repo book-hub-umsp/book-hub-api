@@ -27,7 +27,7 @@ public interface IUsersRepository
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="pagination"/> был <see langword="null"/>.
     /// </exception>
-    public Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfileInfosAsync(
+    public Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
         PaginationBase pagination,
         CancellationToken token);
 

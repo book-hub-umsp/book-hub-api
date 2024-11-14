@@ -24,7 +24,7 @@ public sealed class UsersRepository :
     public UsersRepository(IRepositoryContext context) : base(context) { }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfileInfosAsync(
+    public async Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
         PaginationBase pagination,
         CancellationToken token)
     {
@@ -33,7 +33,7 @@ public sealed class UsersRepository :
         token.ThrowIfCancellationRequested();
 
         var storageUsers = await Context.Users
-            .WithPagging(pagination)
+            .WithPaging(pagination)
             .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
             .ToListAsync(token);
 

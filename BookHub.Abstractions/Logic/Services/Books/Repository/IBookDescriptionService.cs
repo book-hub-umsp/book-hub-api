@@ -4,7 +4,7 @@ using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 
-namespace BookHub.Abstractions.Logic.Services;
+namespace BookHub.Abstractions.Logic.Services.Books.Repository;
 
 /// <summary>
 /// Описывает сервис обработки верхнеуровневого описания книги.

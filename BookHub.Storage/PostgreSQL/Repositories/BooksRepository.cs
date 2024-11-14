@@ -188,7 +188,7 @@ public sealed class BooksRepository :
         var booksShortModels =
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
-                .WithPagging(pagination)
+                .WithPaging(pagination)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
@@ -210,7 +210,7 @@ public sealed class BooksRepository :
         var booksShortModels =
             await Context.Books
                 .AsNoTracking()
-                .WithPagging(pagination)
+                .WithPaging(pagination)
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 

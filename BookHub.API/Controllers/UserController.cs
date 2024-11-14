@@ -4,7 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using BookHub.Abstractions;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Account;
-using BookHub.Contracts.REST.Responces.Account;
+using BookHub.Contracts.REST.Responses;
+using BookHub.Contracts.REST.Responses.Account;
 using BookHub.Logic.Converters.Account;
 using BookHub.Logic.Services.Account;
 
@@ -73,7 +74,7 @@ public sealed class UserController : ControllerBase
     }
 
     /// <summary>
-    /// Возвращает информацию о профиле запрашиваемого пользователя.
+    /// Возвращает информацию о профилях пользователей.
     /// </summary>
     /// <param name="pageNumber">
     /// Номер страницы.
@@ -94,20 +95,23 @@ public sealed class UserController : ControllerBase
     [HttpGet]
     //[ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<UserProfileInfoResponse>> GetUserProfileInfosAsync(
+    public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> GetUserProfilesInfoAsync(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
         CancellationToken token)
     {
-        _logger.LogInformation("Getting profile infos");
+        _logger.LogInformation("Getting profiles info");
 
         try
         {
-            var paginagedProfileInfos = await _userService.GetUserProfileInfosAsync(
-                new(pageNumber, pageSize), 
+            var profilesInfo = await _userService.GetUserProfilesInfoAsync(
+                new(pageNumber, pageSize),
                 token);
 
-            return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
+            return Ok(
+                NewsItemsResponse<UserProfileInfoResponse>.FromDomain(
+                    profilesInfo,
+                    UserProfileInfoResponse.FromDomain));
         }
         catch (InvalidOperationException ex)
         {

@@ -1,5 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 
@@ -25,7 +26,7 @@ public interface IUserService
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="pagination"/> был <see langword="null"/>.
     /// </exception>
-    public Task<PaginatedItems<PagePagination, UserProfileInfo>> GetUserProfileInfosAsync(
+    public Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
         PagePagging pagination,
         CancellationToken token);
 

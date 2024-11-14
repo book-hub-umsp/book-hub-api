@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-using BookHub.Abstractions.Logic.Converters;
-using BookHub.Abstractions.Logic.Services;
+using BookHub.Abstractions.Logic.Converters.Books.Repository;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Responces.Books.Repository;
+using BookHub.Contracts.REST.Responses.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using ContractPreview = BookHub.Contracts.REST.Responces.Books.Repository.BookPreview;
+using ContractPreview = BookHub.Contracts.REST.Responses.Books.Repository.BookPreview;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;

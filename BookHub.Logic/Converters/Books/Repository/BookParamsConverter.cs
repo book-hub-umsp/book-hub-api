@@ -1,4 +1,4 @@
-﻿using BookHub.Abstractions.Logic.Converters;
+﻿using BookHub.Abstractions.Logic.Converters.Books.Repository;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 
@@ -11,7 +11,7 @@ using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
 
-namespace BookHub.Logic.Converters;
+namespace BookHub.Logic.Converters.Books.Repository;
 
 /// <summary>
 /// Конвертер параметров запроса к книгам.
