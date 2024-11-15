@@ -17,38 +17,4 @@ jobs:
       packages: write
       id-token: write
     uses: book-hub-umsp/bh-shared-actions/.github/workflows/docker-publish.yml@master
-    secrets: inherit
-    
-  deploy:
-    needs: [docker-build]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-    - name: Extract tag
-      id: get-tag
-      run: |
-        tag=$(echo ${{  github.ref_name }} | cut -dv -f2)
-        echo "::set-output name=tag::$tag"
-    - name: Checkout Infro repo
-      uses: actions/checkout@v4
-      with:
-        repository: '${{ env.INFRO_REPO }}'
-        ref: ${{ env.TARGET_BRANCH }}
-        token: '${{ secrets.WORKFLOW_TOKEN }}'
-    - name: Setup `nomad`
-      uses: hashicorp/setup-nomad@main
-      id: setup
-      with:
-        version: ${{ vars.ENV_NOMAD_VERSION }}
-    - name: Plan job
-      continue-on-error: true # becase nomad job plan can return 1 as exit code on allocation creation
-      env:
-        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-      run: |
-        nomad job plan -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ steps.get-tag.outputs.tag }} ${{ vars.ENV_JOB_PATH }}
-    - name: Run job
-      env:
-        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-      run: |
-        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ steps.get-tag.outputs.tag }} ${{ vars.ENV_JOB_PATH }}
-  
+    secrets: inherit    
