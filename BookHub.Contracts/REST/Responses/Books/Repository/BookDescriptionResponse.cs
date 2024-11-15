@@ -3,10 +3,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace BookHub.Contracts.REST.Responces.Book.Repository;
+namespace BookHub.Contracts.REST.Responses.Books.Repository;
 
 /// <summary>
-/// Транспортная модель контента книги.
+/// Транспортная модель описания книги.
 /// </summary>
 public sealed class BookDescriptionResponse
 {

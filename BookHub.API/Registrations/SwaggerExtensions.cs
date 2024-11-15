@@ -9,6 +9,7 @@ public static class SwaggerExtensions
         => services
             .AddSwaggerGen(c =>
             {
+                c.UseOneOfForPolymorphism();
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header",

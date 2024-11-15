@@ -1,5 +1,7 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
+using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 
 namespace BookHub.Logic.Services.Account;
@@ -9,6 +11,25 @@ namespace BookHub.Logic.Services.Account;
 /// </summary>
 public interface IUserService
 {
+    /// <summary>
+    /// Возвращет профили пользователей.
+    /// </summary>
+    /// <param name="pagination">
+    /// Применяемая пагинация.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// Коллекция профилей пользователей.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="pagination"/> был <see langword="null"/>.
+    /// </exception>
+    public Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
+        PagePagging pagination,
+        CancellationToken token);
+
     /// <summary>
     /// Получает информацию о профиле пользователя по его идентификатору.
     /// </summary>

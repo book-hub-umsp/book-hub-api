@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responces.Book.Repository;
+namespace BookHub.Contracts.REST.Responses.Books.Repository;
 
 /// <summary>
 /// Транспортная модель превью книги.

@@ -2,6 +2,7 @@
 
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 
 namespace BookHub.Abstractions.Storage.Repositories;
@@ -11,6 +12,25 @@ namespace BookHub.Abstractions.Storage.Repositories;
 /// </summary>
 public interface IUsersRepository
 {
+    /// <summary>
+    /// Возвращет профили пользователей.
+    /// </summary>
+    /// <param name="pagination">
+    /// Применяемая пагинация.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// Коллекция профилей пользователей.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="pagination"/> был <see langword="null"/>.
+    /// </exception>
+    public Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
+        PaginationBase pagination,
+        CancellationToken token);
+
     /// <summary>
     /// Добавляет пользователя в хранилище.
     /// </summary>
@@ -82,4 +102,15 @@ public interface IUsersRepository
     /// Если пользователя с таким идентификатом не существует в хранилище.
     /// </exception>
     public Task<UserProfileInfo> GetUserProfileInfoByIdAsync(Id<User> userId, CancellationToken token);
+
+    /// <summary>
+    /// Возвращет кол-во пользователей.
+    /// </summary>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// Кол-во пользователей.
+    /// </returns>
+    public Task<long> GetUsersCountAsync(CancellationToken token);
 }

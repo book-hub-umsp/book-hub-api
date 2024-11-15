@@ -1,8 +1,8 @@
 ﻿using BookHub.Abstractions;
-using BookHub.Abstractions.Logic.Converters;
-using BookHub.Abstractions.Logic.Services;
-using BookHub.Logic.Converters;
+using BookHub.Abstractions.Logic.Converters.Books.Repository;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Logic.Converters.Account;
+using BookHub.Logic.Converters.Books.Repository;
 using BookHub.Logic.Services.Account;
 using BookHub.Logic.Services.Books.Repository;
 

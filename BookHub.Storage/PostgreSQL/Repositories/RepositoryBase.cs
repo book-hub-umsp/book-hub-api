@@ -1,4 +1,5 @@
-﻿using BookHub.Storage.PostgreSQL.Abstractions;
+﻿using BookHub.Models.API.Pagination;
+using BookHub.Storage.PostgreSQL.Abstractions;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
 

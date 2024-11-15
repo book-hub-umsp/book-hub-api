@@ -3,7 +3,7 @@
 /// <summary>
 /// Жанр книги.
 /// </summary>
-public sealed class BookGenre
+public sealed class BookGenre : IKeyable
 {
     public long Id { get; set; }
 

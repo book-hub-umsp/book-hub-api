@@ -1,6 +1,8 @@
 ﻿using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
+using BookHub.Models.API;
+using BookHub.Models.API.Pagination;
 using BookHub.Models.DomainEvents;
 
 using Microsoft.Extensions.Logging;
@@ -26,6 +28,26 @@ public sealed class UserService : IUserService
         _logger = logger;
     }
 
+    /// <inheritdoc/>
+    public async Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
+        PagePagging pagination, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var pagePagination = new PagePagination(
+            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token),
+            pagination.Page,
+            pagination.PageSize);
+
+        var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
+            pagePagination,
+            token);
+
+        return new(profilesInfo, pagePagination);
+    }
+
+    /// <inheritdoc/>
     public async Task<UserProfileInfo> RegisterNewUserOrGetExistingAsync(
         RegisteringUser registeringUser,
         CancellationToken token)
@@ -54,6 +76,7 @@ public sealed class UserService : IUserService
         return existingUser;
     }
 
+    /// <inheritdoc/>
     public async Task<UserProfileInfo> GetUserProfileInfoAsync(Id<User> userId, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
@@ -61,6 +84,7 @@ public sealed class UserService : IUserService
         return await _booksHubUnitOfWork.Users.GetUserProfileInfoByIdAsync(userId, token);
     }
 
+    /// <inheritdoc/>
     public async Task UpdateUserInfoAsync(UpdatedBase<User> updatedUser, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedUser);

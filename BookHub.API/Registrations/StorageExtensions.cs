@@ -16,10 +16,10 @@ public static class StorageExtensions
 {
     public static IServiceCollection AddPostgresStorage(
         this IServiceCollection services,
+        IWebHostEnvironment environment,
         IConfiguration configuration)
         => services
-            .AddDbContext<BooksHubContext>((sp, dbOpt) =>
-                dbOpt.UseNpgsql(CreateDataSource(configuration)))
+            .AddDbContext(environment, configuration)
             .AddScoped<IRepositoryContext, RepositoryContext>()
             .AddScoped<IBooksHubUnitOfWork, BooksHubUnitOfWork>()
             .AddScoped<IBooksRepository, BooksRepository>()
@@ -28,7 +28,10 @@ public static class StorageExtensions
 
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 
-    private static NpgsqlDataSource CreateDataSource(IConfiguration configuration)
+    private static IServiceCollection AddDbContext(
+        this IServiceCollection services,
+        IWebHostEnvironment environment,
+        IConfiguration configuration)
     {
         var dataSourceBuilder = new NpgsqlDataSourceBuilder(
             configuration.GetConnectionString("DefaultConnection"));
@@ -37,6 +40,10 @@ public static class StorageExtensions
             .MapEnum<BookStatus>()
             .MapEnum<UserStatus>();
 
-        return dataSourceBuilder.Build();
+        var source = dataSourceBuilder.Build();
+
+        return services.AddDbContext<BooksHubContext>(opt => opt
+            .UseNpgsql(source)
+            .EnableSensitiveDataLogging(environment.IsDevelopment()));
     }
 }

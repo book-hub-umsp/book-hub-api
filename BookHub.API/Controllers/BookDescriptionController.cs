@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-using BookHub.Abstractions.Logic.Converters;
-using BookHub.Abstractions.Logic.Services;
+using BookHub.Abstractions.Logic.Converters.Books.Repository;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Responces.Book.Repository;
+using BookHub.Contracts.REST.Responses;
+using BookHub.Contracts.REST.Responses.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
-using ContractPreview = BookHub.Contracts.REST.Responces.Book.Repository.BookPreview;
+using ContractPreview = BookHub.Contracts.REST.Responses.Books.Repository.BookPreview;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
 using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
@@ -96,50 +97,41 @@ public partial class BookDescriptionController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Route("author/{authorId}")]
-    [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NewsItemsResponse<ContractPreview>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetAuthorPaginedBooksAsync(
+    public async Task<IActionResult> GetAuthorPaginatedBooksAsync(
         [Required][FromRoute] long authorId,
         [DefaultValue(1)][FromQuery] int pageNumber,
         [DefaultValue(5)][FromQuery] int elementsInPage,
         CancellationToken token)
     {
-        _logger.LogInformation("Start processing get author pagined books request");
+        _logger.LogDebug("Start processing get author paginated books request");
 
         try
         {
-            var (booksPaginedPreviews, pagination) =
-                await _service.GetAuthorPaginedBooksPreviewsAsync(
+            var bookPreviews =
+                await _service.GetAuthorBooksPreviewsAsync(
                     new(authorId),
                     new(pageNumber, elementsInPage),
                     token);
 
-            var content = new GetAllPaginedBooksPreviewsResponse
-            {
-                ElementsTotal = pagination.ElementsTotal,
+            _logger.LogInformation("Request was processed with successful result");
 
-                PagesTotal = pagination.PagesTotal,
-
-                Previews = booksPaginedPreviews.Select(
+            return Ok(
+                NewsItemsResponse<ContractPreview>.FromDomain(
+                    bookPreviews,
                     x => new ContractPreview
                     {
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
                         Title = x.Title.Value
-                    }).ToList()
-            };
-
-            _logger.LogInformation("Request was processed with succesfull result");
-
-            return Ok(content);
+                    }));
         }
-        catch (ArgumentException ex)
+        catch (ArgumentOutOfRangeException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
@@ -147,48 +139,39 @@ public partial class BookDescriptionController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    [ProducesResponseType<GetAllPaginedBooksPreviewsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NewsItemsResponse<ContractPreview>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetPaginedBooksAsync(
+    public async Task<IActionResult> GetPaginatedBooksAsync(
         [DefaultValue(1)][FromQuery] int pageNumber,
         [DefaultValue(5)][FromQuery] int elementsInPage,
         CancellationToken token)
     {
-        _logger.LogInformation("Start processing get pagined books request");
+        _logger.LogDebug("Start processing get paginated books request");
 
         try
         {
-            var (booksPaginedPreviews, pagination) =
-                await _service.GetPaginedBooksPreviewsAsync(
+            var bookPreviews =
+                await _service.GetBooksPreviewsAsync(
                     new(pageNumber, elementsInPage),
                     token);
 
-            var content = new GetAllPaginedBooksPreviewsResponse
-            {
-                ElementsTotal = pagination.ElementsTotal,
+            _logger.LogInformation("Request was processed with successful result");
 
-                PagesTotal = pagination.PagesTotal,
-
-                Previews = booksPaginedPreviews.Select(
+            return Ok(
+                NewsItemsResponse<ContractPreview>.FromDomain(
+                    bookPreviews,
                     x => new ContractPreview
                     {
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
                         Title = x.Title.Value
-                    }).ToList()
-            };
-
-            _logger.LogInformation("Request was processed with succesfull result");
-
-            return Ok(content);
+                    }));
         }
-        catch (ArgumentException ex)
+        catch (ArgumentOutOfRangeException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }

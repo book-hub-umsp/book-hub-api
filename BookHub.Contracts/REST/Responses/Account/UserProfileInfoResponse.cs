@@ -4,7 +4,7 @@ using BookHub.Models.Account;
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responces.Account;
+namespace BookHub.Contracts.REST.Responses.Account;
 
 public sealed class UserProfileInfoResponse
 {
@@ -24,12 +24,16 @@ public sealed class UserProfileInfoResponse
     [JsonProperty("about", Required = Required.Always)]
     public required string About { get; init; }
 
-    public static UserProfileInfoResponse FromDomain(UserProfileInfo userProfileInfo) =>
-        new()
+    public static UserProfileInfoResponse FromDomain(UserProfileInfo userProfileInfo)
+    {
+        ArgumentNullException.ThrowIfNull(userProfileInfo);
+
+        return new()
         {
             Id = userProfileInfo.Id.Value,
             Name = userProfileInfo.Name.Value,
             Email = userProfileInfo.Email.Address,
             About = userProfileInfo.About.Content
         };
+    }
 }

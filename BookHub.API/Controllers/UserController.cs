@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Account;
-using BookHub.Contracts.REST.Responces.Account;
+using BookHub.Contracts.REST.Responses;
+using BookHub.Contracts.REST.Responses.Account;
 using BookHub.Logic.Converters.Account;
 using BookHub.Logic.Services.Account;
 
@@ -67,6 +69,52 @@ public sealed class UserController : ControllerBase
             return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
         }
         catch (InvalidOperationException ex)
+        {
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
+    /// <summary>
+    /// Возвращает информацию о профилях пользователей.
+    /// </summary>
+    /// <param name="pageNumber">
+    /// Номер страницы.
+    /// </param>
+    /// <param name="pageSize">
+    /// Размер страницы.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// <see cref="ActionResult{TValue}"/> с данными профиля пользователя.
+    /// </returns>
+    /// <response code="400">
+    /// Когда пользователя с таким идентификатором не удалось найти.
+    /// </response>
+    [AllowAnonymous]
+    [HttpGet]
+    [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> GetUserProfilesInfoAsync(
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int pageSize,
+        CancellationToken token)
+    {
+        _logger.LogInformation("Getting profiles info");
+
+        try
+        {
+            var profilesInfo = await _userService.GetUserProfilesInfoAsync(
+                new(pageNumber, pageSize),
+                token);
+
+            return Ok(
+                NewsItemsResponse<UserProfileInfoResponse>.FromDomain(
+                    profilesInfo,
+                    UserProfileInfoResponse.FromDomain));
+        }
+        catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }

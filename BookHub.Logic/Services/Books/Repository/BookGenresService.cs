@@ -1,4 +1,4 @@
-﻿using BookHub.Abstractions.Logic.Services;
+﻿using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Abstractions.Storage;
 using BookHub.Models.Books.Repository;
 
