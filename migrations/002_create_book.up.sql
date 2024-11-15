@@ -56,7 +56,7 @@ CREATE TABLE favorites (
     CONSTRAINT "fk_favorites_user_id" 
         FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE,
     CONSTRAINT "fk_favorites_book_id" 
-        FOREIGN KEY ("book_id") REFERENCES "books" ("id") ON DELETE CASCADE,
+        FOREIGN KEY ("book_id") REFERENCES "books" ("id") ON DELETE CASCADE
 );
 
 
