@@ -16,7 +16,8 @@ env:
   INFRO_REPO: book-hub-umsp/bh-infrastructure
   INFRO_REPO_BRANCH: master
 
-deploy:
+jobs:
+  deploy:
     needs: [docker-build]
     runs-on: ubuntu-latest
     environment: production
