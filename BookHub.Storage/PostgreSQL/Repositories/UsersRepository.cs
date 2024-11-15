@@ -123,7 +123,7 @@ public sealed class UsersRepository :
     }
 
     /// <inheritdoc/>
-    public async Task<long> GetUserCountAsync(CancellationToken token) => 
+    public async Task<long> GetUsersCountAsync(CancellationToken token) => 
         await Context.Users.LongCountAsync(token);
 
     private static UserProfileInfo ToUserProfileInfo(PreviewUserInfo userInfo) =>

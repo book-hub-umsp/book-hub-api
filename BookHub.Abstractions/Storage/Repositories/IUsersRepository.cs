@@ -112,5 +112,5 @@ public interface IUsersRepository
     /// <returns>
     /// Кол-во пользователей.
     /// </returns>
-    public Task<long> GetUserCountAsync(CancellationToken token);
+    public Task<long> GetUsersCountAsync(CancellationToken token);
 }

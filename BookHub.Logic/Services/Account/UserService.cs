@@ -36,7 +36,7 @@ public sealed class UserService : IUserService
         ArgumentNullException.ThrowIfNull(pagination);
 
         var pagePagination = new PagePagination(
-            await _booksHubUnitOfWork.Users.GetUserCountAsync(token),
+            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token),
             pagination.Page,
             pagination.PageSize);
 
