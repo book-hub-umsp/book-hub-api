@@ -5,26 +5,27 @@ CREATE TYPE book_status as ENUM('draft', 'published', 'hiden', 'removed');
 CREATE TABLE genres (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     value TEXT NOT NULL,
-	CONSTRAINT pk_genres PRIMARY KEY (id)
+	CONSTRAINT "pk_genres" 
+        PRIMARY KEY (id)
 );
 
 CREATE TABLE books (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     title TEXT NOT NULL,
     author_id BIGINT DEFAULT NULL,
-    book_genre_id BIGINT NOT NULL DEFAULT 1,
-    book_annotation TEXT NOT NULL,
-    book_status book_status NOT NULL DEFAULT 'draft',
+    genre_id BIGINT NOT NULL DEFAULT 1,
+    annotation TEXT NOT NULL,
+    "status" book_status NOT NULL DEFAULT 'draft',
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     last_edit_date timestamp with time zone NOT NULL DEFAULT NOW(),
     keywords_content JSON DEFAULT NULL,
-    CONSTRAINT "pk_books" PRIMARY KEY (id)
+    CONSTRAINT "pk_books" 
+        PRIMARY KEY (id),
+    CONSTRAINT "fk_books_genre_id" 
+        FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET DEFAULT,
+    CONSTRAINT "fk_books_author_id" 
+        FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
 );
-
-ALTER TABLE books
-    ADD CONSTRAINT "fk_books_genre"
-        FOREIGN KEY (book_genre_id) 
-        REFERENCES genres (id) ON DELETE SET DEFAULT;
 
 INSERT INTO genres (value) 
 VALUES 
@@ -46,6 +47,18 @@ VALUES
     ('drama'),
     ('poem'),
     ('ballad');
+    
+CREATE TABLE favorites (
+    "user_id" BIGINT NOT NULL,
+    "book_id" BIGINT NOT NULL,
+    CONSTRAINT "pk_favorites" 
+        PRIMARY KEY ("user_id", "book_id"),
+    CONSTRAINT "fk_favorites_user_id" 
+        FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "fk_favorites_book_id" 
+        FOREIGN KEY ("book_id") REFERENCES "books" ("id") ON DELETE CASCADE,
+);
+
 
 CREATE FUNCTION update_change_books()
 RETURNS trigger
@@ -61,5 +74,6 @@ CREATE TRIGGER tr_update_change_books
     BEFORE UPDATE ON books
 FOR EACH ROW EXECUTE PROCEDURE 
     update_change_books();
+
 
 COMMIT;

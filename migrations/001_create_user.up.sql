@@ -8,12 +8,8 @@ CREATE TABLE users (
     email TEXT DEFAULT NULL,
     status user_status NOT NULL DEFAULT 'active',
     about TEXT NOT NULL DEFAULT 'about',
-    CONSTRAINT "pk_users" PRIMARY KEY (id)
+    CONSTRAINT 
+        "pk_users" PRIMARY KEY (id)
 );
-
-ALTER TABLE books 
-    ADD CONSTRAINT "fk_author_id" 
-	FOREIGN KEY (author_id) 
-	REFERENCES users (id);
 
 COMMIT;
