@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-using BookHub.Logic.Services.Account;
+using BookHub.Abstractions.Logic.Services.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -15,10 +15,11 @@ public sealed class ClaimTypeAuthorizationHandler :
     AuthorizationHandler<ClaimTypeRequirement>
 {
     public ClaimTypeAuthorizationHandler(
-        IUserService userService,
+        IRolesService rolesService,
         ILogger<ClaimTypeAuthorizationHandler> logger)
     {
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        _rolesService = rolesService 
+            ?? throw new ArgumentNullException(nameof(rolesService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -34,7 +35,7 @@ public sealed class ClaimTypeAuthorizationHandler :
             return;
         }
 
-        var role = await _userService.GetUserRoleAsync(new(email), CancellationToken.None);
+        var role = await _rolesService.GetUserRoleAsync(new(email), CancellationToken.None);
 
         if (role is null)
         {
@@ -47,6 +48,6 @@ public sealed class ClaimTypeAuthorizationHandler :
         }
     }
 
-    private readonly IUserService _userService;
+    private readonly IRolesService _rolesService;
     private readonly ILogger<ClaimTypeAuthorizationHandler> _logger;
 }

@@ -1,4 +1,8 @@
-﻿using BookHub.API.Roles;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+using BookHub.API.Roles;
+using BookHub.Contracts.REST.Requests.Account.Roles;
 using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +28,9 @@ public sealed class AdminController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Route("roles/add")]
-    public IActionResult AddNewRole()
+    public Task<IActionResult> AddNewRoleAsync(
+        [Required][NotNull] AddNewRoleParams addNewRoleParams,
+        CancellationToken token)
     {
         return Ok();
     }
@@ -46,14 +52,15 @@ public sealed class AdminController : ControllerBase
     /// <summary>
     /// Изменяет роль для указанного пользователя.
     /// </summary>
-    [HttpGet]
+    [HttpPut]
     [Authorize(Policy = Claims.CHANGE_USER_ROLE)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("users/{userId}/changeRole")]
+    [Route("users/{userId}/changeRole/{newRole}")]
     public IActionResult ChangeUserRole(
-        [FromRoute] long userId)
+        [FromRoute] long userId,
+        [FromRoute] string newRole)
     {
         return Ok();
     }
