@@ -7,14 +7,17 @@ using Microsoft.Extensions.Logging;
 
 namespace BookHub.Logic.Services.Favorite;
 
-public sealed class UserFavoriteService: IUserFavoriteService
+/// <summary>
+/// Представляет собой сервис для работы с избранными книгами пользователя
+/// </summary>
+public sealed class UserFavoriteService : IUserFavoriteService
 {
     private readonly IBooksHubUnitOfWork _unitOfWork;
 
     private readonly ILogger<UserFavoriteService> _logger;
 
     public UserFavoriteService(
-        IBooksHubUnitOfWork unitOfWork, 
+        IBooksHubUnitOfWork unitOfWork,
         ILogger<UserFavoriteService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -27,7 +30,7 @@ public sealed class UserFavoriteService: IUserFavoriteService
 
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation("Trying to add a favorite link with user id: {UserId} and book id: {BookId}", 
+        _logger.LogInformation("Trying to add a favorite link with user id: {UserId} and book id: {BookId}",
             favoriteLinkParams.UserId.Value,
             favoriteLinkParams.BookId.Value);
 
@@ -38,7 +41,7 @@ public sealed class UserFavoriteService: IUserFavoriteService
         _logger.LogInformation("A new favorite link with user id: {UserId} and book id: {BookId} have been successfully added",
             favoriteLinkParams.UserId.Value,
             favoriteLinkParams.UserId.Value);
-    } 
+    }
 
     public async Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, CancellationToken token)
     {
@@ -46,12 +49,12 @@ public sealed class UserFavoriteService: IUserFavoriteService
 
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation("Trying to get favorite links of user with id: {UserId}", 
+        _logger.LogInformation("Trying to get favorite links of user with id: {UserId}",
             userId.Value);
 
         var usersFavorite = await _unitOfWork.FavoriteLinks.GetUsersFavoriteAsync(userId, token);
 
-        _logger.LogInformation("User's favorite links with user id: {UserId} have been successfully received", 
+        _logger.LogInformation("User's favorite links with user id: {UserId} have been successfully received",
             userId.Value);
 
         return usersFavorite;
