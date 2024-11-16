@@ -53,7 +53,7 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<User>()
             .HasMany(x => x.FavoriteBooksLinks)
             .WithOne(x => x.User)
-            .HasForeignKey(x =>x.UserId);
+            .HasForeignKey(x => x.UserId);
     }
 
     private static void CreateBook(ModelBuilder modelBuilder)
@@ -78,6 +78,10 @@ public sealed class BooksHubContext : DbContext
             .HasColumnName("genre_id");
 
         _ = modelBuilder.Entity<Book>()
+            .Property(x => x.AuthorId)
+            .HasColumnName("author_id");
+
+        _ = modelBuilder.Entity<Book>()
            .HasOne(x => x.Author)
            .WithMany(x => x.WrittenBooks)
            .HasForeignKey(x => x.AuthorId);
@@ -96,7 +100,6 @@ public sealed class BooksHubContext : DbContext
             .HasMany(x => x.UsersFavoritesLinks)
             .WithOne(x => x.Book)
             .HasForeignKey(x => x.BookId);
-
     }
 
     private static void CreateBookGenre(ModelBuilder modelBuilder)
@@ -136,5 +139,13 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<FavoriteLink>()
             .ToTable("favourites");
+
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .Property(l => l.UserId)
+            .HasColumnName("user_id");
+
+        _ = modelBuilder.Entity<FavoriteLink>()
+            .Property(l => l.BookId)
+            .HasColumnName("book_id");
     }
 }
