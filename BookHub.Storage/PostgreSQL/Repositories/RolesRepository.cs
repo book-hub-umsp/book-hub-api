@@ -1,4 +1,5 @@
 ﻿using BookHub.Abstractions.Storage.Repositories;
+using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
@@ -9,7 +10,9 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Представляет репозиторий ролей.
 /// </summary>
-public sealed class RolesRepository : RepositoryBase, IRolesRepository
+public sealed class RolesRepository : 
+    RepositoryBase, 
+    IRolesRepository
 {
     public RolesRepository(IRepositoryContext context) : base(context)
     {
@@ -59,5 +62,45 @@ public sealed class RolesRepository : RepositoryBase, IRolesRepository
         var storageRoles = await Context.Roles.ToListAsync(token);
 
         return storageRoles.Select(r => new Role(new(r.Name), r.Claims)).ToList();
+    }
+
+    public async Task<Role> GetUserRoleAsync(
+        Id<User> userId, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        var storageUser = await Context.Users
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.Role })
+            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+                ?? throw new InvalidOperationException(
+                    $"User with id {userId.Value} not exists");
+
+        return new(new(storageUser.Role.Name), storageUser.Role.Claims);
+    }
+
+    public async Task ChangeUserRoleAsync(
+        Id<User> userId,
+        Role clarifiedRole,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(clarifiedRole);
+
+        var storageUser = await Context.Users
+            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+                ?? throw new InvalidOperationException(
+                    $"User with id {userId.Value} not exists");
+
+        var existedRole =
+            await Context.Roles
+                .SingleOrDefaultAsync(
+                    x => clarifiedRole.CompareTo(new(x.Name)),
+                    token)
+                ?? throw new InvalidOperationException(
+                    $"Role with name '{clarifiedRole.Name}' is not already exists.");
+
+        storageUser.Role = existedRole;
     }
 }
