@@ -1,4 +1,6 @@
-﻿using BookHub.Models;
+﻿using System.Net.Mail;
+
+using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
@@ -79,4 +81,20 @@ public interface IUserService
     /// <see cref="Task"/>.
     /// </returns>
     Task UpdateUserInfoAsync(UpdatedBase<User> updatedUser, CancellationToken token);
+
+    /// <summary>
+    /// Получает роль для пользователя по его электронной почте.
+    /// </summary>
+    /// <param name="mailAddress">
+    /// Электронный адрес.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// <see cref="Role"/>
+    /// если пользователь был найден,
+    /// иначе - <see langword="null"/>.
+    /// </returns>
+    Task<Role?> GetUserRoleAsync(MailAddress mailAddress, CancellationToken token);
 }

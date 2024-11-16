@@ -1,4 +1,6 @@
-﻿using BookHub.Abstractions.Storage;
+﻿using System.Net.Mail;
+
+using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API;
@@ -96,5 +98,22 @@ public sealed class UserService : IUserService
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogDebug("Update user with id: {UserId} completed successfully", updatedUser.Id.Value);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Role?> GetUserRoleAsync(MailAddress mailAddress, CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(mailAddress);
+
+        try
+        {
+            return await _booksHubUnitOfWork.UserRoles.GetUserRoleAsync(mailAddress, token);
+        }
+        catch (InvalidOperationException)
+        {
+            _logger.LogWarning("Not found user with mail address {Email}", mailAddress.Address);
+
+            return null;
+        }
     }
 }

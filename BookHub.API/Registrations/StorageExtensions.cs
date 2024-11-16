@@ -25,6 +25,7 @@ public static class StorageExtensions
             .AddScoped<IBooksRepository, BooksRepository>()
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
+            .AddScoped<IRolesRepository, RolesRepository>()
 
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 

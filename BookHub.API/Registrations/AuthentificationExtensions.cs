@@ -1,6 +1,8 @@
 ﻿using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
 using BookHub.API.Authentification.Configuration.JWT;
+using BookHub.API.Roles;
+using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
@@ -15,6 +17,7 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
+            .AddScoped<IAuthorizationHandler, ClaimTypeAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
             .AddAuthorization(configuration)
@@ -141,5 +144,25 @@ public static class AuthentificationExtensions
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
+            .AddClaimsForAuthorizationBuilder()
             .Services;
+
+    private static AuthorizationBuilder AddClaimsForAuthorizationBuilder(
+        this AuthorizationBuilder authorizationBuilder)
+    {
+        foreach (var claim in Enum.GetValues<ClaimType>())
+        {
+            authorizationBuilder.AddClaimRequirement(claim);
+        }
+
+        return authorizationBuilder;
+    }
+
+    private static AuthorizationBuilder AddClaimRequirement(
+        this AuthorizationBuilder authorizationBuilder,
+        ClaimType claimType)
+        => authorizationBuilder
+            .AddPolicy(
+                $"{claimType}",
+                opt => opt.AddRequirements(new ClaimTypeRequirement(claimType)));
 }

@@ -1,4 +1,6 @@
-﻿using BookHub.Abstractions.Storage.Repositories;
+﻿using System.Net.Mail;
+
+using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -65,17 +67,17 @@ public sealed class RolesRepository :
     }
 
     public async Task<Role> GetUserRoleAsync(
-        Id<User> userId, 
+        MailAddress mailAddress, 
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(mailAddress);
 
         var storageUser = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Role })
-            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+            .Select(x => new { x.Email, x.Role })
+            .SingleOrDefaultAsync(x => mailAddress.Address == x.Email, token)
                 ?? throw new InvalidOperationException(
-                    $"User with id {userId.Value} not exists");
+                    $"User with email '{mailAddress.Address}' not exists");
 
         return new(new(storageUser.Role.Name), storageUser.Role.Claims);
     }
