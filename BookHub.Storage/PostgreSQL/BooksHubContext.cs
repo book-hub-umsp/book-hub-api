@@ -56,6 +56,18 @@ public sealed class BooksHubContext : DbContext
             .UseIdentityAlwaysColumn();
 
         _ = modelBuilder.Entity<Book>()
+            .Property(x => x.BookAnnotation)
+            .HasColumnName("annotation");
+
+        _ = modelBuilder.Entity<Book>()
+            .Property(x => x.BookStatus)
+            .HasColumnName("status");
+
+        _ = modelBuilder.Entity<Book>()
+            .Property(x => x.BookGenreId)
+            .HasColumnName("genre_id");
+
+        _ = modelBuilder.Entity<Book>()
            .HasOne(x => x.Author)
            .WithMany()
            .HasForeignKey(x => x.AuthorId);
