@@ -1,0 +1,15 @@
+﻿using BookHub.Models.Account;
+
+namespace BookHub.Storage.PostgreSQL.Models;
+
+/// <summary>
+/// Модель роли в хранилище.
+/// </summary>
+public sealed class Role
+{
+    public long Id { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public ClaimType[] Claims { get; set; } = null!;
+}

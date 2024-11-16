@@ -12,6 +12,8 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<User> Users { get; set; } = null!;
 
+    public DbSet<Role> Roles { get; set; } = null!;
+
     public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
 
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
@@ -25,6 +27,7 @@ public sealed class BooksHubContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         CreateUser(modelBuilder);
+        CreateRole(modelBuilder);
 
         CreateBook(modelBuilder);
         CreateBookGenre(modelBuilder);
@@ -43,7 +46,29 @@ public sealed class BooksHubContext : DbContext
             .UseIdentityAlwaysColumn();
 
         _ = modelBuilder.Entity<User>()
+           .HasOne(x => x.Role)
+           .WithMany()
+           .HasForeignKey(x => x.RoleId);
+
+        _ = modelBuilder.Entity<User>()
             .ToTable("users");
+    }
+
+    private static void CreateRole(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<Role>()
+            .HasKey(x => x.Id);
+
+        _ = modelBuilder.Entity<Role>()
+            .Property(x => x.Id)
+            .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<Role>()
+            .Property(x => x.Claims)
+            .HasColumnName("claims");
+
+        _ = modelBuilder.Entity<Role>()
+            .ToTable("roles");
     }
 
     private static void CreateBook(ModelBuilder modelBuilder)
