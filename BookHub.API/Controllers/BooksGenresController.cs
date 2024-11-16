@@ -29,7 +29,7 @@ public sealed class BooksGenresController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddNewBookGenreAsync(
         [Required][NotNull] AddNewGenreParams addNewGenreParams,
@@ -59,7 +59,7 @@ public sealed class BooksGenresController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType<BooksGenresListResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetBooksGenresAsync(
         CancellationToken token)
@@ -90,7 +90,7 @@ public sealed class BooksGenresController : ControllerBase
 
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> DeleteBookGenreAsync(
         [Required][NotNull] RemoveGenreParams removeGenreParams,

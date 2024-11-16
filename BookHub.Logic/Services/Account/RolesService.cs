@@ -74,19 +74,19 @@ public sealed class RolesService : IRolesService
     /// <inheritdoc/>
     public async Task ChangeUserRoleAsync(
         Id<User> userId, 
-        Role clarifiedRole, 
+        Name<Role> clarifiedRoleName, 
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
-        ArgumentNullException.ThrowIfNull(clarifiedRole);
+        ArgumentNullException.ThrowIfNull(clarifiedRoleName);
 
         _logger.LogInformation(
             "Setting role {Role} for user {UserId}",
-            clarifiedRole.Name.Value,
+            clarifiedRoleName.Value,
             userId.Value);
 
         await _booksHubUnitOfWork.UserRoles
-            .ChangeUserRoleAsync(userId, clarifiedRole, token);
+            .ChangeUserRoleAsync(userId, clarifiedRoleName, token);
 
         _logger.LogInformation("New role for user {UserId} was setted", userId.Value);
     }

@@ -62,8 +62,8 @@ public interface IRolesService
     /// <param name="userId">
     /// Идентификатор пользователя.
     /// </param>
-    /// <param name="clarifiedRole">
-    /// Новая указанная роль.
+    /// <param name="clarifiedRoleName">
+    /// Имя указанной роли.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -71,5 +71,5 @@ public interface IRolesService
     /// <exception cref="ArgumentNullException">
     /// Если один из параметров равен равен <see langword="null"/>.
     /// </exception>
-    Task ChangeUserRoleAsync(Id<User> userId, Role clarifiedRole, CancellationToken token);
+    Task ChangeUserRoleAsync(Id<User> userId, Name<Role> clarifiedRoleName, CancellationToken token);
 }

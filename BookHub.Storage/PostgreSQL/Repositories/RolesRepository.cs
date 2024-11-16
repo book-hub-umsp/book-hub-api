@@ -84,24 +84,26 @@ public sealed class RolesRepository :
 
     public async Task ChangeUserRoleAsync(
         Id<User> userId,
-        Role clarifiedRole,
+        Name<Role> clarifiedRoleName,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
-        ArgumentNullException.ThrowIfNull(clarifiedRole);
+        ArgumentNullException.ThrowIfNull(clarifiedRoleName);
 
         var storageUser = await Context.Users
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
                 ?? throw new InvalidOperationException(
                     $"User with id {userId.Value} not exists");
 
+        var role = new Role(clarifiedRoleName, []);
+
         var existedRole =
             await Context.Roles
                 .SingleOrDefaultAsync(
-                    x => clarifiedRole.CompareTo(new(x.Name)),
+                    x => role.CompareTo(new(x.Name)),
                     token)
                 ?? throw new InvalidOperationException(
-                    $"Role with name '{clarifiedRole.Name}' is not already exists.");
+                    $"Role with name '{clarifiedRoleName.Value}' is not already exists.");
 
         storageUser.Role = existedRole;
     }

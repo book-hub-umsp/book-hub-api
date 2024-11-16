@@ -66,8 +66,8 @@ public interface IRolesRepository
     /// <param name="userId">
     /// Идентификатор пользователя.
     /// </param>
-    /// <param name="clarifiedRole">
-    /// Указанная роль.
+    /// <param name="clarifiedRoleName">
+    /// Название указанной роли.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -80,6 +80,6 @@ public interface IRolesRepository
     /// </exception>
     public Task ChangeUserRoleAsync(
         Id<User> userId, 
-        Role clarifiedRole, 
+        Name<Role> clarifiedRoleName, 
         CancellationToken token);
 }
