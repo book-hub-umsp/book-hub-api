@@ -21,17 +21,21 @@ public sealed class BooksHubUnitOfWork :
 
     public IBooksGenresRepository BooksGenres { get; }
 
+    public IFavoriteLinkRepository FavoriteLinks { get; }
+
     public BooksHubContext Context { get; }
 
     public BooksHubUnitOfWork(
         IBooksRepository books,
         IUsersRepository users,
         IBooksGenresRepository booksGenres,
+        IFavoriteLinkRepository favoriteLinks,
         BooksHubContext context)
     {
         Users = users ?? throw new ArgumentNullException(nameof(users));
         Books = books ?? throw new ArgumentNullException(nameof(books));
         BooksGenres = booksGenres ?? throw new ArgumentNullException(nameof(booksGenres));
+        FavoriteLinks = favoriteLinks ?? throw new ArgumentNullException(nameof(favoriteLinks));
         Context = context ?? throw new ArgumentNullException(nameof(context));
         _dbContextTransaction =
             Context.Database.BeginTransaction(IsolationLevel.ReadCommitted);
