@@ -19,5 +19,5 @@ public class User : IKeyable
 
     public ICollection<Book> WrittenBooks { get; set; } = null!;
 
-    public ICollection<FavoriteLink> FavouriteBooksLinks { get; set; } = null!;
+    public ICollection<FavoriteLink> FavoriteBooksLinks { get; set; } = null!;
 }

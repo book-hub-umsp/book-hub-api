@@ -44,6 +44,16 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<User>()
             .ToTable("users");
+
+        _ = modelBuilder.Entity<User>()
+            .HasMany(x => x.WrittenBooks)
+            .WithOne(x => x.Author)
+            .HasForeignKey(x => x.AuthorId);
+
+        _ = modelBuilder.Entity<User>()
+            .HasMany(x => x.FavoriteBooksLinks)
+            .WithOne(x => x.User)
+            .HasForeignKey(x =>x.UserId);
     }
 
     private static void CreateBook(ModelBuilder modelBuilder)
@@ -69,18 +79,24 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<Book>()
            .HasOne(x => x.Author)
-           .WithMany()
+           .WithMany(x => x.WrittenBooks)
            .HasForeignKey(x => x.AuthorId);
 
         _ = modelBuilder.Entity<Book>()
             .HasOne(x => x.BookGenre)
-            .WithMany()
+            .WithMany(x => x.Books)
             .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<Book>()
             .Property(x => x.KeyWordsContent)
             .HasColumnType("json")
             .HasColumnName("keywords_content");
+
+        _ = modelBuilder.Entity<Book>()
+            .HasMany(x => x.UsersFavoritesLinks)
+            .WithOne(x => x.Book)
+            .HasForeignKey(x => x.BookId);
+
     }
 
     private static void CreateBookGenre(ModelBuilder modelBuilder)
@@ -94,7 +110,7 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<BookGenre>()
             .HasMany(x => x.Books)
-            .WithOne()
+            .WithOne(x => x.BookGenre)
             .HasForeignKey(x => x.Id);
 
         _ = modelBuilder.Entity<BookGenre>()
@@ -108,13 +124,13 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<FavoriteLink>()
             .HasOne(l => l.User)
-            .WithMany(l => l.FavouriteBooksLinks)
+            .WithMany(l => l.FavoriteBooksLinks)
             .HasForeignKey(l => l.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         _ = modelBuilder.Entity<FavoriteLink>()
             .HasOne(l => l.Book)
-            .WithMany(l => l.UsersFavouritesLinks)
+            .WithMany(l => l.UsersFavoritesLinks)
             .HasForeignKey(l => l.BookId)
             .OnDelete(DeleteBehavior.Cascade);
 
