@@ -38,7 +38,8 @@ public static class StorageExtensions
 
         _ = dataSourceBuilder
             .MapEnum<BookStatus>()
-            .MapEnum<UserStatus>();
+            .MapEnum<UserStatus>()
+            .MapEnum<ClaimType>();
 
         var source = dataSourceBuilder.Build();
 
