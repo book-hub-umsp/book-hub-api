@@ -7,7 +7,7 @@ namespace BookHub.Models.API.Pagination;
 /// </summary>
 /// <remarks>
 /// Использовать для пагинации с последовательным доступом к данным (предыдущий/следующий)
-/// в ситуации, когда не требуется хаточная выборка элементов.
+/// в ситуации, когда не требуется хаотичная выборка элементов.
 /// </remarks>
 public sealed class OffsetPagination : PaginationBase
 {

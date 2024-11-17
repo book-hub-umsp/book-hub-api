@@ -1,6 +1,7 @@
 ﻿using BookHub.Models.Account;
 using BookHub.Models.Favorite;
 using BookHub.Models;
+using BookHub.Models.API.Pagination;
 
 namespace BookHub.Abstractions.Logic.Services.Favorite;
 
@@ -10,14 +11,15 @@ namespace BookHub.Abstractions.Logic.Services.Favorite;
 public interface IUserFavoriteService
 {
     public Task AddFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLinkParams, 
+        UserFavoriteBookLink favoriteLink, 
         CancellationToken token);
 
     public Task<UsersFavorite> GetUsersFavoriteAsync(
         Id<User> userId, 
+        PagePagging pagePagging,
         CancellationToken token);
 
     public Task RemoveFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLinkParams, 
+        UserFavoriteBookLink favoriteLink, 
         CancellationToken token);
 }
