@@ -12,4 +12,6 @@ public sealed class Role
     public string Name { get; set; } = null!;
 
     public ClaimType[] Claims { get; set; } = null!;
+
+    public ICollection<User> Users { get; set; } = null!;
 }

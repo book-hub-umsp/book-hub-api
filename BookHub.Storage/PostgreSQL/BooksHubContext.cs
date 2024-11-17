@@ -47,7 +47,7 @@ public sealed class BooksHubContext : DbContext
 
         _ = modelBuilder.Entity<User>()
            .HasOne(x => x.Role)
-           .WithMany()
+           .WithMany(x => x.Users)
            .HasForeignKey(x => x.RoleId);
 
         _ = modelBuilder.Entity<User>()

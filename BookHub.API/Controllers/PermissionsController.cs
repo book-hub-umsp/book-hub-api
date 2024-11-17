@@ -15,17 +15,17 @@ using Newtonsoft.Json.Linq;
 namespace BookHub.API.Controllers;
 
 /// <summary>
-/// Контроллер для администратора.
+/// Контроллер для дополнительных действий.
 /// </summary>
 [Authorize]
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public sealed class AdminController : ControllerBase
+public sealed class PermissionsController : ControllerBase
 {
-    public AdminController(
+    public PermissionsController(
         IRolesService rolesService,
-        ILogger<AdminController> logger)
+        ILogger<PermissionsController> logger)
     {
         _rolesService = rolesService 
             ?? throw new ArgumentNullException(nameof(rolesService));
@@ -36,7 +36,7 @@ public sealed class AdminController : ControllerBase
     /// Добавляет новую роль в системе.
     /// </summary>
     [HttpPost]
-    [Authorize(Policy = Claims.ADD_NEW_ROLE)]
+    [Authorize(Policy = nameof(ClaimType.AddNewRole))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -71,7 +71,7 @@ public sealed class AdminController : ControllerBase
     /// Изменяет клэймы для существующей в системе роли.
     /// </summary>
     [HttpPut]
-    [Authorize(Policy = Claims.CHANGE_ROLE_CLAIMS)]
+    [Authorize(Policy = nameof(ClaimType.ChangeRoleClaims))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -106,7 +106,7 @@ public sealed class AdminController : ControllerBase
     /// Изменяет роль для указанного пользователя.
     /// </summary>
     [HttpPut]
-    [Authorize(Policy = Claims.CHANGE_USER_ROLE)]
+    [Authorize(Policy = nameof(ClaimType.ChangeUserRole))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -138,5 +138,5 @@ public sealed class AdminController : ControllerBase
     }
 
     private readonly IRolesService _rolesService;
-    private readonly ILogger<AdminController> _logger;
+    private readonly ILogger<PermissionsController> _logger;
 }

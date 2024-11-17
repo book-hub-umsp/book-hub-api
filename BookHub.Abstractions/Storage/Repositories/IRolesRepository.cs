@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-
-using BookHub.Models;
+﻿using BookHub.Models;
 using BookHub.Models.Account;
 
 namespace BookHub.Abstractions.Storage.Repositories;
@@ -47,18 +45,18 @@ public interface IRolesRepository
     public Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token);
 
     /// <summary>
-    /// Возвращает роль для указанного пользователя.
+    /// Возвращает роль для пользователя с указанным идентификатором.
     /// </summary>
-    /// <param name="mailAddress">
-    /// Электронный адрес.
+    /// <param name="userId">
+    /// Идентификатор пользователя.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// Если пользователя с почтой <paramref name="mailAddress"/> не существует.
+    /// Если пользователя с идентификатором <paramref name="userId"/> не существует.
     /// </exception>
-    public Task<Role> GetUserRoleAsync(MailAddress mailAddress, CancellationToken token);
+    public Task<Role> GetUserRoleAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>
     /// Обновляет роль у пользователя.

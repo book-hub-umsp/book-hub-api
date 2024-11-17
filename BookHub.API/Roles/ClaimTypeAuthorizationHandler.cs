@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using BookHub.Abstractions.Logic.Services.Account;
+using BookHub.API.Authentification;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -28,21 +29,23 @@ public sealed class ClaimTypeAuthorizationHandler :
         AuthorizationHandlerContext context, 
         ClaimTypeRequirement requirement)
     {
-        var email = context.User.FindFirstValue(JwtRegisteredClaimNames.Email);
+        var userId = context.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME);
 
-        if (email is null)
+        if (userId is null)
         {
+            _logger.LogWarning("No authentificated user found");
+
             return;
         }
 
-        var role = await _rolesService.GetUserRoleAsync(new(email), CancellationToken.None);
+        var role = await _rolesService.GetUserRoleAsync(new(Convert.ToInt64(userId)), CancellationToken.None);
 
         if (role is null)
         {
             return;
         }
 
-        if (role.Claims.Contains(requirement.ClaimType))
+        if (role.Claims.Contains(requirement.Claim))
         {
             context.Succeed(requirement);
         }

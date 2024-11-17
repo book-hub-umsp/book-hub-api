@@ -7,7 +7,7 @@ namespace BookHub.Models.Account;
 /// <summary>
 /// Модель роли.
 /// </summary>
-public sealed class Role : IEquatable<Role>
+public sealed class Role
 {
     public Name<Role> Name { get; }
 
@@ -30,15 +30,6 @@ public sealed class Role : IEquatable<Role>
     public bool CompareTo(Name<Role> name)
         => GetLowerCertainRepresentation(name)
         == GetLowerCertainRepresentation(Name);
-
-    public bool Equals(Role? other) =>
-        other is not null
-        && CompareTo(other.Name);
-
-    public override bool Equals(object? obj) => Equals(obj as Role);
-
-    public override int GetHashCode() =>
-        GetLowerCertainRepresentation(Name).GetHashCode();
 
     private static string GetLowerCertainRepresentation(Name<Role> name)
         => name.Value

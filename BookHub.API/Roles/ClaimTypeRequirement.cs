@@ -1,4 +1,7 @@
-﻿using BookHub.Models.Account;
+﻿using System.ComponentModel;
+
+using BookHub.Models.Account;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace BookHub.API.Roles;
@@ -6,12 +9,18 @@ namespace BookHub.API.Roles;
 /// <summary>
 /// Требование для <see cref="ClaimType"/>.
 /// </summary>
-public sealed class ClaimTypeRequirement : IAuthorizationRequirement
+public record struct ClaimTypeRequirement : IAuthorizationRequirement
 {
-    public ClaimType ClaimType { get; }
+    public ClaimType Claim { get; }
 
-    public ClaimTypeRequirement(ClaimType claimType)
+    public ClaimTypeRequirement(ClaimType claim)
     {
-        ClaimType = claimType;
+        if (!Enum.IsDefined(claim))
+        {
+            throw new InvalidEnumArgumentException(
+                nameof(claim),
+                (int)claim,
+                typeof(ClaimType));
+        }
     }
 }

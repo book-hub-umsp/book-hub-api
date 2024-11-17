@@ -20,6 +20,22 @@ public sealed class RolesRepository :
     {
     }
 
+    public async Task<Role> GetUserRoleAsync(
+        Id<User> userId,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        var storageUser = await Context.Users
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.Role })
+            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+                ?? throw new InvalidOperationException(
+                    $"User with id '{userId.Value}' not exists");
+
+        return new(new(storageUser.Role.Name), storageUser.Role.Claims);
+    }
+
     public async Task AddRoleAsync(Role role, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(role);
@@ -64,22 +80,6 @@ public sealed class RolesRepository :
         var storageRoles = await Context.Roles.ToListAsync(token);
 
         return storageRoles.Select(r => new Role(new(r.Name), r.Claims)).ToList();
-    }
-
-    public async Task<Role> GetUserRoleAsync(
-        MailAddress mailAddress, 
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(mailAddress);
-
-        var storageUser = await Context.Users
-            .AsNoTracking()
-            .Select(x => new { x.Email, x.Role })
-            .SingleOrDefaultAsync(x => mailAddress.Address == x.Email, token)
-                ?? throw new InvalidOperationException(
-                    $"User with email '{mailAddress.Address}' not exists");
-
-        return new(new(storageUser.Role.Name), storageUser.Role.Claims);
     }
 
     public async Task ChangeUserRoleAsync(

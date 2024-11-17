@@ -163,6 +163,6 @@ public static class AuthentificationExtensions
         ClaimType claimType)
         => authorizationBuilder
             .AddPolicy(
-                Claims.GetStringClaim(claimType),
+                claimType.ToString(),
                 opt => opt.AddRequirements(new ClaimTypeRequirement(claimType)));
 }

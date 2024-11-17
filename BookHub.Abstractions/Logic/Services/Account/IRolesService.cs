@@ -10,10 +10,10 @@ namespace BookHub.Abstractions.Logic.Services.Account;
 public interface IRolesService
 {
     /// <summary>
-    /// Получает роль для пользователя по его электронной почте.
+    /// Получает роль для пользователя по его идентификатору.
     /// </summary>
-    /// <param name="mailAddress">
-    /// Электронный адрес.
+    /// <param name="userId">
+    /// Идентификатор пользователя.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -24,9 +24,9 @@ public interface IRolesService
     /// иначе - <see langword="null"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="mailAddress"/> равен <see langword="null"/>.
+    /// Если <paramref name="userId"/> равен <see langword="null"/>.
     /// </exception>
-    Task<Role?> GetUserRoleAsync(MailAddress mailAddress, CancellationToken token);
+    Task<Role?> GetUserRoleAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>
     /// Добавляет новую роль в систему.

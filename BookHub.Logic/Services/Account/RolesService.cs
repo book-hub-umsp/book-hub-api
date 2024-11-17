@@ -25,17 +25,17 @@ public sealed class RolesService : IRolesService
     }
 
     /// <inheritdoc/>
-    public async Task<Role?> GetUserRoleAsync(MailAddress mailAddress, CancellationToken token)
+    public async Task<Role?> GetUserRoleAsync(Id<User> userId, CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(mailAddress);
+        ArgumentNullException.ThrowIfNull(userId);
 
         try
         {
-            return await _booksHubUnitOfWork.UserRoles.GetUserRoleAsync(mailAddress, token);
+            return await _booksHubUnitOfWork.UserRoles.GetUserRoleAsync(userId, token);
         }
         catch (InvalidOperationException)
         {
-            _logger.LogWarning("Not found user with mail address {Email}", mailAddress.Address);
+            _logger.LogWarning("Not found user with user id {UserId}", userId.Value);
 
             return null;
         }
@@ -49,6 +49,8 @@ public sealed class RolesService : IRolesService
         _logger.LogInformation("Adding new role {Name}", role.Name.Value);
 
         await _booksHubUnitOfWork.UserRoles.AddRoleAsync(role, token);
+
+        await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
             "Role {Name} with {ClaimsCount} was added", 
@@ -64,6 +66,8 @@ public sealed class RolesService : IRolesService
         _logger.LogInformation("Changing claims for role {Name}", updatedRole.Name.Value);
 
         await _booksHubUnitOfWork.UserRoles.ChangeRoleClaimsAsync(updatedRole, token);
+
+        await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
             "New {ClaimsCount} claims for role {Name} was setted", 
@@ -87,6 +91,8 @@ public sealed class RolesService : IRolesService
 
         await _booksHubUnitOfWork.UserRoles
             .ChangeUserRoleAsync(userId, clarifiedRoleName, token);
+
+        await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation("New role for user {UserId} was setted", userId.Value);
     }
