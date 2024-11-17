@@ -29,18 +29,15 @@ public sealed class PermissionsController : ControllerBase
     /// <summary>
     /// Получает все permissions в системе.
     /// </summary>
-    /// <param name="token">
-    /// Токен отмены.
-    /// </param>
     [HttpGet]
     [ProducesResponseType<PermissionsListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("all")]
-    public IActionResult GetAllPermissions(CancellationToken token)
+    public IActionResult GetAllPermissions()
     {
         _logger.LogInformation("Getting all system permissions");
 
-        var permissions = Enum.GetValues<ClaimType>();
+        var permissions = Enum.GetValues<PermissionType>();
 
         return Ok(new PermissionsListResponse
         {
@@ -80,12 +77,12 @@ public sealed class PermissionsController : ControllerBase
 
         _logger.LogInformation(
             "{PermissionsCount} permissions were found for user {UserId}",
-            userRole.Claims.Count,
+            userRole.Permissions.Count,
             userId);
 
         return Ok(new PermissionsListResponse
         {
-            Permissions = userRole.Claims
+            Permissions = userRole.Permissions
         });
     }
 

@@ -11,20 +11,20 @@ public sealed class Role
 {
     public Name<Role> Name { get; }
 
-    public IReadOnlySet<ClaimType> Claims { get; }
+    public IReadOnlySet<PermissionType> Permissions { get; }
 
     public Role(
         Name<Role> name, 
-        IReadOnlyCollection<ClaimType> claims)
+        IReadOnlyCollection<PermissionType> permissions)
     {
         ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(claims);
+        ArgumentNullException.ThrowIfNull(permissions);
 
         Name = new(name.Value.Trim());
 
-        Claims = claims.Any()
-            ? claims.ToHashSet()
-            : [ClaimType.None];
+        Permissions = permissions.Any()
+            ? permissions.ToHashSet()
+            : [PermissionType.None];
     }
 
     public bool CompareTo(Name<Role> name)

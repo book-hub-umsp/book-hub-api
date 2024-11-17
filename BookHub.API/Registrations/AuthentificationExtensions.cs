@@ -17,7 +17,7 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
-            .AddScoped<IAuthorizationHandler, ClaimTypeAuthorizationHandler>()
+            .AddScoped<IAuthorizationHandler, PermissionTypeAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
             .AddAuthorization(configuration)
@@ -150,19 +150,19 @@ public static class AuthentificationExtensions
     private static AuthorizationBuilder AddClaimsForAuthorizationBuilder(
         this AuthorizationBuilder authorizationBuilder)
     {
-        foreach (var claim in Enum.GetValues<ClaimType>())
+        foreach (var permission in Enum.GetValues<PermissionType>())
         {
-            authorizationBuilder.AddClaimRequirement(claim);
+            authorizationBuilder.AddPermissionRequirement(permission);
         }
 
         return authorizationBuilder;
     }
 
-    private static AuthorizationBuilder AddClaimRequirement(
+    private static AuthorizationBuilder AddPermissionRequirement(
         this AuthorizationBuilder authorizationBuilder,
-        ClaimType claimType)
+        PermissionType permissionType)
         => authorizationBuilder
             .AddPolicy(
-                claimType.ToString(),
-                opt => opt.AddRequirements(new ClaimTypeRequirement(claimType)));
+                permissionType.ToString(),
+                opt => opt.AddRequirements(new PermissionTypeRequirement(permissionType)));
 }

@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-
-using BookHub.Abstractions.Logic.Services.Account;
+﻿using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
@@ -53,25 +51,25 @@ public sealed class RolesService : IRolesService
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
-            "Role {Name} with {ClaimsCount} was added", 
+            "Role {Name} with {PermissionsCount} was added", 
             role.Name.Value,
-            role.Claims.Count);
+            role.Permissions.Count);
     }
 
     /// <inheritdoc/>
-    public async Task ChangeRoleClaimsAsync(Role updatedRole, CancellationToken token)
+    public async Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedRole);
 
-        _logger.LogInformation("Changing claims for role {Name}", updatedRole.Name.Value);
+        _logger.LogInformation("Changing permissions for role {Name}", updatedRole.Name.Value);
 
-        await _booksHubUnitOfWork.UserRoles.ChangeRoleClaimsAsync(updatedRole, token);
+        await _booksHubUnitOfWork.UserRoles.ChangeRolePermissionsAsync(updatedRole, token);
 
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
-            "New {ClaimsCount} claims for role {Name} was setted", 
-            updatedRole.Claims.Count, 
+            "New {PermissionsCount} permissions for role {Name} was setted", 
+            updatedRole.Permissions.Count, 
             updatedRole.Name.Value);
     }
 

@@ -32,7 +32,7 @@ public class RolesController : ControllerBase
     /// Добавляет новую роль в системе.
     /// </summary>
     [HttpPost]
-    [Authorize(Policy = nameof(ClaimType.AddNewRole))]
+    [Authorize(Policy = nameof(PermissionType.AddNewRole))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -48,7 +48,7 @@ public class RolesController : ControllerBase
         {
             await _rolesService.AddRoleAsync(
                 new(new(addNewRoleParams.Name),
-                    addNewRoleParams.Claims),
+                    addNewRoleParams.Permissions),
                 token);
 
             return Ok();
@@ -64,26 +64,26 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>
-    /// Изменяет клэймы для существующей в системе роли.
+    /// Изменяет permissions для существующей в системе роли.
     /// </summary>
     [HttpPut]
-    [Authorize(Policy = nameof(ClaimType.ChangeRoleClaims))]
+    [Authorize(Policy = nameof(PermissionType.ChangeRolePermissions))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("claims/change")]
-    public async Task<IActionResult> ChangeRoleClaimsAsync(
-        [Required][NotNull] ChangeRoleClaimsParams changeRoleClaimsParams,
+    [Route("permissions/change")]
+    public async Task<IActionResult> ChangeRolePermissionsAsync(
+        [Required][NotNull] ChangeRolePermissionsParams changeRolePermissions,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         try
         {
-            await _rolesService.ChangeRoleClaimsAsync(
-                new(new(changeRoleClaimsParams.Name),
-                    changeRoleClaimsParams.Claims),
+            await _rolesService.ChangeRolePermissionsAsync(
+                new(new(changeRolePermissions.Name),
+                    changeRolePermissions.Permissions),
                 token);
 
             return Ok();
@@ -102,7 +102,7 @@ public class RolesController : ControllerBase
     /// Изменяет роль для указанного пользователя.
     /// </summary>
     [HttpPut]
-    [Authorize(Policy = nameof(ClaimType.ChangeUserRole))]
+    [Authorize(Policy = nameof(PermissionType.ChangeUserRole))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

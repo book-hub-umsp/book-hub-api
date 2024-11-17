@@ -5,6 +5,6 @@ namespace BookHub.Contracts.REST.Requests.Account.Roles;
 /// <summary>
 /// Контракт для параметров запроса по добавлению роли.
 /// </summary>
-public sealed class AddNewRoleParams : RoleClaimsParamsBase
+public sealed class AddNewRoleParams : RolePermissionsParamsBase
 {
 }

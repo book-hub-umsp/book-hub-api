@@ -43,10 +43,10 @@ public interface IRolesService
     Task AddRoleAsync(Role role, CancellationToken token);
 
     /// <summary>
-    /// Изменяет клэймы для роли.
+    /// Изменяет permissions для роли.
     /// </summary>
     /// <param name="updatedRole">
-    /// Роль с обновленными клэймами.
+    /// Роль с обновленными permissions.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -54,7 +54,7 @@ public interface IRolesService
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="updatedRole"/> равен <see langword="null"/>.
     /// </exception>
-    Task ChangeRoleClaimsAsync(Role updatedRole, CancellationToken token);
+    Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token);
 
     /// <summary>
     /// Изменяет роль для пользователя.

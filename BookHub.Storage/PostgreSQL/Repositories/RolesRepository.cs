@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-
-using BookHub.Abstractions.Storage.Repositories;
+﻿using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -33,7 +31,7 @@ public sealed class RolesRepository :
                 ?? throw new InvalidOperationException(
                     $"User with id '{userId.Value}' not exists");
 
-        return new(new(storageUser.Role.Name), storageUser.Role.Claims);
+        return new(new(storageUser.Role.Name), storageUser.Role.Permissions);
     }
 
     public async Task AddRoleAsync(Role role, CancellationToken token)
@@ -56,11 +54,11 @@ public sealed class RolesRepository :
             new Models.Role 
             { 
                 Name = role.Name.Value, 
-                Claims = role.Claims.ToArray()
+                Permissions = role.Permissions.ToArray()
             });
     }
 
-    public async Task ChangeRoleClaimsAsync(Role updatedRole, CancellationToken token)
+    public async Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedRole);
 
@@ -72,14 +70,14 @@ public sealed class RolesRepository :
                 ?? throw new InvalidOperationException(
                     $"Role with name '{updatedRole.Name}' is not already exists.");
 
-        existedRole.Claims = updatedRole.Claims.ToArray();
+        existedRole.Permissions = updatedRole.Permissions.ToArray();
     }
 
     public async Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token)
     {
         var storageRoles = await Context.Roles.ToListAsync(token);
 
-        return storageRoles.Select(r => new Role(new(r.Name), r.Claims)).ToList();
+        return storageRoles.Select(r => new Role(new(r.Name), r.Permissions)).ToList();
     }
 
     public async Task ChangeUserRoleAsync(

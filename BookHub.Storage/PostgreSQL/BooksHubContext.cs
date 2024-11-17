@@ -74,8 +74,8 @@ public sealed class BooksHubContext : DbContext
             .UseIdentityAlwaysColumn();
 
         _ = modelBuilder.Entity<Role>()
-            .Property(x => x.Claims)
-            .HasColumnName("claims");
+            .Property(x => x.Permissions)
+            .HasColumnName("permissions");
 
         _ = modelBuilder.Entity<Role>()
             .ToTable("roles");

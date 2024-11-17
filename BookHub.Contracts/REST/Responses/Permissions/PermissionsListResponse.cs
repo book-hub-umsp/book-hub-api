@@ -12,5 +12,5 @@ public sealed class PermissionsListResponse
 {
     [JsonProperty("permissions", Required = Required.Always)]
     [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]
-    public required IReadOnlyCollection<ClaimType> Permissions { get; init; }
+    public required IReadOnlyCollection<PermissionType> Permissions { get; init; }
 }

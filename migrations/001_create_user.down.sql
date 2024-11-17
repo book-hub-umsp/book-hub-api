@@ -4,6 +4,6 @@ DROP TABLE IF EXISTS "users";
 DROP TABLE IF EXISTS "roles";
 
 DROP TYPE IF EXISTS "user_status";
-DROP TYPE IF EXISTS "claim_type";
+DROP TYPE IF EXISTS "permission_type";
 
 COMMIT;
