@@ -1,21 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-using BookHub.Abstractions.Logic.Services.Account;
-using BookHub.API.Roles;
+﻿using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Requests.Account.Roles;
+using BookHub.Contracts.REST.Responses.Permissions;
 using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Newtonsoft.Json.Linq;
-
 namespace BookHub.API.Controllers;
 
 /// <summary>
-/// Контроллер для дополнительных действий.
+/// Контроллер для управления permissions.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -27,114 +21,72 @@ public sealed class PermissionsController : ControllerBase
         IRolesService rolesService,
         ILogger<PermissionsController> logger)
     {
-        _rolesService = rolesService 
-            ?? throw new ArgumentNullException(nameof(rolesService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _rolesService = rolesService
+            ?? throw new ArgumentNullException(nameof(rolesService));
     }
 
     /// <summary>
-    /// Добавляет новую роль в системе.
+    /// Получает все permissions в системе.
     /// </summary>
-    [HttpPost]
-    [Authorize(Policy = nameof(ClaimType.AddNewRole))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    [HttpGet]
+    [ProducesResponseType<PermissionsListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("roles/add")]
-    public async Task<IActionResult> AddNewRoleAsync(
-        [Required][NotNull] AddNewRoleParams addNewRoleParams,
-        CancellationToken token)
+    [Route("all")]
+    public IActionResult GetAllPermissions(CancellationToken token)
     {
-        token.ThrowIfCancellationRequested();
+        _logger.LogInformation("Getting all system permissions");
 
-        try
+        var permissions = Enum.GetValues<ClaimType>();
+
+        return Ok(new PermissionsListResponse
         {
-            await _rolesService.AddRoleAsync(
-                new(new(addNewRoleParams.Name), 
-                    addNewRoleParams.Claims), 
-                token);
-
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
-
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
+            Permissions = permissions
+        });
     }
 
     /// <summary>
-    /// Изменяет клэймы для существующей в системе роли.
+    /// Получает все permissions в системе.
     /// </summary>
-    [HttpPut]
-    [Authorize(Policy = nameof(ClaimType.ChangeRoleClaims))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    /// <param name="userId">
+    /// Идентификатор пользователя.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    [HttpGet]
+    [ProducesResponseType<PermissionsListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("roles/changeClaims")]
-    public async Task<IActionResult> ChangeRoleClaimsAsync(
-        [Required][NotNull] ChangeRoleClaimsParams changeRoleClaimsParams,
+    [Route("user/{userId}")]
+    public async Task<IActionResult> GetUserPermissionsAsync(
+        [FromRoute] long userId,
         CancellationToken token)
     {
-        token.ThrowIfCancellationRequested();
+        _logger.LogInformation("Getting permissions for user {UserId}", userId);
 
-        try
+        var userRole = await _rolesService.GetUserRoleAsync(new(userId), token);
+
+        if (userRole is null)
         {
-            await _rolesService.ChangeRoleClaimsAsync(
-                new(new(changeRoleClaimsParams.Name),
-                    changeRoleClaimsParams.Claims),
-                token);
-
-            return Ok();
+            return BadRequest(new FailureCommandResultResponse
+            {
+                FailureMessage = $"User with id {userId} not found"
+            });
         }
-        catch (InvalidOperationException ex)
+
+        _logger.LogInformation(
+            "{PermissionsCount} permissions were found for user {UserId}",
+            userRole.Claims.Count,
+            userId);
+
+        return Ok(new PermissionsListResponse
         {
-            _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
-
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
-    }
-
-    /// <summary>
-    /// Изменяет роль для указанного пользователя.
-    /// </summary>
-    [HttpPut]
-    [Authorize(Policy = nameof(ClaimType.ChangeUserRole))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("users/changeRole")]
-    public async Task<IActionResult> ChangeUserRoleAsync(
-        [Required][NotNull] ChangeUserRoleParams changeUserRoleParams,
-        CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-
-        try
-        {
-            await _rolesService.ChangeUserRoleAsync(
-                new(changeUserRoleParams.UserId),
-                new(changeUserRoleParams.Name),
-                token);
-
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
-
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
+            Permissions = userRole.Claims
+        });
     }
 
     private readonly IRolesService _rolesService;
