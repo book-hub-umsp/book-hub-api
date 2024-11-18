@@ -30,16 +30,23 @@ public interface IRolesService
     /// <summary>
     /// Изменяет permissions для роли.
     /// </summary>
-    /// <param name="updatedRole">
-    /// Роль с обновленными permissions.
+    /// <param name="roleId">
+    /// Идентификатор роли.
+    /// </param>
+    /// <param name="updatedPermissions">
+    /// Обновленные permissions.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="updatedRole"/> равен <see langword="null"/>.
+    /// Если <paramref name="roleId"/> или <paramref name="updatedPermissions"/>
+    /// равны <see langword="null"/>.
     /// </exception>
-    Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token);
+    Task ChangeRolePermissionsAsync(
+        Id<Role> roleId, 
+        IReadOnlySet<PermissionType> updatedPermissions, 
+        CancellationToken token);
 
     /// <summary>
     /// Изменяет роль для пользователя.
@@ -47,8 +54,8 @@ public interface IRolesService
     /// <param name="userId">
     /// Идентификатор пользователя.
     /// </param>
-    /// <param name="clarifiedRoleName">
-    /// Имя указанной роли.
+    /// <param name="clarifiedRoleId">
+    /// Идентификатор указанной роли.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -58,6 +65,14 @@ public interface IRolesService
     /// </exception>
     Task ChangeUserRoleAsync(
         Id<User> userId, 
-        Name<Role> clarifiedRoleName, 
+        Id<Role> clarifiedRoleId, 
         CancellationToken token);
+
+    /// <summary>
+    /// Получает список всех ролей и их идентификаторов.
+    /// </summary>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token);
 }

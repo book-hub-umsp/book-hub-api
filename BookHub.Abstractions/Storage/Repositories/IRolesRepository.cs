@@ -11,8 +11,11 @@ public interface IRolesRepository
     /// <summary>
     /// Меняет набор <see cref="PermissionType"/> для существующей роли.
     /// </summary>
-    /// <param name="updatedRole">
-    /// Модель роли.
+    /// <param name="roleId">
+    /// Идентификатор роли.
+    /// </param>
+    /// <param name="updatedPermissions">
+    /// Обновленный набор permissions.
     /// </param>
     /// <param name="token">
     /// Токен.
@@ -20,15 +23,18 @@ public interface IRolesRepository
     /// <exception cref="InvalidOperationException">
     /// Если не существует роли с таким же названием.
     /// </exception>
-    public Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token);
+    public Task ChangeRolePermissionsAsync(
+        Id<Role> roleId,
+        IReadOnlySet<PermissionType> updatedPermissions,
+        CancellationToken token);
 
     /// <summary>
-    /// Получает список всех ролей и их клэймов.
+    /// Получает список всех ролей и их идентификаторов.
     /// </summary>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
-    public Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token);
+    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token);
 
     /// <summary>
     /// Возвращает роль для пользователя с указанным идентификатором.
@@ -50,8 +56,8 @@ public interface IRolesRepository
     /// <param name="userId">
     /// Идентификатор пользователя.
     /// </param>
-    /// <param name="clarifiedRoleName">
-    /// Название указанной роли.
+    /// <param name="clarifiedRoleId">
+    /// Идентификатор указанной роли.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -60,10 +66,10 @@ public interface IRolesRepository
     /// Если пользователя с идентификатором <paramref name="userId"/> не существует.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Если не существует роли с таким же названием.
+    /// Если не существует роли с идентификатором <paramref name="clarifiedRoleId"/>.
     /// </exception>
     public Task ChangeUserRoleAsync(
         Id<User> userId, 
-        Name<Role> clarifiedRoleName, 
+        Id<Role> clarifiedRoleId, 
         CancellationToken token);
 }

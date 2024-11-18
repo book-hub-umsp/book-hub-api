@@ -1,6 +1,6 @@
 ﻿using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Responses.Permissions;
+using BookHub.Contracts.REST.Responses.Account.Permissions;
 using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;

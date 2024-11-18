@@ -11,6 +11,6 @@ namespace BookHub.Contracts.REST.Requests.Account.Roles;
 /// </summary>
 public abstract class RoleParamsBase
 {
-    [JsonProperty("name", Required = Required.Always)]
-    public required string Name { get; init; }
+    [JsonProperty("id", Required = Required.Always)]
+    public required long Id { get; init; }
 }

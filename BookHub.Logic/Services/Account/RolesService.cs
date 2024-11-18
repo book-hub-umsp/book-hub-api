@@ -40,43 +40,54 @@ public sealed class RolesService : IRolesService
     }
 
     /// <inheritdoc/>
-    public async Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token)
+    public async Task ChangeRolePermissionsAsync(
+        Id<Role> roleId,
+        IReadOnlySet<PermissionType> updatedPermissions,
+        CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(updatedRole);
+        ArgumentNullException.ThrowIfNull(roleId);
+        ArgumentNullException.ThrowIfNull(updatedPermissions);
 
-        _logger.LogInformation("Changing permissions for role {Name}", updatedRole.Name.Value);
+        _logger.LogInformation("Changing permissions for role {RoleId}", roleId.Value);
 
-        await _booksHubUnitOfWork.UserRoles.ChangeRolePermissionsAsync(updatedRole, token);
+        await _booksHubUnitOfWork.UserRoles
+            .ChangeRolePermissionsAsync(roleId, updatedPermissions, token);
 
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
-            "New {PermissionsCount} permissions for role {Name} was setted", 
-            updatedRole.Permissions.Count, 
-            updatedRole.Name.Value);
+            "New {PermissionsCount} permissions for role {RoleId} was setted", 
+            updatedPermissions.Count, 
+            roleId.Value);
     }
 
     /// <inheritdoc/>
     public async Task ChangeUserRoleAsync(
         Id<User> userId, 
-        Name<Role> clarifiedRoleName, 
+        Id<Role> clarifiedRoleId, 
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
-        ArgumentNullException.ThrowIfNull(clarifiedRoleName);
+        ArgumentNullException.ThrowIfNull(clarifiedRoleId);
 
         _logger.LogInformation(
-            "Setting role {Role} for user {UserId}",
-            clarifiedRoleName.Value,
+            "Setting role {RoleId} for user {UserId}",
+            clarifiedRoleId.Value,
             userId.Value);
 
         await _booksHubUnitOfWork.UserRoles
-            .ChangeUserRoleAsync(userId, clarifiedRoleName, token);
+            .ChangeUserRoleAsync(userId, clarifiedRoleId, token);
 
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("New role for user {UserId} was setted", userId.Value);
+        _logger.LogInformation(
+            "New role {RoleId} for user {UserId} was setted", 
+            clarifiedRoleId.Value,
+            userId.Value);
     }
+
+    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token)
+        => _booksHubUnitOfWork.UserRoles.GetAllRolesAsync(token);
 
     private readonly IBooksHubUnitOfWork _booksHubUnitOfWork;
     private readonly ILogger<RolesService> _logger;

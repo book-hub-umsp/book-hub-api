@@ -3,12 +3,12 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Requests.Account.Roles;
+namespace BookHub.Contracts.REST.Responses.Account.Permissions;
 
 /// <summary>
-/// Базовый класс для параметров роли и его permissions.
+/// Список из permissions, присутствующих в системе.
 /// </summary>
-public abstract class RolePermissionsParamsBase : RoleParamsBase
+public sealed class PermissionsListResponse
 {
     [JsonProperty("permissions", Required = Required.Always)]
     [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]

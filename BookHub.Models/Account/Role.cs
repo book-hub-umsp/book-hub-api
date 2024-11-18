@@ -26,14 +26,4 @@ public sealed class Role
             ? permissions.ToHashSet()
             : [PermissionType.None];
     }
-
-    public bool CompareTo(Name<Role> name)
-        => GetLowerCertainRepresentation(name)
-        == GetLowerCertainRepresentation(Name);
-
-    private static string GetLowerCertainRepresentation(Name<Role> name)
-        => name.Value
-            .Trim()
-            .Replace("_", string.Empty)
-            .ToLowerInvariant();
 }

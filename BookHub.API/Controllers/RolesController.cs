@@ -1,11 +1,13 @@
-﻿using BookHub.Abstractions.Logic.Services.Account;
-using BookHub.Contracts.REST.Requests.Account.Roles;
-using BookHub.Contracts;
-using BookHub.Models.Account;
-using Microsoft.AspNetCore.Authorization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
+using BookHub.Abstractions.Logic.Services.Account;
+using BookHub.Contracts;
+using BookHub.Contracts.REST.Requests.Account.Roles;
+using BookHub.Contracts.REST.Responses.Account.Roles;
+using BookHub.Models.Account;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Controllers;
@@ -29,6 +31,33 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>
+    /// Получает список ролей в системе.
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType<RolesListResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Route("all")]
+    public async Task<IActionResult> GetAllRolesAsync(CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+
+        var rolesList = await _rolesService.GetAllRolesAsync(token);
+
+        var dto = new RolesListResponse
+        {
+            Roles = rolesList.Select(tuple => new RoleDTO
+            {
+                RoleId = tuple.Item1.Value,
+                Name = tuple.Item2.Name.Value,
+                Permissions = tuple.Item2.Permissions
+            })
+            .ToList()
+        };
+
+        return Ok(dto);
+    }
+
+    /// <summary>
     /// Изменяет permissions для существующей в системе роли.
     /// </summary>
     [HttpPut]
@@ -47,8 +76,8 @@ public class RolesController : ControllerBase
         try
         {
             await _rolesService.ChangeRolePermissionsAsync(
-                new(new(changeRolePermissions.Name),
-                    changeRolePermissions.Permissions),
+                new(changeRolePermissions.Id),
+                changeRolePermissions.Permissions.ToHashSet(),
                 token);
 
             return Ok();
@@ -83,7 +112,7 @@ public class RolesController : ControllerBase
         {
             await _rolesService.ChangeUserRoleAsync(
                 new(changeUserRoleParams.UserId),
-                new(changeUserRoleParams.Name),
+                new(changeUserRoleParams.Id),
                 token);
 
             return Ok();
