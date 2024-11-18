@@ -138,7 +138,7 @@ public sealed class BooksHubContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         _ = modelBuilder.Entity<FavoriteLink>()
-            .ToTable("favourites");
+            .ToTable("favorites");
 
         _ = modelBuilder.Entity<FavoriteLink>()
             .Property(l => l.UserId)
