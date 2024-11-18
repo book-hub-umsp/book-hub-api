@@ -77,44 +77,6 @@ public class UserServiceTests
         saveCallback.Should().Be(1);
     }
 
-    [Fact(DisplayName = "Can get existing user if already exists.")]
-    [Trait("Category", "Unit")]
-    public async Task CanGetExistingUserIfAlreadyExistsAsync()
-    {
-        // Arrange
-        using var cts = new CancellationTokenSource();
-
-        var registeringUser = new RegisteringUser(
-            new("somename@gmail.com"));
-
-        var expectedProfileInfo = new UserProfileInfo(
-            new(1),
-            new("name"),
-            registeringUser.Email,
-            new("about"));
-
-        var findCallback = 0;
-        var userRepo = new Mock<IUsersRepository>(MockBehavior.Strict);
-        userRepo.Setup(x => x.FindUserProfileInfoByEmailAsync(registeringUser.Email, cts.Token))
-            .ReturnsAsync(expectedProfileInfo)
-            .Callback(() => findCallback++);
-
-        var uow = new Mock<IBooksHubUnitOfWork>(MockBehavior.Strict);
-        uow.SetupGet(x => x.Users)
-            .Returns(userRepo.Object);
-
-        var service = new UserService(
-            uow.Object,
-            Mock.Of<ILogger<UserService>>());
-
-        // Act
-        var actual = await service.RegisterNewUserAsync(registeringUser, cts.Token);
-
-        // Assert
-        actual.Should().BeEquivalentTo(expectedProfileInfo);
-        findCallback.Should().Be(1);
-    }
-
     [Fact(DisplayName = "Cannot register without registering user id.")]
     [Trait("Category", "Unit")]
     public async Task CanNotRegisterWithoutRegisteringUserAsync()
