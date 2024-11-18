@@ -1,5 +1,7 @@
-﻿using BookHub.Abstractions.Storage;
+﻿using BookHub.Abstractions.Logic.Services.Favorite;
+using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
+using BookHub.Logic.Services.Favorite;
 using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 using BookHub.Storage.PostgreSQL;
@@ -25,6 +27,8 @@ public static class StorageExtensions
             .AddScoped<IBooksRepository, BooksRepository>()
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
+            .AddScoped<IFavoriteLinkRepository, FavoriteLinkRepository>()
+            .AddScoped<IUserFavoriteService, UserFavoriteService>()
             .AddScoped<IRolesRepository, RolesRepository>()
 
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
