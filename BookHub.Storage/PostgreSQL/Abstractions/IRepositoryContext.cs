@@ -11,7 +11,7 @@ public interface IRepositoryContext
 {
     public DbSet<User> Users { get; }
 
-    public DbSet<Role> Roles { get; }
+    public DbSet<Role> UserRoles { get; }
 
     public DbSet<Book> Books { get; }
 

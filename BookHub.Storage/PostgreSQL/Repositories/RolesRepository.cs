@@ -43,7 +43,7 @@ public sealed class RolesRepository :
         ArgumentNullException.ThrowIfNull(updatedPermissions);
 
         var existedRole =
-            await Context.Roles
+            await Context.UserRoles
                 .SingleOrDefaultAsync(
                     x => x.Id == roleId.Value,
                     token) 
@@ -55,7 +55,7 @@ public sealed class RolesRepository :
 
     public async Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token)
     {
-        var storageRoles = await Context.Roles.ToListAsync(token);
+        var storageRoles = await Context.UserRoles.ToListAsync(token);
 
         return storageRoles
             .Select(role => (new Id<Role>(role.Id), new Role(new(role.Name), role.Permissions)))
@@ -76,7 +76,7 @@ public sealed class RolesRepository :
                     $"User with id {userId.Value} not exists");
 
         var existedRole =
-            await Context.Roles
+            await Context.UserRoles
                 .SingleOrDefaultAsync(
                 x => x.Id == clarifiedRoleId.Value,
                     token)

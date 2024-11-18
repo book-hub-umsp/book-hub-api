@@ -12,7 +12,7 @@ public sealed class RepositoryContext : IRepositoryContext
 {
     public DbSet<User> Users => _context.Users;
 
-    public DbSet<Role> Roles => _context.Roles;
+    public DbSet<Role> UserRoles => _context.UserRoles;
 
     public DbSet<Book> Books => _context.Books;
 
