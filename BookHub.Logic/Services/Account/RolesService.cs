@@ -23,20 +23,11 @@ public sealed class RolesService : IRolesService
     }
 
     /// <inheritdoc/>
-    public async Task<Role?> GetUserRoleAsync(Id<User> userId, CancellationToken token)
+    public async Task<Role> GetUserRoleAsync(Id<User> userId, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        try
-        {
-            return await _booksHubUnitOfWork.UserRoles.GetUserRoleAsync(userId, token);
-        }
-        catch (InvalidOperationException)
-        {
-            _logger.LogWarning("Not found user with user id {UserId}", userId.Value);
-
-            return null;
-        }
+        return await _booksHubUnitOfWork.UserRoles.GetUserRoleAsync(userId, token);
     }
 
     /// <inheritdoc/>

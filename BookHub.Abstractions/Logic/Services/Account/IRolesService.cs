@@ -18,14 +18,13 @@ public interface IRolesService
     /// Токен отмены.
     /// </param>
     /// <returns>
-    /// <see cref="Role"/>
-    /// если пользователь был найден,
-    /// иначе - <see langword="null"/>.
-    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="userId"/> равен <see langword="null"/>.
     /// </exception>
-    Task<Role?> GetUserRoleAsync(Id<User> userId, CancellationToken token);
+    /// <exception cref="InvalidOperationException">
+    /// Если пользователя с идентификатором <paramref name="userId"/> не существует.
+    /// </exception>
+    Task<Role> GetUserRoleAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>
     /// Изменяет permissions для роли.

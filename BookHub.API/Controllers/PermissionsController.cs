@@ -63,27 +63,28 @@ public sealed class PermissionsController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogInformation("Getting permissions for user {UserId}", userId);
+        _logger.LogInformation("Trying get permissions for user {UserId}", userId);
 
-        var userRole = await _rolesService.GetUserRoleAsync(new(userId), token);
-
-        if (userRole is null)
+        try
         {
-            return BadRequest(new FailureCommandResultResponse
+            var userRole = await _rolesService.GetUserRoleAsync(new(userId), token);
+
+            _logger.LogInformation(
+                "{PermissionsCount} permissions were found for user {UserId}",
+                userRole.Permissions.Count,
+                userId);
+
+            return Ok(new PermissionsListResponse
             {
-                FailureMessage = $"User with id {userId} not found"
+                Permissions = userRole.Permissions
             });
         }
-
-        _logger.LogInformation(
-            "{PermissionsCount} permissions were found for user {UserId}",
-            userRole.Permissions.Count,
-            userId);
-
-        return Ok(new PermissionsListResponse
+        catch (InvalidOperationException ex)
         {
-            Permissions = userRole.Permissions
-        });
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
     }
 
     private readonly IRolesService _rolesService;

@@ -2,8 +2,12 @@
 
 using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.API.Authentification;
+using BookHub.Models;
+using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
+
+using Newtonsoft.Json.Linq;
 
 namespace BookHub.API.Roles;
 
@@ -28,27 +32,33 @@ public sealed class PermissionTypeAuthorizationHandler :
         AuthorizationHandlerContext context,
         PermissionTypeRequirement requirement)
     {
-        var userId = context.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME);
+        var userStringId = context.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME);
 
-        if (userId is null)
+        if (userStringId is null)
         {
             _logger.LogWarning("No authentificated user found in context");
 
             return;
         }
 
-        var role = await _rolesService.GetUserRoleAsync(
-            new(Convert.ToInt64(userId)),
-            CancellationToken.None);
+        var userId = new Id<User>(Convert.ToInt64(userStringId));
 
-        if (role is null)
+        try
         {
-            return;
+            var role = await _rolesService.GetUserRoleAsync(
+                userId,
+                CancellationToken.None);
+
+            if (role.Permissions.Contains(requirement.Permission))
+            {
+                context.Succeed(requirement);
+            }
         }
-
-        if (role.Permissions.Contains(requirement.Permission))
+        catch (InvalidOperationException)
         {
-            context.Succeed(requirement);
+            _logger.LogWarning("Not found user with user id {UserId}", userId.Value);
+
+            return;
         }
     }
 
