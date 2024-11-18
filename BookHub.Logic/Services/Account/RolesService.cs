@@ -39,7 +39,7 @@ public sealed class RolesService : IRolesService
         ArgumentNullException.ThrowIfNull(roleId);
         ArgumentNullException.ThrowIfNull(updatedPermissions);
 
-        _logger.LogInformation("Changing permissions for role {RoleId}", roleId.Value);
+        _logger.LogDebug("Changing permissions for role {RoleId}", roleId.Value);
 
         await _booksHubUnitOfWork.UserRoles
             .ChangeRolePermissionsAsync(roleId, updatedPermissions, token);
@@ -61,7 +61,7 @@ public sealed class RolesService : IRolesService
         ArgumentNullException.ThrowIfNull(userId);
         ArgumentNullException.ThrowIfNull(clarifiedRoleId);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Setting role {RoleId} for user {UserId}",
             clarifiedRoleId.Value,
             userId.Value);
