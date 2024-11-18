@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using BookHub.Abstractions;
 using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.API.Authentification;
 using BookHub.Models;
@@ -19,9 +20,12 @@ public sealed class PermissionTypeAuthorizationHandler :
     AuthorizationHandler<PermissionTypeRequirement>
 {
     public PermissionTypeAuthorizationHandler(
+        IHttpUserIdentityFacade idFacade,
         IRolesService rolesService,
         ILogger<PermissionTypeAuthorizationHandler> logger)
     {
+        _idFacade = idFacade
+            ?? throw new ArgumentNullException(nameof(idFacade));
         _rolesService = rolesService
             ?? throw new ArgumentNullException(nameof(rolesService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -32,16 +36,14 @@ public sealed class PermissionTypeAuthorizationHandler :
         AuthorizationHandlerContext context,
         PermissionTypeRequirement requirement)
     {
-        var userStringId = context.User.FindFirstValue(Auth.ClaimTypes.USER_ID_CLAIM_NAME);
+        var userId = _idFacade.Id;
 
-        if (userStringId is null)
+        if (userId is null)
         {
             _logger.LogWarning("No authentificated user found in context");
 
             return;
         }
-
-        var userId = new Id<User>(Convert.ToInt64(userStringId));
 
         try
         {
@@ -62,6 +64,7 @@ public sealed class PermissionTypeAuthorizationHandler :
         }
     }
 
+    private readonly IHttpUserIdentityFacade _idFacade;
     private readonly IRolesService _rolesService;
     private readonly ILogger<PermissionTypeAuthorizationHandler> _logger;
 }
