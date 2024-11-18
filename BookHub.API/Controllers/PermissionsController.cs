@@ -46,7 +46,7 @@ public sealed class PermissionsController : ControllerBase
     }
 
     /// <summary>
-    /// Получает все permissions в системе.
+    /// Получает все permissions у пользователя.
     /// </summary>
     /// <param name="userId">
     /// Идентификатор пользователя.
