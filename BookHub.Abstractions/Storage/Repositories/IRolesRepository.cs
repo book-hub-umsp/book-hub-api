@@ -9,7 +9,7 @@ namespace BookHub.Abstractions.Storage.Repositories;
 public interface IRolesRepository
 {
     /// <summary>
-    /// Меняет набор <see cref="PermissionType"/> для существующей роли.
+    /// Меняет набор <see cref="Permission"/> для существующей роли.
     /// </summary>
     /// <param name="roleId">
     /// Идентификатор роли.
@@ -25,16 +25,16 @@ public interface IRolesRepository
     /// </exception>
     public Task ChangeRolePermissionsAsync(
         Id<Role> roleId,
-        IReadOnlySet<PermissionType> updatedPermissions,
+        IReadOnlySet<Permission> updatedPermissions,
         CancellationToken token);
 
     /// <summary>
-    /// Получает список всех ролей и их идентификаторов.
+    /// Получает список всех ролей.
     /// </summary>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
-    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token);
+    public Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token);
 
     /// <summary>
     /// Возвращает роль для пользователя с указанным идентификатором.

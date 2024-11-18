@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Mail;
+using System.Security.Claims;
 
 using BookHub.Logic.Services.Account;
 
@@ -37,9 +38,20 @@ public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsReq
             return;
         }
 
-        var userInfo = await _userService.RegisterNewUserOrGetExistingAsync(
-            new(new(email)),
-            CancellationToken.None);
+        var mailAddress = new MailAddress(email);
+        var userInfo = await _userService.FindUserProfileInfoByEmailAsync(mailAddress, CancellationToken.None);
+
+        if (userInfo is null)
+        {
+            if (requirement.NeedRegisterIfNotExists)
+            {
+                userInfo = await _userService.RegisterNewUserAsync(new(mailAddress), CancellationToken.None);
+            }
+            else
+            {
+                return;
+            }
+        }
 
         _logger.LogInformation("Auth user name is: {UserName}", userInfo.Name);
 

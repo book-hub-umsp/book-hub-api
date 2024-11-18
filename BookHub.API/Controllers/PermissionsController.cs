@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Controllers;
 
+//Todo: сделать только для админов
 /// <summary>
 /// Контроллер для управления permissions.
 /// </summary>
@@ -37,11 +38,11 @@ public sealed class PermissionsController : ControllerBase
     {
         _logger.LogInformation("Getting all system permissions");
 
-        var permissions = Enum.GetValues<PermissionType>();
+        var permissions = Enum.GetValues<Permission>();
 
         return Ok(new PermissionsListResponse
         {
-            Permissions = permissions
+            Permissions = permissions.ToList(),
         });
     }
 
@@ -63,7 +64,7 @@ public sealed class PermissionsController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogInformation("Trying get permissions for user {UserId}", userId);
+        _logger.LogDebug("Trying get permissions for user {UserId}", userId);
 
         try
         {

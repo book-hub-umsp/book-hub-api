@@ -5,4 +5,5 @@ namespace BookHub.API.Authentification;
 /// <summary>
 /// Маркер-требование для <see cref="UserExistsAuthorizationHandler"/>.
 /// </summary>
-public class UserExistsRequirementMarker : IAuthorizationRequirement;
+public readonly record struct UserExistsRequirementMarker(bool NeedRegisterIfNotExists = false) 
+    : IAuthorizationRequirement;

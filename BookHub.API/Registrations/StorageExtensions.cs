@@ -41,7 +41,7 @@ static internal class StorageExtensions
         _ = dataSourceBuilder
             .MapEnum<BookStatus>()
             .MapEnum<UserStatus>()
-            .MapEnum<PermissionType>();
+            .MapEnum<Permission>("permission_type");
 
         var source = dataSourceBuilder.Build();
 

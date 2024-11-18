@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Requests.Account.Roles;
 using BookHub.Contracts.REST.Responses.Account.Roles;
 using BookHub.Models.Account;
 
@@ -30,6 +28,7 @@ public class RolesController : ControllerBase
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    //Todo: сделать только для админов.
     /// <summary>
     /// Получает список ролей в системе.
     /// </summary>
@@ -45,11 +44,11 @@ public class RolesController : ControllerBase
 
         var dto = new RolesListResponse
         {
-            Roles = rolesList.Select(tuple => new RoleDTO
+            Roles = rolesList.Select(x => new RoleDTO
             {
-                RoleId = tuple.Item1.Value,
-                Name = tuple.Item2.Name.Value,
-                Permissions = tuple.Item2.Permissions
+                RoleId = x.Id.Value,
+                Name = x.Name.Value,
+                Permissions = x.Permissions
             })
             .ToList()
         };
@@ -60,15 +59,16 @@ public class RolesController : ControllerBase
     /// <summary>
     /// Изменяет permissions для существующей в системе роли.
     /// </summary>
-    [HttpPut]
-    [Authorize(Policy = nameof(PermissionType.ChangeRolePermissions))]
+    [HttpPatch]
+    [Authorize(Policy = nameof(Permission.ChangeRolePermissions))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("permissions/change")]
+    [Route("{roleId}/permissions/change")]
     public async Task<IActionResult> ChangeRolePermissionsAsync(
-        [Required][NotNull] ChangeRolePermissionsParams changeRolePermissions,
+        [FromRoute] long roleId,
+        [Required][FromQuery] IReadOnlyCollection<Permission> permissions,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -76,8 +76,8 @@ public class RolesController : ControllerBase
         try
         {
             await _rolesService.ChangeRolePermissionsAsync(
-                new(changeRolePermissions.Id),
-                changeRolePermissions.Permissions.ToHashSet(),
+                new(roleId),
+                permissions.ToHashSet(),
                 token);
 
             return Ok();
@@ -93,15 +93,16 @@ public class RolesController : ControllerBase
     /// <summary>
     /// Изменяет роль для указанного пользователя.
     /// </summary>
-    [HttpPut]
-    [Authorize(Policy = nameof(PermissionType.ChangeUserRole))]
+    [HttpPatch]
+    [Authorize(Policy = nameof(Permission.ChangeUserRole))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("users/change")]
+    [Route("users/{userId}/set/{roleId}")]
     public async Task<IActionResult> ChangeUserRoleAsync(
-        [Required][NotNull] ChangeUserRoleParams changeUserRoleParams,
+        [FromRoute] long userId,
+        [FromRoute] long roleId,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -109,8 +110,8 @@ public class RolesController : ControllerBase
         try
         {
             await _rolesService.ChangeUserRoleAsync(
-                new(changeUserRoleParams.UserId),
-                new(changeUserRoleParams.Id),
+                new(userId),
+                new(roleId),
                 token);
 
             return Ok();

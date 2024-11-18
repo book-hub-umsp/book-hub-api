@@ -11,7 +11,7 @@ public sealed class Role
 
     public string Name { get; set; } = null!;
 
-    public PermissionType[] Permissions { get; set; } = null!;
+    public Permission[] Permissions { get; set; } = null!;
 
     public ICollection<User> Users { get; set; } = null!;
 }

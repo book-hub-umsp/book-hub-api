@@ -69,7 +69,7 @@ public class UserServiceTests
             Mock.Of<ILogger<UserService>>());
 
         // Act
-        var actual = await service.RegisterNewUserOrGetExistingAsync(registeringUser, cts.Token);
+        var actual = await service.RegisterNewUserAsync(registeringUser, cts.Token);
 
         // Assert
         actual.Should().BeEquivalentTo(expectedProfileInfo);
@@ -108,7 +108,7 @@ public class UserServiceTests
             Mock.Of<ILogger<UserService>>());
 
         // Act
-        var actual = await service.RegisterNewUserOrGetExistingAsync(registeringUser, cts.Token);
+        var actual = await service.RegisterNewUserAsync(registeringUser, cts.Token);
 
         // Assert
         actual.Should().BeEquivalentTo(expectedProfileInfo);
@@ -128,7 +128,7 @@ public class UserServiceTests
 
         // Act
         var exception = await Record.ExceptionAsync(async () =>
-            await service.RegisterNewUserOrGetExistingAsync(null!, cts.Token));
+            await service.RegisterNewUserAsync(null!, cts.Token));
 
         // Assert
         exception.Should().BeOfType<ArgumentNullException>();

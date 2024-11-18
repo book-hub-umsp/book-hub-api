@@ -1,9 +1,9 @@
 ﻿namespace BookHub.Models.Account;
 
 /// <summary>
-/// Тип permission для действия пользователя.
+/// Разрешение для действия пользователя.
 /// </summary>
-public enum PermissionType
+public enum Permission
 {
     /// <summary>
     /// Дефолтное значение, заглушка.

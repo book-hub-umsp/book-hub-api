@@ -9,21 +9,24 @@ namespace BookHub.Models.Account;
 /// </summary>
 public sealed class Role
 {
+    public Id<Role> Id { get; }
+
     public Name<Role> Name { get; }
 
-    public IReadOnlySet<PermissionType> Permissions { get; }
+    public IReadOnlySet<Permission> Permissions { get; }
 
     public Role(
+        Id<Role> id,
         Name<Role> name, 
-        IReadOnlyCollection<PermissionType> permissions)
+        IReadOnlyCollection<Permission> permissions)
     {
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(permissions);
+        ArgumentNullException.ThrowIfNull(id);
+        Id = id;
 
+        ArgumentNullException.ThrowIfNull(name);
         Name = new(name.Value.Trim());
 
-        Permissions = permissions.Any()
-            ? permissions.ToHashSet()
-            : [PermissionType.None];
+        ArgumentNullException.ThrowIfNull(permissions);
+        Permissions = permissions.ToHashSet();
     }
 }

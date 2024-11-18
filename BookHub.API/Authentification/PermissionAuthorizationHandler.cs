@@ -1,28 +1,21 @@
-﻿using System.Security.Claims;
-
-using BookHub.Abstractions;
+﻿using BookHub.Abstractions;
 using BookHub.Abstractions.Logic.Services.Account;
-using BookHub.API.Authentification;
-using BookHub.Models;
-using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
 
-using Newtonsoft.Json.Linq;
-
-namespace BookHub.API.Roles;
+namespace BookHub.API.Authentification;
 
 /// <summary>
 /// Промежуточный обработчик авторизации, проверяющий,
 /// удовлетворяет ли необходимый permission для метода API опциям роли пользователя.
 /// </summary>
-public sealed class PermissionTypeAuthorizationHandler :
-    AuthorizationHandler<PermissionTypeRequirement>
+public sealed class PermissionAuthorizationHandler :
+    AuthorizationHandler<PermissionRequirement>
 {
-    public PermissionTypeAuthorizationHandler(
+    public PermissionAuthorizationHandler(
         IHttpUserIdentityFacade idFacade,
         IRolesService rolesService,
-        ILogger<PermissionTypeAuthorizationHandler> logger)
+        ILogger<PermissionAuthorizationHandler> logger)
     {
         _idFacade = idFacade
             ?? throw new ArgumentNullException(nameof(idFacade));
@@ -34,7 +27,7 @@ public sealed class PermissionTypeAuthorizationHandler :
     /// <inheritdoc/>
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
-        PermissionTypeRequirement requirement)
+        PermissionRequirement requirement)
     {
         var userId = _idFacade.Id;
 
@@ -45,26 +38,17 @@ public sealed class PermissionTypeAuthorizationHandler :
             return;
         }
 
-        try
-        {
-            var role = await _rolesService.GetUserRoleAsync(
-                userId,
-                CancellationToken.None);
+        var role = await _rolesService.GetUserRoleAsync(
+            userId,
+            CancellationToken.None);
 
-            if (role.Permissions.Contains(requirement.Permission))
-            {
-                context.Succeed(requirement);
-            }
-        }
-        catch (InvalidOperationException)
+        if (role.Permissions.Contains(requirement.Permission))
         {
-            _logger.LogWarning("Not found user with user id {UserId}", userId.Value);
-
-            return;
+            context.Succeed(requirement);
         }
     }
 
     private readonly IHttpUserIdentityFacade _idFacade;
     private readonly IRolesService _rolesService;
-    private readonly ILogger<PermissionTypeAuthorizationHandler> _logger;
+    private readonly ILogger<PermissionAuthorizationHandler> _logger;
 }

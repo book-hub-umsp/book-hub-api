@@ -44,7 +44,7 @@ public interface IRolesService
     /// </exception>
     Task ChangeRolePermissionsAsync(
         Id<Role> roleId, 
-        IReadOnlySet<PermissionType> updatedPermissions, 
+        IReadOnlySet<Permission> updatedPermissions, 
         CancellationToken token);
 
     /// <summary>
@@ -73,5 +73,5 @@ public interface IRolesService
     /// <param name="token">
     /// Токен отмены.
     /// </param>
-    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token);
+    public Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token);
 }

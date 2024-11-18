@@ -10,7 +10,10 @@ namespace BookHub.Contracts.REST.Responses.Account.Permissions;
 /// </summary>
 public sealed class PermissionsListResponse
 {
-    [JsonProperty("permissions", Required = Required.Always)]
-    [JsonConverter(typeof(StringEnumConverter), typeof(SnakeCaseNamingStrategy))]
-    public required IReadOnlyCollection<PermissionType> Permissions { get; init; }
+    [JsonProperty(
+        "permissions",
+        ItemConverterType = typeof(StringEnumConverter),
+        ItemConverterParameters = [typeof(SnakeCaseNamingStrategy)],        
+        Required = Required.Always)]
+    public required IReadOnlyCollection<Permission> Permissions { get; init; }
 }

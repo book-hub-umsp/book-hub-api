@@ -33,7 +33,7 @@ public sealed class RolesService : IRolesService
     /// <inheritdoc/>
     public async Task ChangeRolePermissionsAsync(
         Id<Role> roleId,
-        IReadOnlySet<PermissionType> updatedPermissions,
+        IReadOnlySet<Permission> updatedPermissions,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(roleId);
@@ -77,7 +77,7 @@ public sealed class RolesService : IRolesService
             userId.Value);
     }
 
-    public Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token)
+    public Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token)
         => _booksHubUnitOfWork.UserRoles.GetAllRolesAsync(token);
 
     private readonly IBooksHubUnitOfWork _booksHubUnitOfWork;

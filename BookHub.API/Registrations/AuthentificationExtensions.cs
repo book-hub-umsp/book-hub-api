@@ -1,7 +1,6 @@
 ﻿using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
 using BookHub.API.Authentification.Configuration.JWT;
-using BookHub.API.Roles;
 using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +16,7 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
-            .AddScoped<IAuthorizationHandler, PermissionTypeAuthorizationHandler>()
+            .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
             .AddAuthorization(configuration)
@@ -130,9 +129,14 @@ public static class AuthentificationExtensions
         => services
             .AddAuthorizationBuilder()
             .AddDefaultPolicy(
-                "DefaultPolicy",
+                Auth.Policies.DEFAULT_POLICY,
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
+                    .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))
+            .AddPolicy(
+                Auth.Policies.ALLOW_REGISTER_POLICY,
+                opt => opt
+                    .AddRequirements(new UserExistsRequirementMarker(NeedRegisterIfNotExists: true))
                     .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))
             .AddPolicy(
                 Auth.AuthProviders.GOOGLE,
@@ -144,25 +148,19 @@ public static class AuthentificationExtensions
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
-            .AddClaimsForAuthorizationBuilder()
-            .Services;
+            .AddPermissionPolicies();
 
-    private static AuthorizationBuilder AddClaimsForAuthorizationBuilder(
+    private static IServiceCollection AddPermissionPolicies(
         this AuthorizationBuilder authorizationBuilder)
     {
-        foreach (var permission in Enum.GetValues<PermissionType>())
+        foreach (var permission in Enum.GetValues<Permission>())
         {
-            authorizationBuilder.AddPermissionRequirement(permission);
+            _ = authorizationBuilder.AddPolicy(
+                permission.ToString(),
+                opt => opt
+                    .AddRequirements(new PermissionRequirement(permission)));
         }
 
-        return authorizationBuilder;
+        return authorizationBuilder.Services;
     }
-
-    private static AuthorizationBuilder AddPermissionRequirement(
-        this AuthorizationBuilder authorizationBuilder,
-        PermissionType permissionType)
-        => authorizationBuilder
-            .AddPolicy(
-                permissionType.ToString(),
-                opt => opt.AddRequirements(new PermissionTypeRequirement(permissionType)));
 }

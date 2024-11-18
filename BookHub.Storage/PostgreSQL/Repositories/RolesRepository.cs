@@ -24,19 +24,24 @@ public sealed class RolesRepository :
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        var storageUser = await Context.Users
+        var userRole = await Context.Users
             .AsNoTracking()
-            .Select(x => new { x.Id, x.Role })
-            .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
+            .Where(x => x.Id == userId.Value)
+            .Include(x => x.Role)
+            .Select(x => x.Role)
+            .SingleOrDefaultAsync(token)
                 ?? throw new InvalidOperationException(
                     $"User with id '{userId.Value}' not exists");
 
-        return new(new(storageUser.Role.Name), storageUser.Role.Permissions);
+        return new(
+            new(userRole.Id),
+            new(userRole.Name), 
+            userRole.Permissions);
     }
 
     public async Task ChangeRolePermissionsAsync(
         Id<Role> roleId,
-        IReadOnlySet<PermissionType> updatedPermissions, 
+        IReadOnlySet<Permission> updatedPermissions, 
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(roleId);
@@ -48,17 +53,21 @@ public sealed class RolesRepository :
                     x => x.Id == roleId.Value,
                     token) 
                 ?? throw new InvalidOperationException(
-                    $"Role '{roleId.Value}' is not already exists.");
+                    $"Role '{roleId.Value}' does not exists.");
 
         existedRole.Permissions = updatedPermissions.ToArray();
     }
 
-    public async Task<IReadOnlyCollection<(Id<Role>, Role)>> GetAllRolesAsync(CancellationToken token)
+    public async Task<IReadOnlyCollection<Role>> GetAllRolesAsync(CancellationToken token)
     {
         var storageRoles = await Context.UserRoles.ToListAsync(token);
 
         return storageRoles
-            .Select(role => (new Id<Role>(role.Id), new Role(new(role.Name), role.Permissions)))
+            .Select(role => 
+                new Role(
+                    new(role.Id), 
+                    new(role.Name), 
+                    role.Permissions))
             .ToList();
     }
 
@@ -72,16 +81,14 @@ public sealed class RolesRepository :
 
         var storageUser = await Context.Users
             .SingleOrDefaultAsync(x => x.Id == userId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"User with id {userId.Value} not exists");
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} does not exists");
 
-        var existedRole =
-            await Context.UserRoles
-                .SingleOrDefaultAsync(
-                x => x.Id == clarifiedRoleId.Value,
-                    token)
-                ?? throw new InvalidOperationException(
-                    $"Role '{clarifiedRoleId.Value}' is not already exists.");
+        var existedRole = await Context.UserRoles
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == clarifiedRoleId.Value, token)
+            ?? throw new InvalidOperationException(
+                $"Role '{clarifiedRoleId.Value}' does not exists.");
 
         storageUser.RoleId = clarifiedRoleId.Value;
     }
