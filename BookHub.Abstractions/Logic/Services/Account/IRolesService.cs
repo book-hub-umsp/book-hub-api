@@ -1,6 +1,5 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
-using System.Net.Mail;
 
 namespace BookHub.Abstractions.Logic.Services.Account;
 
@@ -27,20 +26,6 @@ public interface IRolesService
     /// Если <paramref name="userId"/> равен <see langword="null"/>.
     /// </exception>
     Task<Role?> GetUserRoleAsync(Id<User> userId, CancellationToken token);
-
-    /// <summary>
-    /// Добавляет новую роль в систему.
-    /// </summary>
-    /// <param name="role">
-    /// Новая роль.
-    /// </param>
-    /// <param name="token">
-    /// Токен отмены.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="role"/> равен <see langword="null"/>.
-    /// </exception>
-    Task AddRoleAsync(Role role, CancellationToken token);
 
     /// <summary>
     /// Изменяет permissions для роли.
@@ -71,5 +56,8 @@ public interface IRolesService
     /// <exception cref="ArgumentNullException">
     /// Если один из параметров равен равен <see langword="null"/>.
     /// </exception>
-    Task ChangeUserRoleAsync(Id<User> userId, Name<Role> clarifiedRoleName, CancellationToken token);
+    Task ChangeUserRoleAsync(
+        Id<User> userId, 
+        Name<Role> clarifiedRoleName, 
+        CancellationToken token);
 }

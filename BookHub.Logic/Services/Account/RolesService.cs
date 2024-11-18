@@ -40,23 +40,6 @@ public sealed class RolesService : IRolesService
     }
 
     /// <inheritdoc/>
-    public async Task AddRoleAsync(Role role, CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(role);
-
-        _logger.LogInformation("Adding new role {Name}", role.Name.Value);
-
-        await _booksHubUnitOfWork.UserRoles.AddRoleAsync(role, token);
-
-        await _booksHubUnitOfWork.SaveChangesAsync(token);
-
-        _logger.LogInformation(
-            "Role {Name} with {PermissionsCount} was added", 
-            role.Name.Value,
-            role.Permissions.Count);
-    }
-
-    /// <inheritdoc/>
     public async Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedRole);

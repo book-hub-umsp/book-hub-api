@@ -24,7 +24,5 @@ public enum PermissionType
 
     ChangeUserRole,
 
-    AddNewRole,
-
     ChangeRolePermissions,
 }

@@ -1,7 +1,7 @@
 BEGIN;
 
 CREATE TYPE user_status as ENUM ('active', 'blocked', 'deleted');
-CREATE TYPE claim_type as ENUM ('none', 'moderate_comments', 'moderate_reviews', 'create_topics', 'change_book_visibility', 'manage_user_actions', 'manage_user_accounts', 'change_user_role');
+CREATE TYPE claim_type as ENUM ('none', 'moderate_comments', 'moderate_reviews', 'create_topics', 'change_book_visibility', 'manage_user_actions', 'manage_user_accounts', 'change_user_role', 'change_role_claims');
 
 CREATE TABLE roles (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
@@ -25,6 +25,6 @@ CREATE TABLE users (
 
 INSERT INTO roles (name, claims) VALUES ('default_user', '{"none"}');
 INSERT INTO roles (name, claims) VALUES ('moderator', '{"moderate_comments", "moderate_reviews", "create_topics", "change_book_visibility"}');
-INSERT INTO roles (name, claims) VALUES ('admin', '{"manage_user_actions", "manage_user_accounts", "change_user_role", "add_new_role", "change_role_claims"}');
+INSERT INTO roles (name, claims) VALUES ('admin', '{"manage_user_actions", "manage_user_accounts", "change_user_role", "change_role_claims"}');
 
 COMMIT;

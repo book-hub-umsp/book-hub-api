@@ -34,30 +34,6 @@ public sealed class RolesRepository :
         return new(new(storageUser.Role.Name), storageUser.Role.Permissions);
     }
 
-    public async Task AddRoleAsync(Role role, CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(role);
-
-        var existedRole = 
-            await Context.Roles.AsNoTracking()
-                .SingleOrDefaultAsync(
-                    x => role.CompareTo(new(x.Name)), 
-                    token);
-
-        if (existedRole is not null)
-        {
-            throw new InvalidOperationException(
-                $"Role with name '{role.Name}' is already exists.");
-        }
-
-        _ = Context.Roles.Add(
-            new Models.Role 
-            { 
-                Name = role.Name.Value, 
-                Permissions = role.Permissions.ToArray()
-            });
-    }
-
     public async Task ChangeRolePermissionsAsync(Role updatedRole, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedRole);

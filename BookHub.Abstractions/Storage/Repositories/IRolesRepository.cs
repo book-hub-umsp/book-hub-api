@@ -9,20 +9,6 @@ namespace BookHub.Abstractions.Storage.Repositories;
 public interface IRolesRepository
 {
     /// <summary>
-    /// Добавляет новую роль с набором <see cref="PermissionType"/>.
-    /// </summary>
-    /// <param name="role">
-    /// Модель роли.
-    /// </param>
-    /// <param name="token">
-    /// Токен.
-    /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// Если уже существует роль с таким же названием.
-    /// </exception>
-    public Task AddRoleAsync(Role role, CancellationToken token);
-
-    /// <summary>
     /// Меняет набор <see cref="PermissionType"/> для существующей роли.
     /// </summary>
     /// <param name="updatedRole">

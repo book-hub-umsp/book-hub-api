@@ -29,41 +29,6 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>
-    /// Добавляет новую роль в системе.
-    /// </summary>
-    [HttpPost]
-    [Authorize(Policy = nameof(PermissionType.AddNewRole))]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Route("add")]
-    public async Task<IActionResult> AddNewRoleAsync(
-        [Required][NotNull] AddNewRoleParams addNewRoleParams,
-        CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-
-        try
-        {
-            await _rolesService.AddRoleAsync(
-                new(new(addNewRoleParams.Name),
-                    addNewRoleParams.Permissions),
-                token);
-
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
-
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
-    }
-
-    /// <summary>
     /// Изменяет permissions для существующей в системе роли.
     /// </summary>
     [HttpPut]
