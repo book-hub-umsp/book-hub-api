@@ -86,8 +86,6 @@ public class RolesController : ControllerBase
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
-            _logger.LogInformation("Request was processed with failed result");
-
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
@@ -120,8 +118,6 @@ public class RolesController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
