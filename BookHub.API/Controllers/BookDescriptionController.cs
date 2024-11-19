@@ -177,6 +177,51 @@ public partial class BookDescriptionController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    [ProducesResponseType<NewsItemsResponse<ContractPreview>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Route("keyword/{keyword}")]
+    public async Task<IActionResult> GetPaginatedBooksByKeywordAsync(
+        [Required][FromRoute] string keyword,
+        [DefaultValue(1)][FromQuery] int pageNumber,
+        [DefaultValue(5)][FromQuery] int elementsInPage,
+        CancellationToken token)
+    {
+        _logger.LogDebug(
+            "Start processing get paginated books containing keyword '{Keyword}' request",
+            keyword);
+
+        try
+        {
+            var bookPreviews =
+                await _service.GetBooksPreviewsByKeywordAsync(
+                    new(new(keyword)),
+                    new(pageNumber, elementsInPage),
+                    token);
+
+            _logger.LogInformation("Request was processed with successful result");
+
+            return Ok(
+                NewsItemsResponse<ContractPreview>.FromDomain(
+                    bookPreviews,
+                    x => new ContractPreview
+                    {
+                        Id = x.Id.Value,
+                        AuthorId = x.AuthorId.Value,
+                        Genre = x.Genre.Value,
+                        Title = x.Title.Value
+                    }));
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError("Error is happened: '{Message}'", ex.Message);
+
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
+    }
+
     // Todo: will be accepted only for book author
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]

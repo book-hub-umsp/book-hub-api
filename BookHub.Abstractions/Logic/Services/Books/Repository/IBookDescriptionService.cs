@@ -32,4 +32,9 @@ public interface IBookDescriptionService
     public Task<NewsItems<BookPreview>> GetBooksPreviewsAsync(
         PagePagging pagination,
         CancellationToken token);
+
+    public Task<NewsItems<BookPreview>> GetBooksPreviewsByKeywordAsync(
+        KeyWord keyword,
+        PagePagging pagination,
+        CancellationToken token);
 }
