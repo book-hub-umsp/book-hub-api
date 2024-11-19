@@ -1,14 +1,16 @@
 ﻿using BookHub.Abstractions.Storage.Repositories;
+using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
-using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 using DomainBook = BookHub.Models.Books.Repository.Book;
+using DomainUser = BookHub.Models.Account.User;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -27,7 +29,7 @@ public sealed class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        BookHub.Models.CRUDS.Requests.AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
@@ -53,8 +55,10 @@ public sealed class BooksRepository :
 
         if (addBookParams.Keywords is not null)
         {
-            storageBook.KeyWordsContent =
-                _keyWordsConverter.ConvertToStorage(addBookParams.Keywords);
+            await SynchronizeKeywordsAsync(
+                addBookParams.Keywords,
+                storageBook,
+                token);
         }
 
         Context.Books.Add(storageBook);
@@ -79,22 +83,32 @@ public sealed class BooksRepository :
                 $"Book genre with id {storageBook.BookGenreId} is not exists.");
         }
 
+        var domainKeywords =
+            storageBook.KeywordLinks?
+                .Select(x => new KeyWord(new(x.Keyword.Value)))
+                .ToHashSet();
+
+        var domainDescription = domainKeywords is null
+            ? new BookDescription(
+                new(storageBook.BookGenre.Value),
+                new(storageBook.Title),
+                new(storageBook.BookAnnotation))
+            : new BookDescription(
+                new(storageBook.BookGenre.Value),
+                new(storageBook.Title),
+                new(storageBook.BookAnnotation),
+                domainKeywords);
+
         return new DomainBook(
                 new(storageBook.Id),
                 new(storageBook.AuthorId),
-                new(
-                    new(storageBook.BookGenre.Value),
-                    new(storageBook.Title),
-                    new(storageBook.BookAnnotation),
-                    _keyWordsConverter
-                        .ConvertToDomain(storageBook.KeyWordsContent)
-                        .ToHashSet()),
+                domainDescription,
                 storageBook.BookStatus);
     }
 
     public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId,
-        Id<User> authorId,
+        Id<DomainUser> authorId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
@@ -163,8 +177,10 @@ public sealed class BooksRepository :
 
             case UpdateKeyWordsParams keyWordsParams:
 
-                storageBook.KeyWordsContent =
-                    _keyWordsConverter.ConvertToStorage(keyWordsParams.UpdatedKeyWords);
+                await SynchronizeKeywordsAsync(
+                    keyWordsParams.UpdatedKeyWords,
+                    storageBook,
+                    token);
 
                 break;
 
@@ -175,7 +191,7 @@ public sealed class BooksRepository :
     }
 
     public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
-        Id<User> authorId,
+        Id<DomainUser> authorId,
         PaginationBase pagination,
         CancellationToken token)
     {
@@ -222,5 +238,44 @@ public sealed class BooksRepository :
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
-    private readonly IKeyWordsConverter _keyWordsConverter;
+    private async Task SynchronizeKeywordsAsync(
+        IReadOnlySet<KeyWord> keywords,
+        StorageBook storageBook,
+        CancellationToken token)
+    {
+        foreach (var keyword in keywords)
+        {
+            var existedKeyword = await Context.Keywords
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x => x.Value == keyword.Content.Value,
+                    token);
+
+            if (existedKeyword is not null)
+            {
+                Context.KeywordLinks.Add(
+                    new KeywordLink
+                    {
+                        Keyword = existedKeyword,
+                        Book = storageBook
+                    });
+
+                continue;
+            }
+
+            var newKeyword = new Keyword
+            {
+                Value = keyword.Content.Value
+            };
+
+            Context.Keywords.Add(newKeyword);
+
+            Context.KeywordLinks.Add(
+                new KeywordLink
+                {
+                    Keyword = newKeyword,
+                    Book = storageBook
+                });
+        }
+    }
 }
