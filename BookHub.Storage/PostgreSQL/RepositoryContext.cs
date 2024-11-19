@@ -20,6 +20,8 @@ public sealed class RepositoryContext : IRepositoryContext
 
     public DbSet<FavoriteLink> FavoriteLinks => _context.FavoriteLinks;
 
+    public DbSet<KeywordLink> KeywordLinks => _context.KeywordLinks;
+
     public RepositoryContext(BooksHubContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));

@@ -1,5 +1,4 @@
-﻿using BookHub.Abstractions.Storage;
-using BookHub.Abstractions.Storage.Repositories;
+﻿using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
@@ -22,12 +21,9 @@ public sealed class BooksRepository :
     IBooksRepository
 {
     public BooksRepository(
-        IRepositoryContext context,
-        IKeyWordsConverter keyWordsConverter)
+        IRepositoryContext context)
         : base(context)
     {
-        _keyWordsConverter = keyWordsConverter
-            ?? throw new ArgumentNullException(nameof(keyWordsConverter));
     }
 
     public async Task AddBookAsync(

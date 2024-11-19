@@ -18,4 +18,6 @@ public interface IRepositoryContext
     public DbSet<BookGenre> Genres { get; }
 
     public DbSet<FavoriteLink> FavoriteLinks { get; }
+
+    public DbSet<KeywordLink> KeywordLinks { get; }
 }

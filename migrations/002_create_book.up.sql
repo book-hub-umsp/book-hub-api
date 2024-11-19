@@ -59,6 +59,22 @@ CREATE TABLE favorites (
         FOREIGN KEY ("book_id") REFERENCES "books" ("id") ON DELETE CASCADE
 );
 
+CREATE TABLE keywords (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    value TEXT NOT NULL,
+    CONSTRAINT "pk_keywords" PRIMARY KEY (id)
+);
+
+CREATE TABLE keywords_books_links (
+    "keyword_id" BIGINT NOT NULL,
+    "book_id" BIGINT NOT NULL,
+    CONSTRAINT "pk_keywords_books_links"
+        PRIMARY KEY ("keyword_id", "book_id"),
+    CONSTRAINT "fk_keywords_books_links_keyword_id"
+        FOREIGN KEY ("keyword_id") REFERENCES "keywords" ("id") ON DELETE CASCADE,
+    CONSTRAINT "fk_keywords_books_links_book_id"
+        FOREIGN KEY ("book_id") REFERENCES "books" ("id") ON DELETE CASCADE
+);
 
 CREATE FUNCTION update_change_books()
 RETURNS trigger

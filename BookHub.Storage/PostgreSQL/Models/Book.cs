@@ -23,11 +23,11 @@ public sealed class Book : IKeyable
 
     public required BookStatus BookStatus { get; set; }
 
-    public string? KeyWordsContent { get; set; } = null!;
-
     public required DateTimeOffset CreationDate { get; set; }
 
     public required DateTimeOffset LastEditDate { get; set; }
 
     public ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
+
+    public ICollection<KeywordLink> KeywordLinks { get; set; } = null!;
 }

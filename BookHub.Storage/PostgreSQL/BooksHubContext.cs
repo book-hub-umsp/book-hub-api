@@ -16,6 +16,8 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
 
+    public DbSet<KeywordLink> KeywordLinks { get; } = null!;
+
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
         : base(options)
     {
@@ -30,8 +32,11 @@ public sealed class BooksHubContext : DbContext
         CreateRole(modelBuilder);
 
         CreateBook(modelBuilder);
+        CreateKeyword(modelBuilder);
         CreateBookGenre(modelBuilder);
+
         CreateFavoriteLink(modelBuilder);
+        CreateKeywordLink(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -122,14 +127,32 @@ public sealed class BooksHubContext : DbContext
             .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<Book>()
-            .Property(x => x.KeyWordsContent)
-            .HasColumnType("json")
-            .HasColumnName("keywords_content");
-
-        _ = modelBuilder.Entity<Book>()
             .HasMany(x => x.UsersFavoritesLinks)
             .WithOne(x => x.Book)
             .HasForeignKey(x => x.BookId);
+
+        _ = modelBuilder.Entity<Book>()
+            .HasMany(x => x.KeywordLinks)
+            .WithOne(x => x.Book)
+            .HasForeignKey(x => x.BookId);
+    }
+
+    public static void CreateKeyword(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<Keyword>()
+            .HasKey(x => x.Id);
+
+        _ = modelBuilder.Entity<Keyword>()
+            .Property(x => x.Id)
+            .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<Keyword>()
+            .HasMany(x => x.BooksLinks)
+            .WithOne(x => x.Keyword)
+            .HasForeignKey(x => x.KeywordId);
+
+        _ = modelBuilder.Entity<Keyword>()
+            .ToTable("keywords");
     }
 
     private static void CreateBookGenre(ModelBuilder modelBuilder)
@@ -177,5 +200,34 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<FavoriteLink>()
             .Property(l => l.BookId)
             .HasColumnName("book_id");
+    }
+
+    private static void CreateKeywordLink(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<KeywordLink>()
+            .HasKey(x => new { x.KeywordId, x.BookId });
+
+        _ = modelBuilder.Entity<KeywordLink>()
+            .HasOne(x => x.Keyword)
+            .WithMany(x => x.BooksLinks)
+            .HasForeignKey(x => x.KeywordId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = modelBuilder.Entity<KeywordLink>()
+            .HasOne(x => x.Book)
+            .WithMany(x => x.KeywordLinks)
+            .HasForeignKey(x => x.BookId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        _ = modelBuilder.Entity<KeywordLink>()
+            .Property(x => x.BookId)
+            .HasColumnName("book_id");
+
+        _ = modelBuilder.Entity<KeywordLink>()
+            .Property(x => x.KeywordId)
+            .HasColumnName("keyword_id");
+
+        _ = modelBuilder.Entity<KeywordLink>()
+            .ToTable("keywords_books_links");
     }
 }
