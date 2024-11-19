@@ -1,6 +1,7 @@
 ﻿using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
 using BookHub.API.Authentification.Configuration.JWT;
+using BookHub.Models.Account;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,7 @@ public static class AuthentificationExtensions
         IConfiguration configuration)
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
+            .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
             .AddAuthorization(configuration)
@@ -127,9 +129,14 @@ public static class AuthentificationExtensions
         => services
             .AddAuthorizationBuilder()
             .AddDefaultPolicy(
-                "DefaultPolicy",
+                Auth.Policies.DEFAULT_POLICY,
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
+                    .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))
+            .AddPolicy(
+                Auth.Policies.ALLOW_REGISTER_POLICY,
+                opt => opt
+                    .AddRequirements(new UserExistsRequirementMarker(NeedRegisterIfNotExists: true))
                     .AddAuthenticationSchemes([Auth.AuthProviders.GOOGLE, Auth.AuthProviders.YANDEX]))
             .AddPolicy(
                 Auth.AuthProviders.GOOGLE,
@@ -141,5 +148,19 @@ public static class AuthentificationExtensions
                 opt => opt
                     .AddRequirements(new UserExistsRequirementMarker())
                     .AddAuthenticationSchemes([Auth.AuthProviders.YANDEX]))
-            .Services;
+            .AddPermissionPolicies();
+
+    private static IServiceCollection AddPermissionPolicies(
+        this AuthorizationBuilder authorizationBuilder)
+    {
+        foreach (var permission in Enum.GetValues<Permission>())
+        {
+            _ = authorizationBuilder.AddPolicy(
+                permission.ToString(),
+                opt => opt
+                    .AddRequirements(new PermissionRequirement(permission)));
+        }
+
+        return authorizationBuilder.Services;
+    }
 }

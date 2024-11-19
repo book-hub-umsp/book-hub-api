@@ -1,4 +1,6 @@
-﻿using BookHub.Models;
+﻿using System.Net.Mail;
+
+using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
@@ -11,6 +13,24 @@ namespace BookHub.Logic.Services.Account;
 /// </summary>
 public interface IUserService
 {
+    /// <summary>
+    /// Пытается найти пользователя по его почте.
+    /// </summary>
+    /// <param name="mailAddress">
+    /// Email.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <returns>
+    /// <see cref="Task{TResult}"/>.
+    /// Если пользователь не найден в хранилище, результатом выполнения задачи будет <see langword="null"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="mailAddress"/> был <see langword="null"/>.
+    /// </exception>
+    public Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(MailAddress mailAddress, CancellationToken token);
+
     /// <summary>
     /// Возвращет профили пользователей.
     /// </summary>
@@ -62,7 +82,7 @@ public interface IUserService
     /// <returns>
     /// <see cref="Task"/>.
     /// </returns>
-    Task<UserProfileInfo> RegisterNewUserOrGetExistingAsync(
+    Task<UserProfileInfo> RegisterNewUserAsync(
         RegisteringUser registeringUser,
         CancellationToken token);
 

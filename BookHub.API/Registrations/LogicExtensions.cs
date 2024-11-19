@@ -1,10 +1,13 @@
 ﻿using BookHub.Abstractions;
 using BookHub.Abstractions.Logic.Converters.Books.Repository;
+using BookHub.Abstractions.Logic.Services.Account;
 using BookHub.Abstractions.Logic.Services.Books.Repository;
+using BookHub.Abstractions.Logic.Services.Favorite;
 using BookHub.Logic.Converters.Account;
 using BookHub.Logic.Converters.Books.Repository;
 using BookHub.Logic.Services.Account;
 using BookHub.Logic.Services.Books.Repository;
+using BookHub.Logic.Services.Favorite;
 
 using Microsoft.Extensions.Options;
 
@@ -27,7 +30,9 @@ internal static class LogicExtensions
             .AddHttpContextAccessor()
             .AddSingleton<IHttpUserIdentityFacade, HttpUserIdentityFacade>()
             .AddSingleton<IUserRequestConverter, UserRequestConverter>()
-            .AddScoped<IUserService, UserService>();
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IUserFavoriteService, UserFavoriteService>()
+            .AddScoped<IRolesService, RolesService>();
 
     private static IServiceCollection AddBooksActionsHandling(
         this IServiceCollection services)

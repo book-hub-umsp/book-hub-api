@@ -12,6 +12,8 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<User> Users { get; set; } = null!;
 
+    public DbSet<Role> UserRoles { get; set; } = null!;
+
     public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
 
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
@@ -25,6 +27,7 @@ public sealed class BooksHubContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         CreateUser(modelBuilder);
+        CreateRole(modelBuilder);
 
         CreateBook(modelBuilder);
         CreateBookGenre(modelBuilder);
@@ -43,6 +46,11 @@ public sealed class BooksHubContext : DbContext
             .UseIdentityAlwaysColumn();
 
         _ = modelBuilder.Entity<User>()
+           .HasOne(x => x.Role)
+           .WithMany(x => x.Users)
+           .HasForeignKey(x => x.RoleId);
+
+        _ = modelBuilder.Entity<User>()
             .ToTable("users");
 
         _ = modelBuilder.Entity<User>()
@@ -54,6 +62,28 @@ public sealed class BooksHubContext : DbContext
             .HasMany(x => x.FavoriteBooksLinks)
             .WithOne(x => x.User)
             .HasForeignKey(x => x.UserId);
+    }
+
+    private static void CreateRole(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<Role>()
+            .HasKey(x => x.Id);
+
+        _ = modelBuilder.Entity<Role>()
+            .Property(x => x.Id)
+            .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<Role>()
+            .HasMany(x => x.Users)
+            .WithOne(x => x.Role)
+            .HasForeignKey(x => x.RoleId);
+
+        _ = modelBuilder.Entity<Role>()
+            .Property(x => x.Permissions)
+            .HasColumnName("permissions");
+
+        _ = modelBuilder.Entity<Role>()
+            .ToTable("roles");
     }
 
     private static void CreateBook(ModelBuilder modelBuilder)

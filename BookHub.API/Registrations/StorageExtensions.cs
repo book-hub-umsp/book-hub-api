@@ -1,7 +1,5 @@
-﻿using BookHub.Abstractions.Logic.Services.Favorite;
-using BookHub.Abstractions.Storage;
+﻿using BookHub.Abstractions.Storage;
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Logic.Services.Favorite;
 using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 using BookHub.Storage.PostgreSQL;
@@ -14,7 +12,7 @@ using Npgsql;
 
 namespace BookHub.API.Registrations;
 
-public static class StorageExtensions
+static internal class StorageExtensions
 {
     public static IServiceCollection AddPostgresStorage(
         this IServiceCollection services,
@@ -28,7 +26,8 @@ public static class StorageExtensions
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
             .AddScoped<IFavoriteLinkRepository, FavoriteLinkRepository>()
-            .AddScoped<IUserFavoriteService, UserFavoriteService>()
+            .AddScoped<IRolesRepository, RolesRepository>()
+
             .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
 
     private static IServiceCollection AddDbContext(
@@ -41,7 +40,8 @@ public static class StorageExtensions
 
         _ = dataSourceBuilder
             .MapEnum<BookStatus>()
-            .MapEnum<UserStatus>();
+            .MapEnum<UserStatus>()
+            .MapEnum<Permission>("permission_type");
 
         var source = dataSourceBuilder.Build();
 

@@ -31,4 +31,23 @@ public struct Auth
         /// </summary>
         public const string USER_ID_CLAIM_NAME = "user_id";
     }
+
+    /// <summary>
+    /// Политики авторизации.
+    /// </summary>
+    public struct Policies
+    {
+        /// <summary>
+        /// Политика доступа к порталу по умолчанию.
+        /// </summary>
+        /// <remarks>
+        /// Требует наличия зарегистрированного профиля на портале.
+        /// </remarks>
+        public const string DEFAULT_POLICY = "default";
+
+        /// <summary>
+        /// Политика, разрешающая автоматическую регистрацию, если аккаунта пользователя не существует.
+        /// </summary>
+        public const string ALLOW_REGISTER_POLICY = "allow-register";
+    }
 }

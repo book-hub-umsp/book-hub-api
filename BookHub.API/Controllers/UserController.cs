@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
+using BookHub.API.Authentification;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Account;
 using BookHub.Contracts.REST.Responses;
@@ -54,6 +55,7 @@ public sealed class UserController : ControllerBase
     /// <returns>
     /// <see cref="ActionResult{TValue}"/> с данными профиля пользователя.
     /// </returns>
+    [Authorize(Policy = Auth.Policies.ALLOW_REGISTER_POLICY)]
     [HttpGet("me")]
     [ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]

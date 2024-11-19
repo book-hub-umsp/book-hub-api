@@ -59,6 +59,7 @@ public sealed class UsersRepository :
 
         Context.Users.Add(new()
         {
+            RoleId = 1,
             Name = user.Name.Value,
             Email = user.Email.Address,
             Status = UserStatus.Active,

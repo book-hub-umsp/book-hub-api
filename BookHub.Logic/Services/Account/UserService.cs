@@ -1,4 +1,6 @@
-﻿using BookHub.Abstractions.Storage;
+﻿using System.Net.Mail;
+
+using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API;
@@ -29,6 +31,16 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
+    public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(MailAddress mailAddress, CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(mailAddress);
+
+        token.ThrowIfCancellationRequested();
+
+        return await _booksHubUnitOfWork.Users.FindUserProfileInfoByEmailAsync(mailAddress, token);
+    }
+
+    /// <inheritdoc/>
     public async Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
         PagePagging pagination, 
         CancellationToken token)
@@ -48,7 +60,7 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserProfileInfo> RegisterNewUserOrGetExistingAsync(
+    public async Task<UserProfileInfo> RegisterNewUserAsync(
         RegisteringUser registeringUser,
         CancellationToken token)
     {
@@ -59,19 +71,23 @@ public sealed class UserService : IUserService
         var existingUser = await _booksHubUnitOfWork.Users
             .FindUserProfileInfoByEmailAsync(registeringUser.Email, token);
 
-        if (existingUser is null)
+        if (existingUser is not null)
         {
-            await _booksHubUnitOfWork.Users.AddUserAsync(registeringUser, token);
-
-            await _booksHubUnitOfWork.SaveChangesAsync(token);
-
-            existingUser = await _booksHubUnitOfWork.Users
-                .FindUserProfileInfoByEmailAsync(registeringUser.Email, token);
-
-            _logger.LogInformation(
-                "New user registered with email: {EmailPattern}",
-                $"{existingUser!.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***");
+            throw new InvalidOperationException(
+                $"User with email: {existingUser!.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***" +
+                " already exists.");
         }
+
+        await _booksHubUnitOfWork.Users.AddUserAsync(registeringUser, token);
+
+        await _booksHubUnitOfWork.SaveChangesAsync(token);
+
+        existingUser = await _booksHubUnitOfWork.Users
+            .FindUserProfileInfoByEmailAsync(registeringUser.Email, token);
+
+        _logger.LogInformation(
+            "New user registered with email: {EmailPattern}",
+            $"{existingUser!.Email.User.Take(3)}***@{existingUser.Email.Host.Take(3)}***");
 
         return existingUser;
     }
