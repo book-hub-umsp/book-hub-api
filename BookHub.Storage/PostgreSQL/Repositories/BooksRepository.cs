@@ -235,6 +235,35 @@ public sealed class BooksRepository :
             .ToList();
     }
 
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
+        KeyWord keyword,
+        PaginationBase pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(keyword);
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var booksShortModels =
+            await Context.Books
+                .AsNoTracking()
+                .Include(x => x.KeywordLinks)
+                .Where(x => x.KeywordLinks.Any(
+                    x => IsSomeStringContainingOther(
+                        x.Keyword.Value,
+                        keyword.Content.Value)))
+                .WithPaging(pagination)
+                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
@@ -277,5 +306,14 @@ public sealed class BooksRepository :
                     Book = storageBook
                 });
         }
+    }
+
+    // самый простой пример сравнения тэгов
+    private static bool IsSomeStringContainingOther(string left, string right)
+    {
+        var lowerLeft = left.Replace("_", string.Empty).ToLowerInvariant();
+        var lowerRight = right.Replace("_", string.Empty).ToLowerInvariant();
+
+        return lowerLeft.Contains(lowerRight) || lowerRight.Contains(lowerLeft);
     }
 }
