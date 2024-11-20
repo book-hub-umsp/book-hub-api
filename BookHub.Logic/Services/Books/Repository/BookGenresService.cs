@@ -23,13 +23,13 @@ public sealed class BookGenresService : IBookGenresService
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
 
-        _logger.LogDebug("Trying to add new genre '{Genre}'", bookGenre.Value);
+        _logger.LogDebug("Trying to add new genre '{@Genre}'", bookGenre);
 
         await _unitOfWork.BooksGenres.AddNewGenreAsync(bookGenre, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("Genre '{Genre}' was added", bookGenre.Value);
+        _logger.LogInformation("Genre '{@Genre}' was added", bookGenre);
     }
 
     public async Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token)
@@ -47,13 +47,13 @@ public sealed class BookGenresService : IBookGenresService
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
 
-        _logger.LogDebug("Trying to remove genre '{Genre}'", bookGenre.Value);
+        _logger.LogDebug("Trying to remove genre '{@Genre}'", bookGenre);
 
         await _unitOfWork.BooksGenres.RemoveGenreAsync(bookGenre, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("Genre '{Genre}' was removed with books links", bookGenre.Value);
+        _logger.LogInformation("Genre '{@Genre}' was removed with books links", bookGenre);
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
