@@ -37,7 +37,7 @@ public sealed class BooksGenresController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation("Start processing adding new genre request");
+        _logger.LogDebug("Start processing adding new genre request");
 
         try
         {
@@ -50,8 +50,6 @@ public sealed class BooksGenresController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
@@ -66,7 +64,7 @@ public sealed class BooksGenresController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation("Start processing getting all books genres request");
+        _logger.LogDebug("Start processing getting all books genres request");
 
         try
         {
@@ -82,8 +80,6 @@ public sealed class BooksGenresController : ControllerBase
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
-            _logger.LogInformation("Request was processed with failed result");
-
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
@@ -98,7 +94,7 @@ public sealed class BooksGenresController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation("Start processing removing genre request");
+        _logger.LogDebug("Start processing removing genre request");
 
         try
         {
@@ -111,8 +107,6 @@ public sealed class BooksGenresController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }

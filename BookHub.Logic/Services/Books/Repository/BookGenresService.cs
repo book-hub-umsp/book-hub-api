@@ -23,7 +23,7 @@ public sealed class BookGenresService : IBookGenresService
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
 
-        _logger.LogInformation("Trying to add new genre '{Genre}'", bookGenre.Value);
+        _logger.LogDebug("Trying to add new genre '{Genre}'", bookGenre.Value);
 
         await _unitOfWork.BooksGenres.AddNewGenreAsync(bookGenre, token);
 
@@ -34,11 +34,11 @@ public sealed class BookGenresService : IBookGenresService
 
     public async Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token)
     {
-        _logger.LogInformation("Receiving all existed book genres");
+        _logger.LogDebug("Receiving all existed book genres");
 
         var genres = await _unitOfWork.BooksGenres.GetAllGenresAsync(token);
 
-        _logger.LogInformation("Genres {Count} were received", genres.Count);
+        _logger.LogDebug("Genres {Count} were received", genres.Count);
 
         return genres;
     }
@@ -47,7 +47,7 @@ public sealed class BookGenresService : IBookGenresService
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
 
-        _logger.LogInformation("Trying to remove genre '{Genre}'", bookGenre.Value);
+        _logger.LogDebug("Trying to remove genre '{Genre}'", bookGenre.Value);
 
         await _unitOfWork.BooksGenres.RemoveGenreAsync(bookGenre, token);
 
