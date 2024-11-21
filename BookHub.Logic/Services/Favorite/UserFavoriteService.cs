@@ -39,7 +39,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("A new favorite link with user id {UserId} and book id {BookId} have been successfully added",
+        _logger.LogInformation(
+            "A new favorite link with user id {UserId} and book id {BookId} have been successfully added",
             favoriteLink.UserId.Value,
             favoriteLink.UserId.Value);
     }
@@ -55,7 +56,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         var totalFavItems = await _unitOfWork.FavoriteLinks.GetTotalCountFavoriteLinkAsync(token);
 
-        _logger.LogDebug("Trying to get paginated favorite links from total" +
+        _logger.LogDebug(
+            "Trying to get paginated favorite links from total" +
             " favorite links count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage} for user with id {UserId}",
             totalFavItems,
@@ -67,7 +69,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         var usersFavorite = await _unitOfWork.FavoriteLinks.GetUsersFavoriteAsync(userId, pagePagination, token);
 
-        _logger.LogInformation("User's favorite links with user id {UserId} have been successfully received",
+        _logger.LogDebug(
+            "User's favorite links with user id {UserId} have been successfully received",
             userId.Value);
 
         return usersFavorite;
@@ -79,13 +82,15 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug("Trying to remove a favorite link with user id {UserId} and book id {BookId}",
+        _logger.LogDebug(
+            "Trying to remove a favorite link with user id {UserId} and book id {BookId}",
             favoriteLink.UserId.Value,
             favoriteLink.BookId.Value);
 
         await _unitOfWork.FavoriteLinks.RemoveFavoriteLinkAsync(favoriteLink, token);
 
-        _logger.LogInformation("A favorite link with user id {UserId} and book id {BookId} have been successfully removed",
+        _logger.LogDebug(
+            "A favorite link with user id {UserId} and book id {BookId} have been successfully removed",
             favoriteLink.UserId.Value,
             favoriteLink.BookId.Value);
     }

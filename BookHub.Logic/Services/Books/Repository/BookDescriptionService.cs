@@ -30,7 +30,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
 
-        _logger.LogInformation("Trying adding book to storage");
+        _logger.LogDebug("Trying adding book to storage");
 
         await _unitOfWork.Books.AddBookAsync(addBookParams, token);
 
@@ -45,14 +45,14 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(getBookParams);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Trying get book {BookId} content from storage",
             getBookParams.BookId.Value);
 
         var content =
             await _unitOfWork.Books.GetBookAsync(getBookParams.BookId, token);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Information about book {BookId} has been received",
             getBookParams.BookId.Value);
 
@@ -65,7 +65,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Trying update book {BookId} content on storage",
             updateBookParams.BookId.Value);
 
@@ -108,7 +108,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
                 pagePagination,
                 token);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Paginated books previews for author {AuthorId} were received",
             authorId.Value);
 
@@ -141,7 +141,7 @@ public sealed class BookDescriptionService : IBookDescriptionService
                 pagePagination,
                 token);
 
-        _logger.LogInformation("Paginated books previews were received");
+        _logger.LogDebug("Paginated books previews were received");
 
         return new(booksPreviews, pagePagination);
     }

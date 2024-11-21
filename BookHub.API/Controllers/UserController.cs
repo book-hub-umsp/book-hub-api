@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
@@ -62,7 +61,8 @@ public sealed class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserProfileInfoResponse>> MeAsync(CancellationToken token)
     {
-        _logger.LogInformation("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        using var _ = _logger.BeginScope("{TraceId}", Guid.NewGuid());
+        _logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {
@@ -94,7 +94,6 @@ public sealed class UserController : ControllerBase
     /// <response code="400">
     /// Когда пользователя с таким идентификатором не удалось найти.
     /// </response>
-    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
@@ -103,7 +102,7 @@ public sealed class UserController : ControllerBase
         [DefaultValue(5)][FromQuery] int pageSize,
         CancellationToken token)
     {
-        _logger.LogInformation("Getting profiles info");
+        _logger.LogDebug("Getting profiles info");
 
         try
         {
@@ -137,7 +136,6 @@ public sealed class UserController : ControllerBase
     /// <response code="400">
     /// Когда пользователя с таким идентификатором не удалось найти.
     /// </response>
-    [AllowAnonymous]
     [HttpGet("{userId}")]
     [ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
@@ -145,7 +143,7 @@ public sealed class UserController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogInformation("Getting info by user id: {Id}", userId);
+        _logger.LogDebug("Getting info by user id: {Id}", userId);
 
         try
         {
@@ -171,6 +169,7 @@ public sealed class UserController : ControllerBase
     /// <returns>
     /// <see cref="IActionResult"/>.
     /// </returns>
+    [Authorize]
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
@@ -179,7 +178,7 @@ public sealed class UserController : ControllerBase
         [Required][NotNull] UpdateUserProfileInfoRequest request,
         CancellationToken token)
     {
-        _logger.LogInformation("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogDebug("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {

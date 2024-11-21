@@ -36,7 +36,7 @@ public sealed class PermissionsController : ControllerBase
     [Route("all")]
     public IActionResult GetAllPermissions()
     {
-        _logger.LogInformation("Getting all system permissions");
+        _logger.LogDebug("Getting all system permissions");
 
         var permissions = Enum.GetValues<Permission>();
 
@@ -70,7 +70,7 @@ public sealed class PermissionsController : ControllerBase
         {
             var userRole = await _rolesService.GetUserRoleAsync(new(userId), token);
 
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "{PermissionsCount} permissions were found for user {UserId}",
                 userRole.Permissions.Count,
                 userId);

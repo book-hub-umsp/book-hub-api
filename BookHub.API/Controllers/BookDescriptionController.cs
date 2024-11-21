@@ -52,7 +52,7 @@ public partial class BookDescriptionController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Start processing book {BookId} getting request",
             bookId);
 
@@ -87,8 +87,6 @@ public partial class BookDescriptionController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
@@ -233,7 +231,7 @@ public partial class BookDescriptionController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Start processing new book adding request for author {AuthorId}",
             addAuthorBookParams.AuthorId);
 
@@ -251,8 +249,6 @@ public partial class BookDescriptionController : ControllerBase
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
-            _logger.LogInformation("Request was processed with failed result");
-
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
@@ -268,7 +264,7 @@ public partial class BookDescriptionController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "Start processing book {BookId} updating request",
             updateParams.BookId);
 
@@ -285,8 +281,6 @@ public partial class BookDescriptionController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
-
-            _logger.LogInformation("Request was processed with failed result");
 
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
