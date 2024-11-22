@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace BookHub.Contracts.REST.Responses.Pagination;
+namespace BookHub.Contracts.REST.Pagination;
 
 public sealed class OffsetPagination : PaginationBase
 {

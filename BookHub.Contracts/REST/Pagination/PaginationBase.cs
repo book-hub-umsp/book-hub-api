@@ -4,13 +4,21 @@ using Newtonsoft.Json;
 
 using DomainModels = BookHub.Models.API.Pagination;
 
-namespace BookHub.Contracts.REST.Responses.Pagination;
+namespace BookHub.Contracts.REST.Pagination;
 
 public abstract class PaginationBase
 {
     [Required]
     [JsonProperty("page_size", Required = Required.Always)]
     public required int PageSize { get; init; }
+
+    public static DomainModels.PaginationBase ToDomain(PaginationBase? pagination) => 
+        (pagination) switch
+        {
+            null => DomainModels.WithoutPagination.Instance,
+
+            PagePagination => new DomainModels.PagePagination()
+        }
 
     public static PaginationBase? FromDomain(DomainModels.PaginationBase pagination)
     {
