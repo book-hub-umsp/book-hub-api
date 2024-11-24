@@ -26,9 +26,7 @@ static internal class StorageExtensions
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
             .AddScoped<IFavoriteLinkRepository, FavoriteLinkRepository>()
-            .AddScoped<IRolesRepository, RolesRepository>()
-
-            .AddSingleton<IKeyWordsConverter, KeyWordsConverter>();
+            .AddScoped<IRolesRepository, RolesRepository>();
 
     private static IServiceCollection AddDbContext(
         this IServiceCollection services,

@@ -1,15 +1,18 @@
-﻿using BookHub.Abstractions.Storage;
+﻿using System.Linq.Expressions;
+
 using BookHub.Abstractions.Storage.Repositories;
+using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
-using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 using DomainBook = BookHub.Models.Books.Repository.Book;
+using DomainUser = BookHub.Models.Account.User;
 using StorageBook = BookHub.Storage.PostgreSQL.Models.Book;
 
 namespace BookHub.Storage.PostgreSQL.Repositories;
@@ -22,16 +25,13 @@ public sealed class BooksRepository :
     IBooksRepository
 {
     public BooksRepository(
-        IRepositoryContext context,
-        IKeyWordsConverter keyWordsConverter)
+        IRepositoryContext context)
         : base(context)
     {
-        _keyWordsConverter = keyWordsConverter
-            ?? throw new ArgumentNullException(nameof(keyWordsConverter));
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        BookHub.Models.CRUDS.Requests.AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
@@ -57,8 +57,10 @@ public sealed class BooksRepository :
 
         if (addBookParams.Keywords is not null)
         {
-            storageBook.KeyWordsContent =
-                _keyWordsConverter.ConvertToStorage(addBookParams.Keywords);
+            await SynchronizeKeywordsAsync(
+                addBookParams.Keywords,
+                storageBook,
+                token);
         }
 
         Context.Books.Add(storageBook);
@@ -83,22 +85,32 @@ public sealed class BooksRepository :
                 $"Book genre with id {storageBook.BookGenreId} is not exists.");
         }
 
+        var domainKeywords =
+            storageBook.KeywordLinks?
+                .Select(x => new KeyWord(new(x.Keyword.Value)))
+                .ToHashSet();
+
+        var domainDescription = domainKeywords is null
+            ? new BookDescription(
+                new(storageBook.BookGenre.Value),
+                new(storageBook.Title),
+                new(storageBook.BookAnnotation))
+            : new BookDescription(
+                new(storageBook.BookGenre.Value),
+                new(storageBook.Title),
+                new(storageBook.BookAnnotation),
+                domainKeywords);
+
         return new DomainBook(
                 new(storageBook.Id),
                 new(storageBook.AuthorId),
-                new(
-                    new(storageBook.BookGenre.Value),
-                    new(storageBook.Title),
-                    new(storageBook.BookAnnotation),
-                    _keyWordsConverter
-                        .ConvertToDomain(storageBook.KeyWordsContent)
-                        .ToHashSet()),
+                domainDescription,
                 storageBook.BookStatus);
     }
 
     public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
         Id<DomainBook> bookId,
-        Id<User> authorId,
+        Id<DomainUser> authorId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
@@ -167,8 +179,10 @@ public sealed class BooksRepository :
 
             case UpdateKeyWordsParams keyWordsParams:
 
-                storageBook.KeyWordsContent =
-                    _keyWordsConverter.ConvertToStorage(keyWordsParams.UpdatedKeyWords);
+                await SynchronizeKeywordsAsync(
+                    keyWordsParams.UpdatedKeyWords,
+                    storageBook,
+                    token);
 
                 break;
 
@@ -179,7 +193,7 @@ public sealed class BooksRepository :
     }
 
     public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
-        Id<User> authorId,
+        Id<DomainUser> authorId,
         PaginationBase pagination,
         CancellationToken token)
     {
@@ -223,8 +237,105 @@ public sealed class BooksRepository :
             .ToList();
     }
 
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
+        KeyWord keyword,
+        PaginationBase pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(keyword);
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var stringMatchExpression = BuildStringContainsExpression(keyword.Content.Value);
+
+        var keywordMatchExpression = CombineExpressions<KeywordLink>(
+            keywordLink => keywordLink.Keyword.Value, stringMatchExpression);
+
+        var booksShortModels =
+            await Context.Books
+                .AsNoTracking()
+                .Include(book => book.KeywordLinks)
+                .Where(book => book.KeywordLinks.AsQueryable().Any(keywordMatchExpression))
+                .WithPaging(pagination)
+                .Select(book => new { book.Id, book.AuthorId, book.BookGenre, book.Title })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId)))
+            .ToList();
+    }
+
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
-    private readonly IKeyWordsConverter _keyWordsConverter;
+    private async Task SynchronizeKeywordsAsync(
+        IReadOnlySet<KeyWord> keywords,
+        StorageBook storageBook,
+        CancellationToken token)
+    {
+        foreach (var keyword in keywords)
+        {
+            var existedKeyword = await Context.Keywords
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    x => x.Value == keyword.Content.Value,
+                    token);
+
+            if (existedKeyword is not null)
+            {
+                Context.KeywordLinks.Add(
+                    new KeywordLink
+                    {
+                        Keyword = existedKeyword,
+                        Book = storageBook
+                    });
+
+                continue;
+            }
+
+            var newKeyword = new Keyword
+            {
+                Value = keyword.Content.Value
+            };
+
+            Context.Keywords.Add(newKeyword);
+
+            Context.KeywordLinks.Add(
+                new KeywordLink
+                {
+                    Keyword = newKeyword,
+                    Book = storageBook
+                });
+        }
+    }
+
+    private static Expression<Func<T, bool>> CombineExpressions<T>(
+        Expression<Func<T, string>> valueSelector,
+        Expression<Func<string, bool>> condition)
+    {
+        var parameter = valueSelector.Parameters[0];
+
+        var body = Expression.Invoke(condition, valueSelector.Body);
+
+        return Expression.Lambda<Func<T, bool>>(body, parameter);
+    }
+
+    private static Expression<Func<string, bool>> BuildStringContainsExpression(string keyword)
+    {
+        var processedKeyword = keyword.Replace("_", string.Empty).ToLower();
+        var parameter = Expression.Parameter(typeof(string), "value");
+
+        var valueProcessed = Expression.Call(
+            Expression.Call(parameter, nameof(string.Replace), null, Expression.Constant("_"), Expression.Constant(string.Empty)),
+            nameof(string.ToLower), null);
+
+        var body = Expression.OrElse(
+            Expression.Call(valueProcessed, nameof(string.Contains), null, Expression.Constant(processedKeyword)),
+            Expression.Call(Expression.Constant(processedKeyword), nameof(string.Contains), null, valueProcessed));
+
+        return Expression.Lambda<Func<string, bool>>(body, parameter);
+    }
 }

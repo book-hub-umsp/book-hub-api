@@ -28,7 +28,10 @@ public sealed class PagePagination : PaginationBase
         ArgumentOutOfRangeException.ThrowIfLessThan(pageNumber, 1);
         PageNumber = pageNumber;
 
-        PagesTotal = (int)Math.Ceiling(itemsTotal / (double)pageSize);
+        PagesTotal = ItemsTotal != 0
+            ? (int)Math.Ceiling(itemsTotal / (double)pageSize)
+            : 1;
+
         ArgumentOutOfRangeException.ThrowIfGreaterThan(pageNumber, PagesTotal);
     }
 }
