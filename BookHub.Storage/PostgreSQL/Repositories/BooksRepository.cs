@@ -268,7 +268,7 @@ public sealed class BooksRepository :
             .ToList();
     }
 
-    public async Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
+    public async Task<IReadOnlyCollection<ChapterNumber>> GetBooksChaptersNumbersAsync(
         Id<DomainBook> bookId,
         CancellationToken token)
     {
@@ -287,10 +287,7 @@ public sealed class BooksRepository :
                 .ToListAsync(token);
 
         return chaptersPreviews
-            .Select(x => new ChapterPreview(
-                new(x.Id), 
-                new(x.BookId), 
-                new(x.Number)))
+            .Select(x => new ChapterNumber(x.Number))
             .ToList();
     }
 
