@@ -51,7 +51,6 @@ public interface IBooksRepository
 
     public Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
         Id<DomainBook> bookId,
-        PaginationBase pagination,
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);

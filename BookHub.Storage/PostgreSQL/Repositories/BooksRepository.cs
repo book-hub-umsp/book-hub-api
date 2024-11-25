@@ -270,11 +270,9 @@ public sealed class BooksRepository :
 
     public async Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
         Id<DomainBook> bookId,
-        PaginationBase pagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(pagination);
 
         var _ = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
@@ -285,7 +283,6 @@ public sealed class BooksRepository :
             await Context.Chapters
                 .AsNoTracking()
                 .Where(x => x.BookId == bookId.Value)
-                .WithPaging(pagination)
                 .Select(x => new { x.Id, x.BookId, x.Number })
                 .ToListAsync(token);
 
