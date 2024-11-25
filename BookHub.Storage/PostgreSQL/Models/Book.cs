@@ -27,6 +27,8 @@ public sealed class Book : IKeyable
 
     public required DateTimeOffset LastEditDate { get; set; }
 
+    public ICollection<Chapter> Chapters { get; set; } = null!;
+
     public ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
 
     public ICollection<KeywordLink> KeywordLinks { get; set; } = null!;

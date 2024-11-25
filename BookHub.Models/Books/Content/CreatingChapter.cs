@@ -11,7 +11,7 @@ namespace BookHub.Models.Books.Content;
 /// </summary>
 public sealed class CreatingChapter
 {
-    public Name<Chapter> Name { get; }
+    public Name<Chapter> Title { get; }
 
     public ChapterNumber ChapterNumber { get; }
 
@@ -23,14 +23,14 @@ public sealed class CreatingChapter
         Id<Book> bookId, 
         Content content,
         ChapterNumber chapterNumber,
-        Name<Chapter>? name = null)
+        Name<Chapter>? title = null)
     {
         BookId = bookId ?? throw new ArgumentNullException(nameof(bookId));
         Content = content ?? throw new ArgumentNullException(nameof(content));
         ChapterNumber = chapterNumber ?? throw new ArgumentNullException(nameof(chapterNumber));
 
-        Name = name is not null 
-            ? name 
+        Title = title is not null 
+            ? title 
             : new Name<Chapter>(
                 string.Format(
                     CultureInfo.InvariantCulture, 

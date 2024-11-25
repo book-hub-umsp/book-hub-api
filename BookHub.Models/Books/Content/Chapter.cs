@@ -11,7 +11,7 @@ public sealed class Chapter
 {
     public Id<Chapter> Id { get; }
 
-    public Name<Chapter> Name { get; }
+    public Name<Chapter> Title { get; }
 
     public ChapterNumber ChapterNumber { get; }
 
@@ -21,13 +21,13 @@ public sealed class Chapter
 
     public Chapter(
         Id<Chapter> id,
-        Name<Chapter> name,
+        Name<Chapter> title,
         ChapterNumber chapterNumber,
         Id<Book> bookId,
         Content content)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
-        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Title = title ?? throw new ArgumentNullException(nameof(title));
         ChapterNumber = chapterNumber ?? throw new ArgumentNullException(nameof(chapterNumber));
         BookId = bookId ?? throw new ArgumentNullException(nameof(bookId));
         Content = content ?? throw new ArgumentNullException(nameof(content));

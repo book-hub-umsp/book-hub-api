@@ -18,13 +18,23 @@ CREATE TABLE books (
     "status" book_status NOT NULL DEFAULT 'draft',
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     last_edit_date timestamp with time zone NOT NULL DEFAULT NOW(),
-    keywords_content JSON DEFAULT NULL,
     CONSTRAINT "pk_books" 
         PRIMARY KEY (id),
     CONSTRAINT "fk_books_genre_id" 
         FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE SET DEFAULT,
     CONSTRAINT "fk_books_author_id" 
         FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE chapters (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    title TEXT NOT NULL,
+    number BIGINT NOT NULL,
+    book_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    CONSTRAINT "pk_chapters" PRIMARY KEY(id),
+    CONSTRAINT "fk_chapters_book_id" 
+        FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
 );
 
 INSERT INTO genres (value) 
