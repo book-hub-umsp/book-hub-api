@@ -12,7 +12,10 @@ public sealed record class ChapterNumber
     public ChapterNumber(int value)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(value, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(value, MAX_NUMBER);
 
         Value = value;
     }
+
+    public static readonly int MAX_NUMBER = 5;
 }

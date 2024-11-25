@@ -23,17 +23,43 @@ public sealed class ChaptersRepository :
         : base(context) { }
 
     /// <inheritdoc/>
+    /// <exception cref="InvalidOperationException">
+    /// Если в книге уже есть максимальное число глав.
+    /// Или если номер добавляемой главы не соответствует ожидаемому.
+    /// </exception>
     public async Task AddChapterAsync(
         CreatingChapter chapter,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(chapter);
 
-        if (await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == chapter.BookId.Value, token) is null)
+        var existedBook = await Context.Books
+            .Include(x => x.Chapters)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == chapter.BookId.Value, token);
+
+        if (existedBook is null)
         {
             throw new InvalidOperationException(
                 $"No related book {chapter.BookId.Value} for creating chapter.");
+        }
+
+        var currentBookChapters = existedBook.Chapters.ToList();
+
+        if (currentBookChapters.Count == ChapterNumber.MAX_NUMBER)
+        {
+            throw new InvalidOperationException(
+                $"Book {chapter.BookId.Value} already" +
+                $" has max amount of chapters - {ChapterNumber.MAX_NUMBER}.");
+        }
+
+        var expectedChapterNumber = currentBookChapters.Count + 1;
+
+        if (chapter.ChapterNumber.Value != expectedChapterNumber)
+        {
+            throw new InvalidOperationException(
+                $"New chapter for book {chapter.BookId.Value} " +
+                $"should has number {expectedChapterNumber}.");
         }
 
         var storageChapter = new StorageChapter
@@ -48,6 +74,9 @@ public sealed class ChaptersRepository :
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// При удалении главы из книги делает перерасчет номеров остальных глав.
+    /// </remarks>
     public async Task RemoveChapterAsync(
         Id<Chapter> chapterId,
         CancellationToken token)
@@ -63,6 +92,18 @@ public sealed class ChaptersRepository :
         }
 
         Context.Chapters.Remove(existedChapter);
+
+        var restOfChapters = 
+            await Context.Chapters
+                .Where(x => x.BookId == existedChapter.BookId).ToListAsync(token);
+
+        foreach (var chapter in restOfChapters)
+        {
+            if (chapter.Number > existedChapter.Number)
+            {
+                chapter.Number -= 1;
+            }
+        }
     }
 
     /// <inheritdoc/>
@@ -105,18 +146,6 @@ public sealed class ChaptersRepository :
 
         switch (updatedChapter)
         {
-            case UpdatedChapter<Name<Chapter>> titleUpdate:
-
-                existedChapter.Title = titleUpdate.Attribute.Value;
-
-                break;
-
-            case UpdatedChapter<ChapterNumber> numberUpdate:
-
-                existedChapter.Number = numberUpdate.Attribute.Value;
-
-                break;
-
             case UpdatedChapter<ChapterContent> contentUpdate:
 
                 existedChapter.Content = contentUpdate.Attribute.Value;
