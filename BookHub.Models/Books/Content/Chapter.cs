@@ -17,14 +17,14 @@ public sealed class Chapter
 
     public Id<Book> BookId { get; }
 
-    public Content Content { get; }
+    public ChapterContent Content { get; }
 
     public Chapter(
         Id<Chapter> id,
         Name<Chapter> title,
         ChapterNumber chapterNumber,
         Id<Book> bookId,
-        Content content)
+        ChapterContent content)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Title = title ?? throw new ArgumentNullException(nameof(title));

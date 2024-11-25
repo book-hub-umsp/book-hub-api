@@ -17,11 +17,11 @@ public sealed class CreatingChapter
 
     public Id<Book> BookId { get; }
 
-    public Content Content { get; }
+    public ChapterContent Content { get; }
 
     public CreatingChapter(
         Id<Book> bookId, 
-        Content content,
+        ChapterContent content,
         ChapterNumber chapterNumber,
         Name<Chapter>? title = null)
     {

@@ -117,7 +117,7 @@ public sealed class ChaptersRepository :
 
                 break;
 
-            case UpdatedChapter<Content> contentUpdate:
+            case UpdatedChapter<ChapterContent> contentUpdate:
 
                 existedChapter.Content = contentUpdate.Attribute.Value;
                 break;
