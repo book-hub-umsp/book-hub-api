@@ -69,7 +69,7 @@ public sealed class ChaptersRepository :
 
     /// <inheritdoc/>
     /// <remarks>
-    /// При удалении главы из книги делает перерасчет номеров остальных глав.
+    /// При удалении главы из книги делается перерасчет номеров остальных глав.
     /// </remarks>
     public async Task RemoveChapterAsync(
         Id<Chapter> chapterId,
@@ -78,7 +78,7 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(chapterId);
 
         var existedChapter = await Context.Chapters
-            .SingleOrDefaultAsync(x => x.Id == chapterId.Value, token) 
+            .FindAsync([chapterId.Value], token) 
             ?? throw new InvalidOperationException(
                 $"Chapter {chapterId.Value} not found");
 
@@ -105,7 +105,7 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(chapterId);
 
         var existedChapter = await Context.Chapters
-            .SingleOrDefaultAsync(x => x.Id == chapterId.Value, token);
+            .FindAsync([chapterId.Value], token);
 
         return existedChapter is null
             ? throw new InvalidOperationException(
@@ -125,7 +125,7 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(updatedChapter);
 
         var existedChapter = await Context.Chapters
-            .SingleOrDefaultAsync(x => x.Id == updatedChapter.Id.Value, token) 
+            .FindAsync([updatedChapter.Id.Value], token) 
             ?? throw new InvalidOperationException(
                 $"Chapter {updatedChapter.Id.Value} not found");
 

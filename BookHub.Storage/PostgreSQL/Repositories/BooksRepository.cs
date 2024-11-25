@@ -31,7 +31,7 @@ public sealed class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        BookHub.Models.CRUDS.Requests.AddAuthorBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
