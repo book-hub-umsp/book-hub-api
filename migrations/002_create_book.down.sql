@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS "favorites";
 DROP TABLE IF EXISTS "keywords_books_links";
 DROP TABLE IF EXISTS "books";
 DROP TABLE IF EXISTS "genres";
+DROP TABLE IF EXISTS "chapters";
 
 DROP TYPE IF EXISTS "book_status";
 
