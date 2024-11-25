@@ -7,8 +7,6 @@ public sealed class Chapter : IKeyable
 {
     public long Id { get; set; }
 
-    public string Title { get; set; } = null!;
-
     public int Number { get; set; }
 
     public long BookId { get; set; }

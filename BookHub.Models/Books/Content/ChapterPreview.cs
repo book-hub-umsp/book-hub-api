@@ -15,17 +15,17 @@ public sealed class ChapterPreview
 
     public ChapterNumber ChapterNumber { get; }
 
-    public Name<Chapter> Title { get; }
+    public ChapterTitle Title { get; }
 
     public ChapterPreview(
         Id<Chapter> id,
         Id<Book> bookId,
-        ChapterNumber chapterNumber,
-        Name<Chapter> title)
+        ChapterNumber chapterNumber)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         BookId = bookId ?? throw new ArgumentNullException(nameof(bookId));
         ChapterNumber = chapterNumber ?? throw new ArgumentNullException(nameof(chapterNumber));
-        Title = title ?? throw new ArgumentNullException(nameof(title));
+
+        Title = new ChapterTitle(ChapterNumber);
     }
 }

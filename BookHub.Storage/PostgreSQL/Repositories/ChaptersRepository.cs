@@ -5,7 +5,6 @@ using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Books;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
-
 using Microsoft.EntityFrameworkCore;
 
 using StorageChapter = BookHub.Storage.PostgreSQL.Models.Chapter;
@@ -36,13 +35,9 @@ public sealed class ChaptersRepository :
         var existedBook = await Context.Books
             .Include(x => x.Chapters)
             .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.Id == chapter.BookId.Value, token);
-
-        if (existedBook is null)
-        {
-            throw new InvalidOperationException(
+            .SingleOrDefaultAsync(x => x.Id == chapter.BookId.Value, token) 
+            ?? throw new InvalidOperationException(
                 $"No related book {chapter.BookId.Value} for creating chapter.");
-        }
 
         var currentBookChapters = existedBook.Chapters.ToList();
 
@@ -65,7 +60,6 @@ public sealed class ChaptersRepository :
         var storageChapter = new StorageChapter
         {
             Number = chapter.ChapterNumber.Value,
-            Title = chapter.Title.Value,
             Content = chapter.Content.Value,
             BookId = chapter.BookId.Value
         };
@@ -84,12 +78,9 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(chapterId);
 
         var existedChapter = await Context.Chapters
-            .SingleOrDefaultAsync(x => x.Id == chapterId.Value, token);
-
-        if (existedChapter is null)
-        {
-            throw new InvalidOperationException($"Chapter {chapterId.Value} not found");
-        }
+            .SingleOrDefaultAsync(x => x.Id == chapterId.Value, token) 
+            ?? throw new InvalidOperationException(
+                $"Chapter {chapterId.Value} not found");
 
         Context.Chapters.Remove(existedChapter);
 
@@ -116,17 +107,14 @@ public sealed class ChaptersRepository :
         var existedChapter = await Context.Chapters
             .SingleOrDefaultAsync(x => x.Id == chapterId.Value, token);
 
-        if (existedChapter is null)
-        {
-            throw new InvalidOperationException($"Chapter {chapterId.Value} not found");
-        }
-
-        return new(
-            chapterId,
-            new(existedChapter.Title),
-            new(existedChapter.Number),
-            new(existedChapter.BookId),
-            new(existedChapter.Content));
+        return existedChapter is null
+            ? throw new InvalidOperationException(
+                $"Chapter {chapterId.Value} not found")
+            : new(
+                chapterId,
+                new(existedChapter.Number),
+                new(existedChapter.BookId),
+                new(existedChapter.Content));
     }
 
     /// <inheritdoc/>
@@ -137,12 +125,9 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(updatedChapter);
 
         var existedChapter = await Context.Chapters
-            .SingleOrDefaultAsync(x => x.Id == updatedChapter.Id.Value, token);
-
-        if (existedChapter is null)
-        {
-            throw new InvalidOperationException($"Chapter {updatedChapter.Id.Value} not found");
-        }
+            .SingleOrDefaultAsync(x => x.Id == updatedChapter.Id.Value, token) 
+            ?? throw new InvalidOperationException(
+                $"Chapter {updatedChapter.Id.Value} not found");
 
         switch (updatedChapter)
         {

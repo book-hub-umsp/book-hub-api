@@ -286,15 +286,14 @@ public sealed class BooksRepository :
                 .AsNoTracking()
                 .Where(x => x.BookId == bookId.Value)
                 .WithPaging(pagination)
-                .Select(x => new { x.Id, x.BookId, x.Number, x.Title })
+                .Select(x => new { x.Id, x.BookId, x.Number })
                 .ToListAsync(token);
 
         return chaptersPreviews
             .Select(x => new ChapterPreview(
                 new(x.Id), 
                 new(x.BookId), 
-                new(x.Number), 
-                new(x.Title)))
+                new(x.Number)))
             .ToList();
     }
 

@@ -28,7 +28,6 @@ CREATE TABLE books (
 
 CREATE TABLE chapters (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    title TEXT NOT NULL,
     number BIGINT NOT NULL,
     book_id BIGINT NOT NULL,
     content TEXT NOT NULL,
