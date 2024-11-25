@@ -4,6 +4,7 @@ using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
+using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -338,4 +339,8 @@ public sealed class BooksRepository :
 
         return Expression.Lambda<Func<string, bool>>(body, parameter);
     }
+
+    public Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
+        PaginationBase pagination,
+        CancellationToken token) => throw new NotImplementedException();
 }
