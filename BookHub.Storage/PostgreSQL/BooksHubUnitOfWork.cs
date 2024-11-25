@@ -21,6 +21,8 @@ public sealed class BooksHubUnitOfWork :
 
     public IBooksRepository Books { get; }
 
+    public IChaptersRepository Chapters { get; }
+
     public IBooksGenresRepository BooksGenres { get; }
 
     public IFavoriteLinkRepository FavoriteLinks { get; }
@@ -29,6 +31,7 @@ public sealed class BooksHubUnitOfWork :
 
     public BooksHubUnitOfWork(
         IBooksRepository books,
+        IChaptersRepository chapters,
         IUsersRepository users,
         IRolesRepository userRoles,
         IBooksGenresRepository booksGenres,
@@ -37,6 +40,7 @@ public sealed class BooksHubUnitOfWork :
     {
         Users = users ?? throw new ArgumentNullException(nameof(users));
         Books = books ?? throw new ArgumentNullException(nameof(books));
+        Chapters = chapters ?? throw new ArgumentNullException(nameof(chapters));
         UserRoles = userRoles ?? throw new ArgumentNullException(nameof(userRoles));
         BooksGenres = booksGenres ?? throw new ArgumentNullException(nameof(booksGenres));
         FavoriteLinks = favoriteLinks ?? throw new ArgumentNullException(nameof(favoriteLinks));

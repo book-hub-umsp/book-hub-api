@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Content;
@@ -269,6 +268,36 @@ public sealed class BooksRepository :
             .ToList();
     }
 
+    public async Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
+        Id<DomainBook> bookId,
+        PaginationBase pagination,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(bookId);
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var _ = await Context.Books
+            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
+                ?? throw new InvalidOperationException(
+                    $"No such book with id {bookId.Value}.");
+
+        var chaptersPreviews = 
+            await Context.Chapters
+                .AsNoTracking()
+                .Where(x => x.BookId == bookId.Value)
+                .WithPaging(pagination)
+                .Select(x => new { x.Id, x.BookId, x.Number, x.Title })
+                .ToListAsync(token);
+
+        return chaptersPreviews
+            .Select(x => new ChapterPreview(
+                new(x.Id), 
+                new(x.BookId), 
+                new(x.Number), 
+                new(x.Title)))
+            .ToList();
+    }
+
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
@@ -339,8 +368,4 @@ public sealed class BooksRepository :
 
         return Expression.Lambda<Func<string, bool>>(body, parameter);
     }
-
-    public Task<IReadOnlyCollection<ChapterPreview>> GetBooksChaptersAsync(
-        PaginationBase pagination,
-        CancellationToken token) => throw new NotImplementedException();
 }

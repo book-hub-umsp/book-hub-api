@@ -23,6 +23,7 @@ static internal class StorageExtensions
             .AddScoped<IRepositoryContext, RepositoryContext>()
             .AddScoped<IBooksHubUnitOfWork, BooksHubUnitOfWork>()
             .AddScoped<IBooksRepository, BooksRepository>()
+            .AddScoped<IChaptersRepository, ChaptersRepository>()
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
             .AddScoped<IFavoriteLinkRepository, FavoriteLinkRepository>()
