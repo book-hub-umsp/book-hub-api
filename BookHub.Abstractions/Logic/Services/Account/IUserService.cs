@@ -34,8 +34,8 @@ public interface IUserService
     /// <summary>
     /// Возвращет профили пользователей.
     /// </summary>
-    /// <param name="pagination">
-    /// Применяемая пагинация.
+    /// <param name="manipulation">
+    /// Применяемая манипуляция над данными.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -44,10 +44,10 @@ public interface IUserService
     /// Коллекция профилей пользователей.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="pagination"/> был <see langword="null"/>.
+    /// Если <paramref name="manipulation"/> был <see langword="null"/>.
     /// </exception>
     public Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
-        PagePagging pagination,
+        DataManipulation manipulation,
         CancellationToken token);
 
     /// <summary>

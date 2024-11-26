@@ -6,18 +6,20 @@ using Newtonsoft.Json;
 
 namespace BookHub.Contracts.REST.Requests;
 
-public sealed class DataManipulationContainerRequest
+public sealed class DataManipulationRequest
 {
     [JsonProperty("pagination")]
-    public PaginationBase? Pagination { get; init; }
+    public PaggingBase? Pagination { get; init; }
 
     [JsonProperty("filters")]
     public IReadOnlyCollection<Filter> Filters { get; init; } = [];
 
-    public static DataManipulation ToDomain(DataManipulationContainerRequest contract)
+    public static DataManipulation ToDomain(DataManipulationRequest contract)
     {
         ArgumentNullException.ThrowIfNull(contract);
 
-        return new();
+        return new(
+            PaggingBase.ToDomain(contract.Pagination),
+            contract.Filters.Select(Filter.ToDomain).ToList());
     }
 }

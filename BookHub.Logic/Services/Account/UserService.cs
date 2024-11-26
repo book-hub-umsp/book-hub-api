@@ -42,17 +42,17 @@ public sealed class UserService : IUserService
 
     /// <inheritdoc/>
     public async Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
-        PagePagging pagination, 
+        DataManipulation manipulation, 
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(pagination);
+        ArgumentNullException.ThrowIfNull(manipulation);
 
         var pagePagination = new PagePagination(
-            pagination,
+            (PagePagging)manipulation.Pagination,
             await _booksHubUnitOfWork.Users.GetUsersCountAsync(token));
 
         var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
-            pagination,
+            manipulation,
             token);
 
         return new(profilesInfo, pagePagination);

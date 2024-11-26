@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BookHub.Models.API.Filtration;
+
+using Newtonsoft.Json;
 
 namespace BookHub.Contracts.REST.Filtration;
 
@@ -12,4 +14,20 @@ public sealed class Filter
 
     [JsonProperty("value")]
     public object? FilterValue { get; set; }
+
+    public static FilterBase ToDomain(Filter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        return filter.Type switch
+        {
+            FilterType.Equals =>
+                new EqualsFilter(filter.PropertyName, filter.FilterValue!),
+
+            FilterType.Contains =>
+                new ContainsFilter(filter.PropertyName, filter.FilterValue!),
+
+            _ => throw new InvalidOperationException("Unknown filter type")
+        };
+    }
 }

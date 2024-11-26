@@ -3,7 +3,7 @@
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Account;
-using BookHub.Models.API.Pagination;
+using BookHub.Models.API;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Account;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -22,25 +22,6 @@ public sealed class UsersRepository :
     private const string NOT_EXISTS_MESSAGE = "User is not exists.";
 
     public UsersRepository(IRepositoryContext context) : base(context) { }
-
-    /// <inheritdoc/>
-    public async Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
-        PaggingBase pagination,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(pagination);
-
-        token.ThrowIfCancellationRequested();
-
-        var storageUsers = await Context.Users
-            .WithPaging(pagination)
-            .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
-            .ToListAsync(token);
-
-        return storageUsers
-            .Select(ToUserProfileInfo)
-            .ToList();
-    }
 
     /// <inheritdoc/>
     public async Task AddUserAsync(RegisteringUser user, CancellationToken token)
@@ -124,7 +105,27 @@ public sealed class UsersRepository :
     }
 
     /// <inheritdoc/>
-    public async Task<long> GetUsersCountAsync(CancellationToken token) => 
+    public async Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
+        DataManipulation manipulation,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(manipulation);
+
+        token.ThrowIfCancellationRequested();
+
+        var storageUsers = await Context.Users
+            .WithPaging(manipulation.Pagination)
+            .WithFiltering(manipulation.Filters)
+            .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
+            .ToListAsync(token);
+
+        return storageUsers
+            .Select(ToUserProfileInfo)
+            .ToList();
+    }
+
+    /// <inheritdoc/>
+    public async Task<long> GetUsersCountAsync(CancellationToken token) =>
         await Context.Users.LongCountAsync(token);
 
     private static UserProfileInfo ToUserProfileInfo(PreviewUserInfo userInfo) =>

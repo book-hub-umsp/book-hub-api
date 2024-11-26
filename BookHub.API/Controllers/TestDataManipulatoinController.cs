@@ -1,42 +1,53 @@
-﻿using BookHub.API.Authentification;
-using BookHub.Contracts.REST.Responses.Account;
-using BookHub.Contracts;
+﻿using System.ComponentModel.DataAnnotations;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using BookHub.Contracts.REST.Responses;
+using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests;
-using System.ComponentModel.DataAnnotations;
+using BookHub.Contracts.REST.Responses;
+using BookHub.Contracts.REST.Responses.Account;
+using BookHub.Logic.Services.Account;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class TestDataManipulatoinController : ControllerBase
+public class TestDataManipulationController : ControllerBase
 {
-    [HttpGet("data")]
+    public TestDataManipulationController(
+        IUserService userService,
+        ILogger<TestDataManipulationController> logger)
+    {
+
+    }
+
+    [HttpGet("test")]
     [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<UserProfileInfoResponse>> MeAsync(
-        [FromBody][Required] DataManipulationContainerRequest requestContainer,
+    public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> TestAsync(
+        [FromBody][Required] DataManipulationRequest request,
         CancellationToken token)
     {
-        var aa = 0;
-        //using var _ = _logger.BeginScope("{TraceId}", Guid.NewGuid());
-        //_logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogDebug("Request parsing result: @{Request}", request);
 
-        //try
-        //{
-        //    var profileInfo = await _userService.GetUserProfileInfoAsync(_userIdentityFacade.Id, token);
+        try
+        {
+            var users = await _userService.GetUserProfilesInfoAsync(
+                DataManipulationRequest.ToDomain(request),
+                token);
 
-        //    return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
-        //}
-        //catch (InvalidOperationException ex)
-        //{
-        //    return BadRequest(FailureCommandResultResponse.FromException(ex));
-        //}
-
-        return Ok();
+            return Ok(
+                NewsItemsResponse<UserProfileInfoResponse>.FromDomain(
+                    users,
+                    UserProfileInfoResponse.FromDomain));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(FailureCommandResultResponse.FromException(ex));
+        }
     }
+
+    private readonly IUserService _userService;
+    private readonly ILogger<TestDataManipulationController> _logger;
 }
