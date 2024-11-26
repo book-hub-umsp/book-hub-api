@@ -1,5 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Books.Content;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.DomainEvents;
 
 namespace BookHub.Abstractions.Storage.Repositories;
@@ -32,16 +33,23 @@ public interface IChaptersRepository
     /// <param name="chapterId">
     /// Идентификатор главы.
     /// </param>
+    /// <param name="bookId">
+    /// Идентификатор книги.
+    /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="chapterId"/> равен <see langword="null"/>.
+    /// Если <paramref name="chapterId"/> или <paramref name="bookId"/> 
+    /// равны <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Если не существует главы с идентификатором <paramref name="chapterId"/>.
     /// </exception>
-    public Task RemoveChapterAsync(Id<Chapter> chapterId, CancellationToken token);
+    public Task RemoveChapterAsync(
+        Id<Chapter> chapterId,
+        Id<Book> bookId,
+        CancellationToken token);
 
     /// <summary>
     /// Получает главу по идентификатору.

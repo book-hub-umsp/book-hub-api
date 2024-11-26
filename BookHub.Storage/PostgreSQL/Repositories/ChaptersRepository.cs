@@ -1,6 +1,7 @@
 ﻿using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.Books.Content;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Books;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -73,24 +74,26 @@ public sealed class ChaptersRepository :
     /// </remarks>
     public async Task RemoveChapterAsync(
         Id<Chapter> chapterId,
+        Id<Book> bookId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(chapterId);
+        ArgumentNullException.ThrowIfNull(bookId);
 
-        var existedChapter = await Context.Chapters
+        var bookChapters = await Context.Chapters
+            .Where(x => x.BookId == bookId.Value)
+            .ToListAsync(token);
+
+        var chapterToRemove = await Context.Chapters
             .FindAsync([chapterId.Value], token) 
             ?? throw new InvalidOperationException(
                 $"Chapter {chapterId.Value} not found");
 
-        Context.Chapters.Remove(existedChapter);
+        Context.Chapters.Remove(chapterToRemove);
 
-        var restOfChapters = 
-            await Context.Chapters
-                .Where(x => x.BookId == existedChapter.BookId).ToListAsync(token);
-
-        foreach (var chapter in restOfChapters)
+        foreach (var chapter in bookChapters)
         {
-            if (chapter.Number > existedChapter.Number)
+            if (chapter.Number > chapterToRemove.Number)
             {
                 chapter.Number -= 1;
             }
