@@ -11,8 +11,6 @@ public sealed class Chapter
 {
     public Id<Chapter> Id { get; }
 
-    public ChapterTitle Title { get; }
-
     public ChapterNumber ChapterNumber { get; }
 
     public Id<Book> BookId { get; }
@@ -29,7 +27,5 @@ public sealed class Chapter
         ChapterNumber = chapterNumber ?? throw new ArgumentNullException(nameof(chapterNumber));
         BookId = bookId ?? throw new ArgumentNullException(nameof(bookId));
         Content = content ?? throw new ArgumentNullException(nameof(content));
-
-        Title = new ChapterTitle(ChapterNumber);
     }
 }
