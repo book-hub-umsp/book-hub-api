@@ -160,19 +160,18 @@ public sealed class BookDescriptionService : IBookDescriptionService
             " and elements in page {ElementsInPage}" +
             " containing keyword '{Keyword}'",
             elementsTotalCount,
-            pagination.Page,
+            pagination.PageNumber,
             pagination.PageSize,
             keyword.Content.Value);
 
         var pagePagination = new PagePagination(
-            elementsTotalCount,
-            pagination.Page,
-            pagination.PageSize);
+            pagination,
+            elementsTotalCount);
 
         var booksPreviews =
             await _unitOfWork.Books.GetBooksByKeywordAsync(
                 keyword,
-                pagePagination,
+                pagination,
                 token);
 
         _logger.LogInformation(
