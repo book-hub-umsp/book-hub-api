@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Runtime.InteropServices;
 
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests;
@@ -26,7 +26,7 @@ public class TestDataManipulationController : ControllerBase
     [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> TestAsync(
-        [FromBody][Required] DataManipulationRequest request,
+        [FromBody][Optional] DataManipulationRequest request,
         CancellationToken token)
     {
         _logger.LogDebug("Request parsing result: @{Request}", request);

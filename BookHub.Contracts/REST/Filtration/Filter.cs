@@ -27,7 +27,8 @@ public sealed class Filter
             FilterType.Contains =>
                 new ContainsFilter(filter.PropertyName, filter.FilterValue!),
 
-            _ => throw new InvalidOperationException("Unknown filter type")
+            _ => throw new InvalidOperationException(
+                $"Unknown filter type {filter.Type}.")
         };
     }
 }

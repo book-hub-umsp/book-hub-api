@@ -14,12 +14,10 @@ public sealed class DataManipulationRequest
     [JsonProperty("filters")]
     public IReadOnlyCollection<Filter> Filters { get; init; } = [];
 
-    public static DataManipulation ToDomain(DataManipulationRequest contract)
+    public static DataManipulation ToDomain(DataManipulationRequest? contract)
     {
-        ArgumentNullException.ThrowIfNull(contract);
-
         return new(
-            PaggingBase.ToDomain(contract.Pagination),
-            contract.Filters.Select(Filter.ToDomain).ToList());
+            PaggingBase.ToDomain(contract?.Pagination),
+            contract?.Filters.Select(Filter.ToDomain).ToList() ?? []);
     }
 }

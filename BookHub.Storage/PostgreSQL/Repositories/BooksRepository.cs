@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
