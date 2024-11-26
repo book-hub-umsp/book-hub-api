@@ -124,7 +124,10 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChapterNumbers
+                            .Select(c => c.Value)
+                            .ToArray()
                     }));
         }
         catch (ArgumentOutOfRangeException ex)
@@ -164,7 +167,10 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChapterNumbers
+                            .Select(c => c.Value)
+                            .ToArray()
                     }));
         }
         catch (ArgumentOutOfRangeException ex)
@@ -209,7 +215,10 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChapterNumbers
+                            .Select(c => c.Value)
+                            .ToArray()
                     }));
         }
         catch (ArgumentException ex)

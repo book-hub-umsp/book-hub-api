@@ -206,12 +206,28 @@ public sealed class BooksRepository :
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
+        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+
+        foreach (var bookShortModel in booksShortModels)
+        {
+            var chaptersNumbers = await Context.Chapters
+                .Where(x => x.BookId == bookShortModel.Id)
+                .Select(x => x.Number)
+                .ToListAsync();
+
+            booksChaptersNumbers[bookShortModel.Id] =
+                chaptersNumbers
+                    .Select(x => new ChapterNumber(x))
+                    .ToList();
+        }
+
         return booksShortModels
             .Select(x => new BookPreview(
                 new(x.Id),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
+                new(x.AuthorId), 
+                booksChaptersNumbers[x.Id]))
             .ToList();
     }
 
@@ -228,12 +244,28 @@ public sealed class BooksRepository :
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
+        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+
+        foreach (var bookShortModel in booksShortModels)
+        {
+            var chaptersNumbers = await Context.Chapters
+                .Where(x => x.BookId == bookShortModel.Id)
+                .Select(x => x.Number)
+                .ToListAsync();
+
+            booksChaptersNumbers[bookShortModel.Id] =
+                chaptersNumbers
+                    .Select(x => new ChapterNumber(x))
+                    .ToList();
+        }
+
         return booksShortModels
             .Select(x => new BookPreview(
                 new(x.Id),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
+                new(x.AuthorId),
+                booksChaptersNumbers[x.Id]))
             .ToList();
     }
 
@@ -259,35 +291,28 @@ public sealed class BooksRepository :
                 .Select(book => new { book.Id, book.AuthorId, book.BookGenre, book.Title })
                 .ToListAsync(token);
 
+        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+
+        foreach (var bookShortModel in booksShortModels)
+        {
+            var chaptersNumbers = await Context.Chapters
+                .Where(x => x.BookId == bookShortModel.Id)
+                .Select(x => x.Number)
+                .ToListAsync();
+
+            booksChaptersNumbers[bookShortModel.Id] = 
+                chaptersNumbers
+                    .Select(x => new ChapterNumber(x))
+                    .ToList();
+        }
+
         return booksShortModels
             .Select(x => new BookPreview(
                 new(x.Id),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
-            .ToList();
-    }
-
-    public async Task<IReadOnlyCollection<ChapterNumber>> GetBooksChaptersNumbersAsync(
-        Id<DomainBook> bookId,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-
-        var _ = await Context.Books
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
-                ?? throw new InvalidOperationException(
-                    $"No such book with id {bookId.Value}.");
-
-        var chaptersPreviews = 
-            await Context.Chapters
-                .AsNoTracking()
-                .Where(x => x.BookId == bookId.Value)
-                .Select(x => new { x.Id, x.BookId, x.Number })
-                .ToListAsync(token);
-
-        return chaptersPreviews
-            .Select(x => new ChapterNumber(x.Number))
+                new(x.AuthorId),
+                booksChaptersNumbers[x.Id]))
             .ToList();
     }
 
