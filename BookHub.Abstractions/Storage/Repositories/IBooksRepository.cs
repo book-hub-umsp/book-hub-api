@@ -42,5 +42,11 @@ public interface IBooksRepository
         PaggingBase pagination,
         CancellationToken token);
 
+
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
+        KeyWord keyword,
+        PaginationBase pagination,
+        CancellationToken token);
+
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);
 }

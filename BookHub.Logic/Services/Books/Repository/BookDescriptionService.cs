@@ -144,6 +144,44 @@ public sealed class BookDescriptionService : IBookDescriptionService
         return new(booksPreviews, pagePagination);
     }
 
+    public async Task<NewsItems<BookPreview>> GetBooksPreviewsByKeywordAsync(
+        KeyWord keyword,
+        PagePagging pagination, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(keyword);
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var elementsTotalCount = await _unitOfWork.Books.GetBooksTotalCountAsync(token);
+
+        _logger.LogDebug(
+            "Trying to get paginated books from total" +
+            " books count {Total} with settings: page number {PageNumber}" +
+            " and elements in page {ElementsInPage}" +
+            " containing keyword '{Keyword}'",
+            elementsTotalCount,
+            pagination.Page,
+            pagination.PageSize,
+            keyword.Content.Value);
+
+        var pagePagination = new PagePagination(
+            elementsTotalCount,
+            pagination.Page,
+            pagination.PageSize);
+
+        var booksPreviews =
+            await _unitOfWork.Books.GetBooksByKeywordAsync(
+                keyword,
+                pagePagination,
+                token);
+
+        _logger.LogInformation(
+            "Paginated books previews containing keyword '{Keyword}' were received",
+            keyword.Content.Value);
+
+        return new(booksPreviews, pagePagination);
+    }
+
     private readonly IBooksHubUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
 }

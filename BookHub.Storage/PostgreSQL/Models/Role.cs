@@ -5,7 +5,7 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// <summary>
 /// Модель роли в хранилище.
 /// </summary>
-public sealed class Role
+public sealed class Role : IKeyable
 {
     public long Id { get; set; }
 

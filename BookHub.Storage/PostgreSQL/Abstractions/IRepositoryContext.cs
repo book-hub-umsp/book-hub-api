@@ -15,7 +15,11 @@ public interface IRepositoryContext
 
     public DbSet<Book> Books { get; }
 
+    public DbSet<Keyword> Keywords { get; }
+
     public DbSet<BookGenre> Genres { get; }
 
     public DbSet<FavoriteLink> FavoriteLinks { get; }
+
+    public DbSet<KeywordLink> KeywordLinks { get; }
 }
