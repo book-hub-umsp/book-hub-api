@@ -11,16 +11,8 @@ namespace BookHub.Contracts.REST.Pagination;
 public abstract class PaginationBase
 {
     [Required]
-    [JsonProperty("page_size", Required = Required.Always)]
-    public required int PageSize { get; init; }
-
-    //public static DomainModels.PaginationBase ToDomain(PaginationBase? pagination) => 
-    //    (pagination) switch
-    //    {
-    //        null => DomainModels.WithoutPagging.Instance,
-
-    //        PagePagination => new DomainModels.PagePagination()
-    //    }
+    [JsonProperty("pagging", Required = Required.Always)]
+    public required PaggingBase Pagging { get; init; }
 
     public static PaginationBase? FromDomain(IPagination pagination)
     {
@@ -30,19 +22,17 @@ public abstract class PaginationBase
         {
             DomainModels.WithoutPagination => null,
 
-            //DomainModels.PagePagination pagePagination => new PagePagination()
-            //{
-            //    ItemsTotal = pagePagination.ItemsTotal,
-            //    PagesTotal = pagePagination.PagesTotal,
-            //    PageNumber = pagePagination.PageNumber,
-            //    PageSize = pagePagination.PageSize,
-            //},
+            DomainModels.PagePagination pagePagination => new PagePagination
+            {
+                ItemsTotal = pagePagination.ItemsTotal,
+                PagesTotal = pagePagination.PagesTotal,
+                Pagging = PaggingBase.FromDomain(pagePagination.Pagging)!
+            },
 
-            //DomainModels.OffsetPagination offsetPagination => new OffsetPagination()
-            //{
-            //    Offset = offsetPagination.Offset,
-            //    PageSize = offsetPagination.PageSize,
-            //},
+            DomainModels.OffsetPagination offsetPagination => new OffsetPagination
+            {
+                Pagging = PaggingBase.FromDomain(offsetPagination.Pagging)!
+            },
 
             _ => throw new InvalidOperationException(
                 $"Pagination {pagination.GetType().Name} is not supported.")
