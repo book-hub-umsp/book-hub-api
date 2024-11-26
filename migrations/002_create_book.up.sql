@@ -28,7 +28,7 @@ CREATE TABLE books (
 
 CREATE TABLE chapters (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    number BIGINT NOT NULL,
+    number SMALLINT NOT NULL,
     book_id BIGINT NOT NULL,
     content TEXT NOT NULL,
     CONSTRAINT "pk_chapters" PRIMARY KEY(id),
