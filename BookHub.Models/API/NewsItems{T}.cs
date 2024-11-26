@@ -25,7 +25,7 @@ public sealed class NewsItems<T> : IEnumerable<T>
     public PaginationBase Pagination { get; }
 
     public NewsItems(IReadOnlyCollection<T> items)
-        : this(items, WithoutPagination.Instance) { }
+        : this(items, WithoutPagging.Instance) { }
 
     public NewsItems(IReadOnlyCollection<T> items, PaginationBase pagination)
     {

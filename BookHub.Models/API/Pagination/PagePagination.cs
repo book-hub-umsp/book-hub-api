@@ -9,26 +9,30 @@ namespace BookHub.Models.API.Pagination;
 /// Использовать в тех случаях, когда нам необходима пагинация со случайным доступом к странице.
 /// Работает медленне <see cref="OffsetPagination"/>, но позволяет запрашивать данные непоследовательно.
 /// </remarks>
-public sealed class PagePagination : PaginationBase
+public sealed class PagePagination : IPagination
 {
     public long ItemsTotal { get; }
 
     public int PagesTotal { get; }
 
-    public int PageNumber { get; }
+    public PagePagging Pagging { get; }
 
     public PagePagination(
-        long itemsTotal,
-        int pageNumber,
-        int pageSize) : base(pageSize)
+        PagePagging pagging,
+        long itemsTotal)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(itemsTotal, 0);
+        ArgumentNullException.ThrowIfNull(pagging);
+        Pagging = pagging;
+
+        ArgumentOutOfRangeException.ThrowIfLessThan(itemsTotal, MIN_TOTAL_ITEMS);
         ItemsTotal = itemsTotal;
 
-        ArgumentOutOfRangeException.ThrowIfLessThan(pageNumber, 1);
-        PageNumber = pageNumber;
-
-        PagesTotal = (int)Math.Ceiling(itemsTotal / (double)pageSize);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(pageNumber, PagesTotal);
+        PagesTotal = ItemsTotal != MIN_TOTAL_ITEMS
+            ? (int)Math.Ceiling(itemsTotal / (double)Pagging.PageSize)
+            : MIN_PAGES_TOTAL;
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(Pagging.PageNumber, PagesTotal);
     }
+
+    private const long MIN_TOTAL_ITEMS = 0;
+    private const int MIN_PAGES_TOTAL = 1;
 }

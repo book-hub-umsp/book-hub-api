@@ -12,7 +12,7 @@ public interface IFavoriteLinkRepository
 {
     public Task AddFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token);
 
-    public Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, PagePagination pagePagination, CancellationToken token);
+    public Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, PagePagging pagePagination, CancellationToken token);
 
     public Task RemoveFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token);
 

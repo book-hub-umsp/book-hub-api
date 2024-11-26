@@ -12,7 +12,9 @@ namespace BookHub.Storage.PostgreSQL;
 /// </summary>
 public static class QueryExtensions
 {
-    public static IQueryable<T> WithPaging<T>(this IQueryable<T> items, PaginationBase pagination)
+    public static IQueryable<T> WithPaging<T>(
+        this IQueryable<T> items, 
+        PaggingBase pagination)
         where T : IKeyable
     {
         ArgumentNullException.ThrowIfNull(items);
@@ -20,14 +22,14 @@ public static class QueryExtensions
 
         return pagination switch
         {
-            WithoutPagination withoutPagination => items,
+            WithoutPagging withoutPagination => items,
 
-            PagePagination pagePagination => items
+            PagePagging pagePagination => items
                 .OrderBy(x => x.Id)
                 .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
                 .Take(pagePagination.PageSize),
 
-            OffsetPagination offsetPagination => items
+            OffsetPagging offsetPagination => items
                 .OrderBy(x => x.Id)
                 .Where(x => x.Id > offsetPagination.Offset)
                 .Take(offsetPagination.PageSize),
@@ -60,35 +62,34 @@ public static class QueryExtensions
         var sb = new StringBuilder();
         var parameters = new List<object>(filters.Count);
 
-        sb.Append($"x => {BuildQueryFromFilter(filters.First(), parameters, ref count)}");
+        sb.Append($"x => {GetQueryFromFilter(filters.First(), parameters, ref count)}");
         foreach (var filter in filters.Skip(1))
         {
-            sb.Append($" && {BuildQueryFromFilter(filter, parameters, ref count)}");
+            sb.Append($" && {GetQueryFromFilter(filter, parameters, ref count)}");
         }
 
-        return new(sb.ToString(), parameters.ToArray());
+        return new(sb.ToString(), [.. parameters]);
     }
 
-    private static string BuildQueryFromFilter(
+    private static string GetQueryFromFilter(
         FilterBase filter,
         List<object> parameters,
         ref int counter)
     {
-        if (filter is EqualsFilter equalsFilter)
+        switch (filter)
         {
-            parameters.Add(equalsFilter.Value);
+            case EqualsFilter equalsFilter:
+                parameters.Add(equalsFilter.Value);
+                return $"x.{equalsFilter.PropertyName} == @{counter++}";
 
-            return $"x.{equalsFilter.PropertyName} == @{counter++}";
+            case ContainsFilter containsFilter:
+                parameters.Add(containsFilter.Value);
+                return $"x.{containsFilter.PropertyName}.Contains(@{counter++})";
+
+            default:
+                throw new InvalidOperationException(
+                    $"Filter type {filter.GetType().Name} not supported");
         }
-
-        if (filter is ContainsFilter containsFilter)
-        {
-            parameters.Add(containsFilter.Value);
-
-            return $"x.{containsFilter.PropertyName}.Contains(@{counter++})";
-        }
-
-        throw new InvalidOperationException($"Filter type {filter.GetType().Name} not supported");
     }
 
     private readonly record struct FiltersQuery(string Query, object[] Parameters);

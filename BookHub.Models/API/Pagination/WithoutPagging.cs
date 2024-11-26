@@ -3,14 +3,14 @@
 /// <summary>
 /// Модель означающая отсутствие пагинации.
 /// </summary>
-public sealed class WithoutPagination : PaginationBase
+public sealed class WithoutPagging : PaggingBase
 {
     /// <summary>
     /// Экземпляр.
     /// </summary>
-    public static WithoutPagination Instance { get; } = new(DEFAULT_PAGE_SIZE);
+    public static WithoutPagging Instance { get; } = new(DEFAULT_PAGE_SIZE);
 
-    private WithoutPagination(int pageSize) : base(pageSize)
+    private WithoutPagging(int pageSize) : base(pageSize)
     {
     }
 

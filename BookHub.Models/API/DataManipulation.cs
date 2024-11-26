@@ -9,22 +9,22 @@ namespace BookHub.Models.API;
 /// <summary>
 /// Представляет контейнер, содержащий модели манипуляции с данными.
 /// </summary>
-public sealed class DataManipulationContainer
+public sealed class DataManipulation
 {
-    public PaginationBase Pagination { get; }
+    public PaggingBase Pagination { get; }
 
     public IReadOnlyCollection<FilterBase> Filters { get; }
 
-    public DataManipulationContainer()
-        : this(WithoutPagination.Instance, []) { }
+    public DataManipulation()
+        : this(WithoutPagging.Instance, []) { }
 
-    public DataManipulationContainer(PaginationBase pagination)
+    public DataManipulation(PaggingBase pagination)
         : this(pagination, []) { }
 
-    public DataManipulationContainer(IReadOnlyCollection<FilterBase> filters)
-        : this(WithoutPagination.Instance, filters) { }
+    public DataManipulation(IReadOnlyCollection<FilterBase> filters)
+        : this(WithoutPagging.Instance, filters) { }
 
-    public DataManipulationContainer(PaginationBase pagination, IReadOnlyCollection<FilterBase> filters)
+    public DataManipulation(PaggingBase pagination, IReadOnlyCollection<FilterBase> filters)
     {
         ArgumentNullException.ThrowIfNull(pagination);
         Pagination = pagination;

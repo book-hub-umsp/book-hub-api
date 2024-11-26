@@ -14,7 +14,7 @@ public sealed class DataManipulationContainerRequest
     [JsonProperty("filters")]
     public IReadOnlyCollection<Filter> Filters { get; init; } = [];
 
-    public static DataManipulationContainer ToDomain(DataManipulationContainerRequest contract)
+    public static DataManipulation ToDomain(DataManipulationContainerRequest contract)
     {
         ArgumentNullException.ThrowIfNull(contract);
 

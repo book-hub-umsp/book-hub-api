@@ -15,7 +15,7 @@ public abstract class PaginationBase
     public static DomainModels.PaginationBase ToDomain(PaginationBase? pagination) => 
         (pagination) switch
         {
-            null => DomainModels.WithoutPagination.Instance,
+            null => DomainModels.WithoutPagging.Instance,
 
             PagePagination => new DomainModels.PagePagination()
         }
@@ -26,7 +26,7 @@ public abstract class PaginationBase
 
         return pagination switch
         {
-            DomainModels.WithoutPagination => null,
+            DomainModels.WithoutPagging => null,
 
             DomainModels.PagePagination pagePagination => new PagePagination()
             {

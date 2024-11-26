@@ -9,15 +9,13 @@ namespace BookHub.Models.API.Pagination;
 /// Использовать для пагинации с последовательным доступом к данным (предыдущий/следующий)
 /// в ситуации, когда не требуется хаотичная выборка элементов.
 /// </remarks>
-public sealed class OffsetPagination : PaginationBase
+public sealed class OffsetPagination : IPagination
 {
-    public long Offset { get; }
+    public OffsetPagging Pagging { get; }
 
-    public OffsetPagination(long offset, int pageSize) : base(pageSize)
+    public OffsetPagination(OffsetPagging pagging)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(offset, MIN_OFFSET);
-        Offset = offset;
+        ArgumentNullException.ThrowIfNull(pagging);
+        Pagging = pagging;
     }
-
-    private const long MIN_OFFSET = 0;
 }

@@ -35,11 +35,11 @@ public interface IBooksRepository
 
     public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
         Id<User> authorId,
-        PaginationBase pagination,
+        PaggingBase pagination,
         CancellationToken token);
 
     public Task<IReadOnlyCollection<BookPreview>> GetBooksAsync(
-        PaginationBase pagination,
+        PaggingBase pagination,
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);
