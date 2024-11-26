@@ -48,12 +48,11 @@ public sealed class UserService : IUserService
         ArgumentNullException.ThrowIfNull(pagination);
 
         var pagePagination = new PagePagination(
-            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token),
-            pagination.Page,
-            pagination.PageSize);
+            pagination,
+            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token));
 
         var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
-            pagePagination,
+            pagination,
             token);
 
         return new(profilesInfo, pagePagination);

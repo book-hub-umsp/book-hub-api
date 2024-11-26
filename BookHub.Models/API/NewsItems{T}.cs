@@ -22,12 +22,12 @@ public sealed class NewsItems<T> : IEnumerable<T>
     /// <summary>
     /// Пагинация.
     /// </summary>
-    public PaginationBase Pagination { get; }
+    public IPagination Pagination { get; }
 
     public NewsItems(IReadOnlyCollection<T> items)
-        : this(items, WithoutPagging.Instance) { }
+        : this(items, WithoutPagination.Instance) { }
 
-    public NewsItems(IReadOnlyCollection<T> items, PaginationBase pagination)
+    public NewsItems(IReadOnlyCollection<T> items, IPagination pagination)
     {
         ArgumentNullException.ThrowIfNull(items);
         Items = items;

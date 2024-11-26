@@ -18,6 +18,6 @@ public sealed class DataManipulationContainerRequest
     {
         ArgumentNullException.ThrowIfNull(contract);
 
-        return new()
+        return new();
     }
 }

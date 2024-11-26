@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using BookHub.Models.API.Pagination;
+
 using Newtonsoft.Json;
 
 using DomainModels = BookHub.Models.API.Pagination;
@@ -12,35 +14,35 @@ public abstract class PaginationBase
     [JsonProperty("page_size", Required = Required.Always)]
     public required int PageSize { get; init; }
 
-    public static DomainModels.PaginationBase ToDomain(PaginationBase? pagination) => 
-        (pagination) switch
-        {
-            null => DomainModels.WithoutPagging.Instance,
+    //public static DomainModels.PaginationBase ToDomain(PaginationBase? pagination) => 
+    //    (pagination) switch
+    //    {
+    //        null => DomainModels.WithoutPagging.Instance,
 
-            PagePagination => new DomainModels.PagePagination()
-        }
+    //        PagePagination => new DomainModels.PagePagination()
+    //    }
 
-    public static PaginationBase? FromDomain(DomainModels.PaginationBase pagination)
+    public static PaginationBase? FromDomain(IPagination pagination)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
         return pagination switch
         {
-            DomainModels.WithoutPagging => null,
+            DomainModels.WithoutPagination => null,
 
-            DomainModels.PagePagination pagePagination => new PagePagination()
-            {
-                ItemsTotal = pagePagination.ItemsTotal,
-                PagesTotal = pagePagination.PagesTotal,
-                PageNumber = pagePagination.PageNumber,
-                PageSize = pagePagination.PageSize,
-            },
+            //DomainModels.PagePagination pagePagination => new PagePagination()
+            //{
+            //    ItemsTotal = pagePagination.ItemsTotal,
+            //    PagesTotal = pagePagination.PagesTotal,
+            //    PageNumber = pagePagination.PageNumber,
+            //    PageSize = pagePagination.PageSize,
+            //},
 
-            DomainModels.OffsetPagination offsetPagination => new OffsetPagination()
-            {
-                Offset = offsetPagination.Offset,
-                PageSize = offsetPagination.PageSize,
-            },
+            //DomainModels.OffsetPagination offsetPagination => new OffsetPagination()
+            //{
+            //    Offset = offsetPagination.Offset,
+            //    PageSize = offsetPagination.PageSize,
+            //},
 
             _ => throw new InvalidOperationException(
                 $"Pagination {pagination.GetType().Name} is not supported.")

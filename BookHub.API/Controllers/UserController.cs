@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using BookHub.Abstractions;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Account;
-using BookHub.Contracts.REST.Responces.Account;
+using BookHub.Contracts.REST.Responses.Account;
 using BookHub.Logic.Converters.Account;
 using BookHub.Logic.Services.Account;
 

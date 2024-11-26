@@ -61,13 +61,16 @@ public sealed class UserFavoriteService : IUserFavoriteService
             " favorite links count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage} for user with id {UserId}",
             totalFavItems,
-            pagePagging.Page,
+            pagePagging.PageNumber,
             pagePagging.PageSize,
             userId.Value);
 
-        var pagePagination = new PagePagination(totalFavItems, pagePagging.Page, pagePagging.PageSize);
+        var pagePagination = new PagePagination(
+            pagePagging,
+            totalFavItems);
 
-        var usersFavorite = await _unitOfWork.FavoriteLinks.GetUsersFavoriteAsync(userId, pagePagination, token);
+        var usersFavorite = await _unitOfWork.FavoriteLinks
+            .GetUsersFavoriteAsync(userId, pagePagging, token);
 
         _logger.LogDebug(
             "User's favorite links with user id {UserId} have been successfully received",

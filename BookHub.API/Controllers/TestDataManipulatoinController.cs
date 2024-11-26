@@ -22,18 +22,21 @@ public class TestDataManipulatoinController : ControllerBase
         [FromBody][Required] DataManipulationContainerRequest requestContainer,
         CancellationToken token)
     {
-        using var _ = _logger.BeginScope("{TraceId}", Guid.NewGuid());
-        _logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        var aa = 0;
+        //using var _ = _logger.BeginScope("{TraceId}", Guid.NewGuid());
+        //_logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
-        try
-        {
-            var profileInfo = await _userService.GetUserProfileInfoAsync(_userIdentityFacade.Id, token);
+        //try
+        //{
+        //    var profileInfo = await _userService.GetUserProfileInfoAsync(_userIdentityFacade.Id, token);
 
-            return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
+        //    return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
+        //}
+        //catch (InvalidOperationException ex)
+        //{
+        //    return BadRequest(FailureCommandResultResponse.FromException(ex));
+        //}
+
+        return Ok();
     }
 }

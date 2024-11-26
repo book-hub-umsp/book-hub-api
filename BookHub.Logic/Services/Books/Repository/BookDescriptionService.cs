@@ -93,19 +93,18 @@ public sealed class BookDescriptionService : IBookDescriptionService
             " books count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage} for author {AuthorId}",
             elementsTotalCount,
-            pagination.Page,
+            pagination.PageNumber,
             pagination.PageSize,
             authorId.Value);
 
         var pagePagination = new PagePagination(
-            elementsTotalCount,
-            pagination.Page,
-            pagination.PageSize);
+            pagination,
+            elementsTotalCount);
 
         var booksPreviews =
             await _unitOfWork.Books.GetAuthorBooksAsync(
                 authorId,
-                pagePagination,
+                pagination,
                 token);
 
         _logger.LogDebug(
@@ -128,17 +127,16 @@ public sealed class BookDescriptionService : IBookDescriptionService
             " books count {Total} with settings: page number {PageNumber}" +
             " and elements in page {ElementsInPage}",
             elementsTotalCount,
-            pagination.Page,
+            pagination.PageNumber,
             pagination.PageSize);
 
         var pagePagination = new PagePagination(
-            elementsTotalCount,
-            pagination.Page,
-            pagination.PageSize);
+            pagination,
+            elementsTotalCount);
 
         var booksPreviews =
             await _unitOfWork.Books.GetBooksAsync(
-                pagePagination,
+                pagination,
                 token);
 
         _logger.LogDebug("Paginated books previews were received");
