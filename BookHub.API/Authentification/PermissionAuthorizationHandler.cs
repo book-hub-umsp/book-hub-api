@@ -13,7 +13,7 @@ public sealed class PermissionAuthorizationHandler :
     AuthorizationHandler<PermissionRequirement>
 {
     public PermissionAuthorizationHandler(
-        IHttpUserIdentityFacade idFacade,
+        IUserIdentityFacade idFacade,
         IRolesService rolesService,
         ILogger<PermissionAuthorizationHandler> logger)
     {
@@ -48,7 +48,7 @@ public sealed class PermissionAuthorizationHandler :
         }
     }
 
-    private readonly IHttpUserIdentityFacade _idFacade;
+    private readonly IUserIdentityFacade _idFacade;
     private readonly IRolesService _rolesService;
     private readonly ILogger<PermissionAuthorizationHandler> _logger;
 }

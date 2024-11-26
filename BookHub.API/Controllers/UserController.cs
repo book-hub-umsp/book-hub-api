@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions;
-using BookHub.API.Authentification;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Account;
-using BookHub.Contracts.REST.Responses;
-using BookHub.Contracts.REST.Responses.Account;
+using BookHub.Contracts.REST.Responces.Account;
 using BookHub.Logic.Converters.Account;
 using BookHub.Logic.Services.Account;
 
@@ -16,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
@@ -23,13 +21,13 @@ public sealed class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IUserRequestConverter _converter;
-    private readonly IHttpUserIdentityFacade _userIdentityFacade;
+    private readonly IUserIdentityFacade _userIdentityFacade;
     private readonly ILogger<UserController> _logger;
 
     public UserController(
         IUserService userService,
         IUserRequestConverter converter,
-        IHttpUserIdentityFacade userIdentityFacade,
+        IUserIdentityFacade userIdentityFacade,
         ILogger<UserController> logger)
     {
         ArgumentNullException.ThrowIfNull(userService);
@@ -54,15 +52,13 @@ public sealed class UserController : ControllerBase
     /// <returns>
     /// <see cref="ActionResult{TValue}"/> с данными профиля пользователя.
     /// </returns>
-    [Authorize(Policy = Auth.Policies.ALLOW_REGISTER_POLICY)]
     [HttpGet("me")]
     [ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserProfileInfoResponse>> MeAsync(CancellationToken token)
     {
-        using var _ = _logger.BeginScope("{TraceId}", Guid.NewGuid());
-        _logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogInformation("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {
@@ -71,51 +67,6 @@ public sealed class UserController : ControllerBase
             return Ok(UserProfileInfoResponse.FromDomain(profileInfo));
         }
         catch (InvalidOperationException ex)
-        {
-            return BadRequest(FailureCommandResultResponse.FromException(ex));
-        }
-    }
-
-    /// <summary>
-    /// Возвращает информацию о профилях пользователей.
-    /// </summary>
-    /// <param name="pageNumber">
-    /// Номер страницы.
-    /// </param>
-    /// <param name="pageSize">
-    /// Размер страницы.
-    /// </param>
-    /// <param name="token">
-    /// Токен отмены.
-    /// </param>
-    /// <returns>
-    /// <see cref="ActionResult{TValue}"/> с данными профиля пользователя.
-    /// </returns>
-    /// <response code="400">
-    /// Когда пользователя с таким идентификатором не удалось найти.
-    /// </response>
-    [HttpGet]
-    [ProducesResponseType<NewsItemsResponse<UserProfileInfoResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<NewsItemsResponse<UserProfileInfoResponse>>> GetUserProfilesInfoAsync(
-        [DefaultValue(1)][FromQuery] int pageNumber,
-        [DefaultValue(5)][FromQuery] int pageSize,
-        CancellationToken token)
-    {
-        _logger.LogDebug("Getting profiles info");
-
-        try
-        {
-            var profilesInfo = await _userService.GetUserProfilesInfoAsync(
-                new(pageNumber, pageSize),
-                token);
-
-            return Ok(
-                NewsItemsResponse<UserProfileInfoResponse>.FromDomain(
-                    profilesInfo,
-                    UserProfileInfoResponse.FromDomain));
-        }
-        catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
@@ -136,6 +87,7 @@ public sealed class UserController : ControllerBase
     /// <response code="400">
     /// Когда пользователя с таким идентификатором не удалось найти.
     /// </response>
+    [AllowAnonymous]
     [HttpGet("{userId}")]
     [ProducesResponseType<UserProfileInfoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
@@ -143,7 +95,7 @@ public sealed class UserController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogDebug("Getting info by user id: {Id}", userId);
+        _logger.LogInformation("Getting info by user id: {Id}", userId);
 
         try
         {
@@ -169,7 +121,6 @@ public sealed class UserController : ControllerBase
     /// <returns>
     /// <see cref="IActionResult"/>.
     /// </returns>
-    [Authorize]
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
@@ -178,7 +129,7 @@ public sealed class UserController : ControllerBase
         [Required][NotNull] UpdateUserProfileInfoRequest request,
         CancellationToken token)
     {
-        _logger.LogDebug("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogInformation("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {
