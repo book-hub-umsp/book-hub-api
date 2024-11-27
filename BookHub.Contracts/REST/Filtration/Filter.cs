@@ -10,7 +10,7 @@ public sealed class Filter
     public required FilterType Type { get; set; }
 
     [JsonProperty("field", Required = Required.Always)]
-    public required string PropertyName { get; set; }
+    public required string Field { get; set; }
 
     [JsonProperty("value")]
     public object? FilterValue { get; set; }
@@ -22,10 +22,10 @@ public sealed class Filter
         return filter.Type switch
         {
             FilterType.Equals =>
-                new EqualsFilter(filter.PropertyName, filter.FilterValue!),
+                new EqualsFilter(filter.Field, filter.FilterValue!),
 
             FilterType.Contains =>
-                new ContainsFilter(filter.PropertyName, filter.FilterValue!),
+                new ContainsFilter(filter.Field, filter.FilterValue!),
 
             _ => throw new InvalidOperationException(
                 $"Unknown filter type {filter.Type}.")

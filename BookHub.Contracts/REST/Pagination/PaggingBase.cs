@@ -12,6 +12,10 @@ public abstract class PaggingBase
     [JsonProperty("page_size", Required = Required.Always)]
     public required int PageSize { get; init; }
 
+    [Required]
+    [JsonProperty("type", Required = Required.Always)]
+    public required PaggingType Type { get; init; }
+
     public static DomainModels.PaggingBase ToDomain(PaggingBase? pagging) =>
         (pagging) switch
         {
