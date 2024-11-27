@@ -44,12 +44,14 @@ public abstract class PaggingBase
 
             DomainModels.PagePagging pagePagging => new PagePagging
             {
+                Type = PaggingType.Page,
                 PageNumber = pagePagging.PageNumber,
                 PageSize = pagePagging.PageSize
             },
 
             DomainModels.OffsetPagging offsetPagging => new OffsetPagging
             {
+                Type = PaggingType.Offset,
                 Offset = offsetPagging.Offset,
                 PageSize = offsetPagging.PageSize
             },

@@ -14,13 +14,17 @@ public sealed class PaggingConverter : JsonConverter<PaggingBase>
     {
         var raw = JObject.Load(reader);
 
-        return raw["type"]!.ToObject<PaggingType>() switch
-        {
-            PaggingType.Page => raw.ToObject<PagePagging>(),
-            PaggingType.Offset => raw.ToObject<OffsetPagging>(),
+        var type = raw["type"];
 
-            _ => throw new InvalidOperationException("Unknown pagging type.")
-        };
+        return type is null
+            ? throw new InvalidOperationException("Pagging must have type.")
+            : type.ToObject<PaggingType>() switch
+            {
+                PaggingType.Page => raw.ToObject<PagePagging>(),
+                PaggingType.Offset => raw.ToObject<OffsetPagging>(),
+
+                _ => throw new InvalidOperationException("Unknown pagging type.")
+            };
     }
 
     public override void WriteJson(JsonWriter writer, PaggingBase? value, JsonSerializer serializer) =>
