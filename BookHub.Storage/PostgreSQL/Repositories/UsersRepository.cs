@@ -114,8 +114,8 @@ public sealed class UsersRepository :
         token.ThrowIfCancellationRequested();
 
         var storageUsers = await Context.Users
-            .WithPaging(manipulation.Pagination)
             .WithFiltering(manipulation.Filters)
+            .WithPaging(manipulation.Pagination)
             .Select(x => new PreviewUserInfo { Id = x.Id, Name = x.Name, Email = x.Email, About = x.About })
             .ToListAsync(token);
 

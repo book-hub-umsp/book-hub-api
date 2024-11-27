@@ -47,15 +47,17 @@ public sealed class UserService : IUserService
     {
         ArgumentNullException.ThrowIfNull(manipulation);
 
-        var pagePagination = new PagePagination(
-            (PagePagging)manipulation.Pagination,
-            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token));
-
         var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
             manipulation,
             token);
 
-        return new(profilesInfo, pagePagination);
+        return manipulation.Pagination is WithoutPagging 
+            ? new(profilesInfo)
+            : new(
+                profilesInfo, 
+                new PagePagination(
+                    (PagePagging)manipulation.Pagination,
+                    await _booksHubUnitOfWork.Users.GetUsersCountAsync(token)));
     }
 
     /// <inheritdoc/>

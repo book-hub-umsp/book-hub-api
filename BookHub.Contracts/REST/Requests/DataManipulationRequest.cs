@@ -8,6 +8,7 @@ namespace BookHub.Contracts.REST.Requests;
 
 public sealed class DataManipulationRequest
 {
+    [JsonConverter(typeof(PaggingConverter))]
     [JsonProperty("pagination")]
     public PaggingBase? Pagination { get; init; }
 

@@ -19,7 +19,11 @@ public class TestDataManipulationController : ControllerBase
         IUserService userService,
         ILogger<TestDataManipulationController> logger)
     {
+        ArgumentNullException.ThrowIfNull(userService);
+        _userService = userService;
 
+        ArgumentNullException.ThrowIfNull(logger);
+        _logger = logger;
     }
 
     [HttpGet("test")]
