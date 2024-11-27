@@ -5,11 +5,11 @@ namespace BookHub.Models.Books.Content;
 /// <summary>
 /// Модель номера главы.
 /// </summary>
-public sealed record class ChapterNumber
+public sealed record class ChapterSequenceNumber
 {
     public int Value { get; }
 
-    public ChapterNumber(int value)
+    public ChapterSequenceNumber(int value)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(value, MIN_NUMBER);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(value, MAX_NUMBER);

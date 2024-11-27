@@ -128,8 +128,8 @@ public partial class BookDescriptionController : ControllerBase
                         ChaptersNumbers = x.ChaptersIdsMap
                             .Select(pair => new BookChapterIdResponse
                             {
-                                ChapterSequenceNumber = pair.Key,
-                                BookChapterNumber = pair.Value.Value,
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
                             })
                             .ToArray()
                     }));
@@ -175,8 +175,8 @@ public partial class BookDescriptionController : ControllerBase
                         ChaptersNumbers = x.ChaptersIdsMap
                             .Select(pair => new BookChapterIdResponse
                             {
-                                ChapterSequenceNumber = pair.Key,
-                                BookChapterNumber = pair.Value.Value,
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
                             })
                             .ToArray()
                     }));
@@ -227,8 +227,8 @@ public partial class BookDescriptionController : ControllerBase
                         ChaptersNumbers = x.ChaptersIdsMap
                             .Select(pair => new BookChapterIdResponse
                             {
-                                ChapterSequenceNumber = pair.Key,
-                                BookChapterNumber = pair.Value.Value,
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
                             })
                             .ToArray()
                     }));

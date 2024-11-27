@@ -5,7 +5,7 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// <summary>
 /// Книга.
 /// </summary>
-public sealed class Book : IKeyable
+public class Book : IKeyable
 {
     public long Id { get; set; }
 

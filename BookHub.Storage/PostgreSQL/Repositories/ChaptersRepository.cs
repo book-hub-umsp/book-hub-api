@@ -40,18 +40,16 @@ public sealed class ChaptersRepository :
             ?? throw new InvalidOperationException(
                 $"No related book {chapter.BookId.Value} for creating chapter.");
 
-        var currentBookChapters = existedBook.Chapters;
-
-        if (currentBookChapters.Count == ChapterNumber.MAX_NUMBER)
+        if (existedBook.Chapters.Count == ChapterSequenceNumber.MAX_NUMBER)
         {
             throw new InvalidOperationException(
                 $"Book {chapter.BookId.Value} already" +
-                $" has max amount of chapters - {ChapterNumber.MAX_NUMBER}.");
+                $" has max amount of chapters - {ChapterSequenceNumber.MAX_NUMBER}.");
         }
 
         var storageChapter = new StorageChapter
         {
-            Number = currentBookChapters.Count + 1,
+            SequenceNumber = existedBook.Chapters.Count + 1,
             Content = chapter.Content.Value,
             BookId = chapter.BookId.Value
         };
@@ -84,9 +82,9 @@ public sealed class ChaptersRepository :
 
         foreach (var chapter in bookChapters)
         {
-            if (chapter.Number > chapterToRemove.Number)
+            if (chapter.SequenceNumber > chapterToRemove.SequenceNumber)
             {
-                chapter.Number -= 1;
+                chapter.SequenceNumber -= 1;
             }
         }
     }
@@ -106,7 +104,7 @@ public sealed class ChaptersRepository :
                 $"Chapter {chapterId.Value} not found")
             : new(
                 chapterId,
-                new(existedChapter.Number),
+                new(existedChapter.SequenceNumber),
                 new(existedChapter.BookId),
                 new(existedChapter.Content));
     }

@@ -7,9 +7,9 @@ namespace BookHub.Contracts.REST.Responses.Books.Repository;
 /// </summary>
 public sealed class BookChapterIdResponse
 {
-    [JsonProperty("sequence_number", Required = Required.Always)]
-    public required long ChapterSequenceNumber { get; init; }
+    [JsonProperty("chapter_id", Required = Required.Always)]
+    public required long ChapterId { get; init; }
 
-    [JsonProperty("book_chapter_number", Required = Required.Always)]
-    public required int BookChapterNumber { get; init; }
+    [JsonProperty("sequence_number", Required = Required.Always)]
+    public required int ChapterSequenceNumber { get; init; }
 }

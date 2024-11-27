@@ -11,7 +11,7 @@ public sealed class Chapter
 {
     public Id<Chapter> Id { get; }
 
-    public ChapterNumber ChapterNumber { get; }
+    public ChapterSequenceNumber ChapterNumber { get; }
 
     public Id<Book> BookId { get; }
 
@@ -19,7 +19,7 @@ public sealed class Chapter
 
     public Chapter(
         Id<Chapter> id,
-        ChapterNumber chapterNumber,
+        ChapterSequenceNumber chapterNumber,
         Id<Book> bookId,
         ChapterContent content)
     {
