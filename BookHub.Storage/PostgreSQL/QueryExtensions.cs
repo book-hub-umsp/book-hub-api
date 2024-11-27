@@ -88,7 +88,7 @@ public static class QueryExtensions
 
             default:
                 throw new InvalidOperationException(
-                    $"Filter type {filter.GetType().Name} not supported");
+                    $"Filter type {filter.GetType().Name} not supported.");
         }
     }
 
