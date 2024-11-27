@@ -19,20 +19,20 @@ public sealed class BookPreview
 
     public Id<User> AuthorId { get; }
 
-    public IReadOnlyList<ChapterNumber> ChapterNumbers { get; }
+    public IReadOnlyDictionary<long, ChapterNumber> ChaptersIdsMap { get; }
 
     public BookPreview(
         Id<Book> id,
         Name<Book> title,
         BookGenre genre,
         Id<User> authorId,
-        IReadOnlyList<ChapterNumber> chapterNumbers)
+        IReadOnlyDictionary<long, ChapterNumber> chaptersIdsMap)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Genre = genre ?? throw new ArgumentNullException(nameof(genre));
         AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));
-        ChapterNumbers = chapterNumbers 
-            ?? throw new ArgumentNullException(nameof(chapterNumbers));
+        ChaptersIdsMap = chaptersIdsMap 
+            ?? throw new ArgumentNullException(nameof(chaptersIdsMap));
     }
 }

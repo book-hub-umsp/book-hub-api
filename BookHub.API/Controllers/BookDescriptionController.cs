@@ -125,8 +125,12 @@ public partial class BookDescriptionController : ControllerBase
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
                         Title = x.Title.Value,
-                        ChaptersNumbers = x.ChapterNumbers
-                            .Select(c => c.Value)
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterSequenceNumber = pair.Key,
+                                BookChapterNumber = pair.Value.Value,
+                            })
                             .ToArray()
                     }));
         }
@@ -168,8 +172,12 @@ public partial class BookDescriptionController : ControllerBase
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
                         Title = x.Title.Value,
-                        ChaptersNumbers = x.ChapterNumbers
-                            .Select(c => c.Value)
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterSequenceNumber = pair.Key,
+                                BookChapterNumber = pair.Value.Value,
+                            })
                             .ToArray()
                     }));
         }
@@ -216,8 +224,12 @@ public partial class BookDescriptionController : ControllerBase
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
                         Title = x.Title.Value,
-                        ChaptersNumbers = x.ChapterNumbers
-                            .Select(c => c.Value)
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterSequenceNumber = pair.Key,
+                                BookChapterNumber = pair.Value.Value,
+                            })
                             .ToArray()
                     }));
         }

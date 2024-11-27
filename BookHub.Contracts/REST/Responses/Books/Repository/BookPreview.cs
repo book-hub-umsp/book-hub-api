@@ -26,6 +26,6 @@ public sealed class BookPreview
     public required string Genre { get; init; }
 
     [Required]
-    [JsonProperty("chapters_numbers", Required = Required.Always)]
-    public required int[] ChaptersNumbers { get; init; }
+    [JsonProperty("chapters_ids", Required = Required.Always)]
+    public required BookChapterIdResponse[] ChaptersNumbers { get; init; }
 }

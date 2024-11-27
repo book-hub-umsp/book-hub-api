@@ -206,19 +206,19 @@ public sealed class BooksRepository :
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
-        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+        var booksChaptersNumbers = 
+            new Dictionary<long, IReadOnlyDictionary<long, ChapterNumber>>();
 
         foreach (var bookShortModel in booksShortModels)
         {
             var chaptersNumbers = await Context.Chapters
                 .Where(x => x.BookId == bookShortModel.Id)
-                .Select(x => x.Number)
+                .Select(x => new { x.Id, x.Number })
                 .ToListAsync();
 
             booksChaptersNumbers[bookShortModel.Id] =
                 chaptersNumbers
-                    .Select(x => new ChapterNumber(x))
-                    .ToList();
+                    .ToDictionary(x => x.Id, x => new ChapterNumber(x.Number));
         }
 
         return booksShortModels
@@ -244,19 +244,19 @@ public sealed class BooksRepository :
                 .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
                 .ToListAsync(token);
 
-        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+        var booksChaptersNumbers =
+            new Dictionary<long, IReadOnlyDictionary<long, ChapterNumber>>();
 
         foreach (var bookShortModel in booksShortModels)
         {
             var chaptersNumbers = await Context.Chapters
                 .Where(x => x.BookId == bookShortModel.Id)
-                .Select(x => x.Number)
+                .Select(x => new { x.Id, x.Number })
                 .ToListAsync();
 
             booksChaptersNumbers[bookShortModel.Id] =
                 chaptersNumbers
-                    .Select(x => new ChapterNumber(x))
-                    .ToList();
+                    .ToDictionary(x => x.Id, x => new ChapterNumber(x.Number));
         }
 
         return booksShortModels
@@ -291,19 +291,19 @@ public sealed class BooksRepository :
                 .Select(book => new { book.Id, book.AuthorId, book.BookGenre, book.Title })
                 .ToListAsync(token);
 
-        var booksChaptersNumbers = new Dictionary<long, IReadOnlyList<ChapterNumber>>();
+        var booksChaptersNumbers =
+            new Dictionary<long, IReadOnlyDictionary<long, ChapterNumber>>();
 
         foreach (var bookShortModel in booksShortModels)
         {
             var chaptersNumbers = await Context.Chapters
                 .Where(x => x.BookId == bookShortModel.Id)
-                .Select(x => x.Number)
+                .Select(x => new { x.Id, x.Number })
                 .ToListAsync();
 
-            booksChaptersNumbers[bookShortModel.Id] = 
+            booksChaptersNumbers[bookShortModel.Id] =
                 chaptersNumbers
-                    .Select(x => new ChapterNumber(x))
-                    .ToList();
+                    .ToDictionary(x => x.Id, x => new ChapterNumber(x.Number));
         }
 
         return booksShortModels

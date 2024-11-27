@@ -40,7 +40,7 @@ public sealed class ChaptersRepository :
             ?? throw new InvalidOperationException(
                 $"No related book {chapter.BookId.Value} for creating chapter.");
 
-        var currentBookChapters = existedBook.Chapters.ToList();
+        var currentBookChapters = existedBook.Chapters;
 
         if (currentBookChapters.Count == ChapterNumber.MAX_NUMBER)
         {
@@ -49,18 +49,9 @@ public sealed class ChaptersRepository :
                 $" has max amount of chapters - {ChapterNumber.MAX_NUMBER}.");
         }
 
-        var expectedChapterNumber = currentBookChapters.Count + 1;
-
-        if (chapter.ChapterNumber.Value != expectedChapterNumber)
-        {
-            throw new InvalidOperationException(
-                $"New chapter for book {chapter.BookId.Value} " +
-                $"should has number {expectedChapterNumber}.");
-        }
-
         var storageChapter = new StorageChapter
         {
-            Number = chapter.ChapterNumber.Value,
+            Number = currentBookChapters.Count + 1,
             Content = chapter.Content.Value,
             BookId = chapter.BookId.Value
         };
