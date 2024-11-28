@@ -10,7 +10,7 @@ namespace BookHub.API;
 /// <summary>
 /// Фасад для получения информации об авторизованном пользователе.
 /// </summary>
-public sealed class HttpUserIdentityFacade : IHttpUserIdentityFacade
+public sealed class HttpUserIdentityFacade : IUserIdentityFacade
 {
     private readonly IHttpContextAccessor _contextAccessor;
 

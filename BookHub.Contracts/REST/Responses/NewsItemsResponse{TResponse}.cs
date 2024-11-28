@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using BookHub.Contracts.REST.Responses.Pagination;
+using BookHub.Contracts.REST.Pagination;
 
 using Newtonsoft.Json;
 

@@ -48,7 +48,10 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
         });
     }
 
-    public async Task<UsersFavorite> GetUsersFavoriteAsync(Id<User> userId, PagePagination pagePagination, CancellationToken token)
+    public async Task<UsersFavorite> GetUsersFavoriteAsync(
+        Id<User> userId, 
+        PagePagging pagePagination, 
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
         ArgumentNullException.ThrowIfNull(pagePagination);

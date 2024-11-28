@@ -2,7 +2,7 @@
 
 using BookHub.Models;
 using BookHub.Models.Account;
-using BookHub.Models.API.Pagination;
+using BookHub.Models.API;
 using BookHub.Models.DomainEvents;
 
 namespace BookHub.Abstractions.Storage.Repositories;
@@ -13,10 +13,10 @@ namespace BookHub.Abstractions.Storage.Repositories;
 public interface IUsersRepository
 {
     /// <summary>
-    /// Возвращет профили пользователей.
+    /// Возвращает профили пользователей.
     /// </summary>
-    /// <param name="pagination">
-    /// Применяемая пагинация.
+    /// <param name="manipulation">
+    /// Применяемая манипуляция над данными.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -25,10 +25,10 @@ public interface IUsersRepository
     /// Коллекция профилей пользователей.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="pagination"/> был <see langword="null"/>.
+    /// Если <paramref name="manipulation"/> был <see langword="null"/>.
     /// </exception>
     public Task<IReadOnlyCollection<UserProfileInfo>> GetUserProfilesInfoAsync(
-        PaginationBase pagination,
+        DataManipulation manipulation,
         CancellationToken token);
 
     /// <summary>
@@ -104,7 +104,7 @@ public interface IUsersRepository
     public Task<UserProfileInfo> GetUserProfileInfoByIdAsync(Id<User> userId, CancellationToken token);
 
     /// <summary>
-    /// Возвращет кол-во пользователей.
+    /// Возвращает кол-во пользователей.
     /// </summary>
     /// <param name="token">
     /// Токен отмены.

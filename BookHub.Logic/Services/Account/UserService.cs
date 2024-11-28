@@ -42,21 +42,22 @@ public sealed class UserService : IUserService
 
     /// <inheritdoc/>
     public async Task<NewsItems<UserProfileInfo>> GetUserProfilesInfoAsync(
-        PagePagging pagination, 
+        DataManipulation manipulation, 
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(pagination);
-
-        var pagePagination = new PagePagination(
-            await _booksHubUnitOfWork.Users.GetUsersCountAsync(token),
-            pagination.Page,
-            pagination.PageSize);
+        ArgumentNullException.ThrowIfNull(manipulation);
 
         var profilesInfo = await _booksHubUnitOfWork.Users.GetUserProfilesInfoAsync(
-            pagePagination,
+            manipulation,
             token);
 
-        return new(profilesInfo, pagePagination);
+        return manipulation.Pagination is WithoutPagging 
+            ? new(profilesInfo)
+            : new(
+                profilesInfo, 
+                new PagePagination(
+                    (PagePagging)manipulation.Pagination,
+                    await _booksHubUnitOfWork.Users.GetUsersCountAsync(token)));
     }
 
     /// <inheritdoc/>

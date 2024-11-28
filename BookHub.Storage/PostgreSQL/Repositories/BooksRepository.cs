@@ -194,7 +194,7 @@ public sealed class BooksRepository :
 
     public async Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
         Id<DomainUser> authorId,
-        PaginationBase pagination,
+        PaggingBase pagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(pagination);
@@ -232,7 +232,7 @@ public sealed class BooksRepository :
     }
 
     public async Task<IReadOnlyCollection<BookPreview>> GetBooksAsync(
-        PaginationBase pagination,
+        PaggingBase pagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(pagination);
@@ -270,7 +270,7 @@ public sealed class BooksRepository :
 
     public async Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
         KeyWord keyword,
-        PaginationBase pagination,
+        PaggingBase pagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(keyword);

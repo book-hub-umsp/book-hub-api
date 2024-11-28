@@ -3,13 +3,13 @@
 namespace BookHub.Models.API.Pagination;
 
 /// <summary>
-/// Базовая модель для пагинации.
+/// Базовая модель запроса на пагинацию.
 /// </summary>
-public abstract class PaginationBase
+public abstract class PaggingBase
 {
     public int PageSize { get; }
 
-    protected PaginationBase(int pageSize)
+    protected PaggingBase(int pageSize)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(pageSize, MIN_PAGE_SIZE);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(pageSize, MAX_PAGE_SIZE);

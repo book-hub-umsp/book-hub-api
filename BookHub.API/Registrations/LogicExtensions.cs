@@ -28,7 +28,7 @@ internal static class LogicExtensions
         this IServiceCollection services)
         => services
             .AddHttpContextAccessor()
-            .AddSingleton<IHttpUserIdentityFacade, HttpUserIdentityFacade>()
+            .AddSingleton<IUserIdentityFacade, HttpUserIdentityFacade>()
             .AddSingleton<IUserRequestConverter, UserRequestConverter>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<IUserFavoriteService, UserFavoriteService>()

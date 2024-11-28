@@ -1,12 +1,23 @@
-﻿namespace BookHub.Models.API.Pagination;
+﻿using System;
+
+namespace BookHub.Models.API.Pagination;
 
 /// <summary>
 /// Модель запроса на пагинацию для <see cref="PagePagination"/>.
 /// </summary>
-/// <param name="Page">
-/// Запрашиваемая страница.
-/// </param>
-/// <param name="PageSize">
-/// Размер страницы.
-/// </param>
-public sealed record class PagePagging(int Page, int PageSize);
+public sealed class PagePagging : PaggingBase
+{
+    public int PagesTotal { get; }
+
+    public int PageNumber { get; }
+
+    public PagePagging(
+        int pageNumber,
+        int pageSize) : base(pageSize)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(pageNumber, MIN_PAGE_NUMBER);
+        PageNumber = pageNumber;
+    }
+
+    private const int MIN_PAGE_NUMBER = 1;
+}

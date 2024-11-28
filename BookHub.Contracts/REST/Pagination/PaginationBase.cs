@@ -1,18 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using BookHub.Models.API.Pagination;
+
 using Newtonsoft.Json;
 
 using DomainModels = BookHub.Models.API.Pagination;
 
-namespace BookHub.Contracts.REST.Responses.Pagination;
+namespace BookHub.Contracts.REST.Pagination;
 
 public abstract class PaginationBase
 {
     [Required]
-    [JsonProperty("page_size", Required = Required.Always)]
-    public required int PageSize { get; init; }
+    [JsonProperty("pagging", Required = Required.Always)]
+    public required PaggingBase Pagging { get; init; }
 
-    public static PaginationBase? FromDomain(DomainModels.PaginationBase pagination)
+    public static PaginationBase? FromDomain(IPagination pagination)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
@@ -20,18 +22,16 @@ public abstract class PaginationBase
         {
             DomainModels.WithoutPagination => null,
 
-            DomainModels.PagePagination pagePagination => new PagePagination()
+            DomainModels.PagePagination pagePagination => new PagePagination
             {
                 ItemsTotal = pagePagination.ItemsTotal,
                 PagesTotal = pagePagination.PagesTotal,
-                PageNumber = pagePagination.PageNumber,
-                PageSize = pagePagination.PageSize,
+                Pagging = PaggingBase.FromDomain(pagePagination.Pagging)!
             },
 
-            DomainModels.OffsetPagination offsetPagination => new OffsetPagination()
+            DomainModels.OffsetPagination offsetPagination => new OffsetPagination
             {
-                Offset = offsetPagination.Offset,
-                PageSize = offsetPagination.PageSize,
+                Pagging = PaggingBase.FromDomain(offsetPagination.Pagging)!
             },
 
             _ => throw new InvalidOperationException(
