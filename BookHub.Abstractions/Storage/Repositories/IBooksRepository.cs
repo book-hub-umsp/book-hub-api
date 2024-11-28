@@ -1,6 +1,7 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
+using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 

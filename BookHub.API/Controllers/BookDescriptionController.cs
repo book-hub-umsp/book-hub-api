@@ -124,7 +124,14 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
+                            })
+                            .ToArray()
                     }));
         }
         catch (ArgumentOutOfRangeException ex)
@@ -164,7 +171,14 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
+                            })
+                            .ToArray()
                     }));
         }
         catch (ArgumentOutOfRangeException ex)
@@ -209,7 +223,14 @@ public partial class BookDescriptionController : ControllerBase
                         Id = x.Id.Value,
                         AuthorId = x.AuthorId.Value,
                         Genre = x.Genre.Value,
-                        Title = x.Title.Value
+                        Title = x.Title.Value,
+                        ChaptersNumbers = x.ChaptersIdsMap
+                            .Select(pair => new BookChapterIdResponse
+                            {
+                                ChapterId = pair.Key.Value,
+                                ChapterSequenceNumber = pair.Value.Value,
+                            })
+                            .ToArray()
                     }));
         }
         catch (ArgumentException ex)
