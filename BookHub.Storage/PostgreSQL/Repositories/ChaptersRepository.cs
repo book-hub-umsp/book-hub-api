@@ -115,7 +115,7 @@ public sealed class ChaptersRepository :
 
     /// <inheritdoc/>
     public async Task UpdateChapterAsync(
-        UpdatedBase<Chapter> updatedChapter, 
+        UpdatedChapter<ChapterContent> updatedChapter, 
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedChapter);
@@ -125,16 +125,6 @@ public sealed class ChaptersRepository :
             ?? throw new InvalidOperationException(
                 $"Chapter {updatedChapter.Id.Value} not found");
 
-        switch (updatedChapter)
-        {
-            case UpdatedChapter<ChapterContent> contentUpdate:
-
-                existedChapter.Content = contentUpdate.Attribute.Value;
-                break;
-
-            default:
-                throw new InvalidOperationException(
-                    $"Update type: {updatedChapter.GetType().Name} is not supported.");
-        }
+        existedChapter.Content = updatedChapter.Attribute.Value;
     }
 }

@@ -2,6 +2,7 @@
 using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.DomainEvents;
+using BookHub.Models.DomainEvents.Books;
 
 namespace BookHub.Abstractions.Logic.Services.Books.Content;
 
@@ -21,6 +22,10 @@ public interface IChaptersService
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="creatingChapter"/> равен <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если пользователь не является автором книги, 
+    /// в которую добавляет главу.
     /// </exception>
     public Task AddChapterAsync(
         CreatingChapter creatingChapter, 
@@ -42,6 +47,10 @@ public interface IChaptersService
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="chapterId"/> или <paramref name="bookId"/>
     /// равны <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если пользователь не является автором книги, 
+    /// из которой удаляет главу.
     /// </exception>
     public Task RemoveChapterAsync(
         Id<Chapter> chapterId, 
@@ -76,7 +85,11 @@ public interface IChaptersService
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="updatedChapter"/> равен <see langword="null"/>.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если пользователь не является автором книги, 
+    /// в которой изменяет данную главу.
+    /// </exception>
     public Task UpdateChapterAsync(
-        UpdatedBase<Chapter> updatedChapter, 
+        UpdatedChapter<ChapterContent> updatedChapter, 
         CancellationToken token);
 }

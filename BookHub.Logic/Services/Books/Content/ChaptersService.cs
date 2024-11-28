@@ -1,9 +1,10 @@
-﻿using BookHub.Abstractions.Logic.Services.Books.Content;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Services.Books.Content;
 using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
-using BookHub.Models.DomainEvents;
+using BookHub.Models.DomainEvents.Books;
 
 using Microsoft.Extensions.Logging;
 
@@ -16,9 +17,12 @@ public sealed class ChaptersService : IChaptersService
 {
     public ChaptersService(
         IBooksHubUnitOfWork unitOfWork,
+        IUserIdentityFacade userIdentityFacade,
         ILogger<ChaptersService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _userIdentityFacade = userIdentityFacade
+            ?? throw new ArgumentNullException(nameof(userIdentityFacade));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -28,9 +32,24 @@ public sealed class ChaptersService : IChaptersService
     {
         ArgumentNullException.ThrowIfNull(creatingChapter);
 
+        var currentUserId = _userIdentityFacade.Id!;
+
         _logger.LogDebug(
-            "Trying to add new chapter for book {BookId}", 
-            creatingChapter.BookId.Value);
+            "Trying to add new chapter for book {BookId}" +
+            " via user {UserId} request", 
+            creatingChapter.BookId.Value,
+            currentUserId.Value);
+
+        if (!await _unitOfWork.Books.IsUserAuthorForBook(
+            currentUserId,
+            creatingChapter.BookId,
+            token))
+        {
+            throw new InvalidOperationException(
+                $"Current user {currentUserId.Value} is not author" +
+                $" for book {creatingChapter.BookId.Value}" +
+                " and can not add chapters.");
+        }
 
         await _unitOfWork.Chapters.AddChapterAsync(creatingChapter, token);
 
@@ -49,10 +68,26 @@ public sealed class ChaptersService : IChaptersService
         ArgumentNullException.ThrowIfNull(chapterId);
         ArgumentNullException.ThrowIfNull(bookId);
 
+        var currentUserId = _userIdentityFacade.Id!;
+
         _logger.LogDebug(
-            "Trying to remove chapter with sequence number {ChapterId} for book {BookId}",
+            "Trying to remove chapter with sequence number {ChapterId}" +
+            " for book {BookId}" +
+            " via user {UserId} request",
             chapterId.Value,
-            bookId.Value);
+            bookId.Value,
+            currentUserId.Value);
+
+        if (!await _unitOfWork.Books.IsUserAuthorForBook(
+            currentUserId,
+            bookId,
+            token))
+        {
+            throw new InvalidOperationException(
+                $"Current user {currentUserId.Value} is not author" +
+                $" for book {bookId.Value}" +
+                " and can not remove chapters.");
+        }
 
         await _unitOfWork.Chapters.RemoveChapterAsync(chapterId, bookId, token);
 
@@ -87,15 +122,30 @@ public sealed class ChaptersService : IChaptersService
     }
 
     public async Task UpdateChapterAsync(
-        UpdatedBase<Chapter> updatedChapter, 
+        UpdatedChapter<ChapterContent> updatedChapter, 
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedChapter);
 
+        var currentUserId = _userIdentityFacade.Id!;
+
         _logger.LogDebug(
             "Trying to update content of chapter" +
-            " with sequence number {ChapterId}",
-            updatedChapter.Id.Value);
+            " with sequence number {ChapterId}" +
+            " via user {UserId} request",
+            updatedChapter.Id.Value,
+            currentUserId.Value);
+
+        if (!await _unitOfWork.Books.IsUserAuthorForBook(
+            currentUserId,
+            updatedChapter.BookId,
+            token))
+        {
+            throw new InvalidOperationException(
+                $"Current user {currentUserId.Value} is not author" +
+                $" for book {updatedChapter.BookId.Value}" +
+                " and can not update chapters.");
+        }
 
         await _unitOfWork.Chapters.UpdateChapterAsync(updatedChapter, token);
 
@@ -107,5 +157,6 @@ public sealed class ChaptersService : IChaptersService
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
+    private readonly IUserIdentityFacade _userIdentityFacade;
     private readonly ILogger<ChaptersService> _logger;
 }

@@ -108,24 +108,6 @@ public sealed class BooksRepository :
                 storageBook.BookStatus);
     }
 
-    public async Task<bool> IsBookRelatedForCurrentAuthorAsync(
-        Id<DomainBook> bookId,
-        Id<DomainUser> authorId,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(bookId);
-        ArgumentNullException.ThrowIfNull(authorId);
-
-        var storageBook = await Context.Books
-            .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token);
-
-        return storageBook is null
-            ? throw new InvalidOperationException(
-               $"No such book with id {bookId.Value}.")
-            : storageBook.AuthorId == authorId.Value;
-    }
-
     public async Task UpdateBookContentAsync(
         UpdateBookParamsBase updateBookParams,
         CancellationToken token)
@@ -314,6 +296,23 @@ public sealed class BooksRepository :
                         v => new ChapterSequenceNumber(v.SequenceNumber))
                 ))
             .ToList();
+    }
+
+    public async Task<bool> IsUserAuthorForBook(
+        Id<DomainUser> userId, 
+        Id<DomainBook> bookId, 
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(bookId);
+
+        var book = await Context.Books
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token) 
+            ?? throw new InvalidOperationException(
+                $"Book {bookId.Value} is not found.");
+
+        return book.AuthorId == userId.Value;
     }
 
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>

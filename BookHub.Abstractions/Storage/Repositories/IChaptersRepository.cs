@@ -2,6 +2,7 @@
 using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.DomainEvents;
+using BookHub.Models.DomainEvents.Books;
 
 namespace BookHub.Abstractions.Storage.Repositories;
 
@@ -83,5 +84,7 @@ public interface IChaptersRepository
     /// <exception cref="InvalidOperationException">
     /// Если не существует указанной в модели главы.
     /// </exception>
-    public Task UpdateChapterAsync(UpdatedBase<Chapter> updatedChapter, CancellationToken token);
+    public Task UpdateChapterAsync(
+        UpdatedChapter<ChapterContent> updatedChapter, 
+        CancellationToken token);
 }
