@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using BookHub.Models.Account;
+using BookHub.Models.Books.Content;
 
 namespace BookHub.Models.Books.Repository;
 
@@ -17,15 +19,20 @@ public sealed class BookPreview
 
     public Id<User> AuthorId { get; }
 
+    public IReadOnlyDictionary<Id<Chapter>, ChapterSequenceNumber> ChaptersIdsMap { get; }
+
     public BookPreview(
         Id<Book> id,
         Name<Book> title,
         BookGenre genre,
-        Id<User> authorId)
+        Id<User> authorId,
+        IReadOnlyDictionary<Id<Chapter>, ChapterSequenceNumber> chaptersIdsMap)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Genre = genre ?? throw new ArgumentNullException(nameof(genre));
         AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));
+        ChaptersIdsMap = chaptersIdsMap 
+            ?? throw new ArgumentNullException(nameof(chaptersIdsMap));
     }
 }

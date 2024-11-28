@@ -16,6 +16,8 @@ public sealed class RepositoryContext : IRepositoryContext
 
     public DbSet<Book> Books => _context.Books;
 
+    public DbSet<Chapter> Chapters => _context.Chapters;
+
     public DbSet<Keyword> Keywords => _context.Keywords;
 
     public DbSet<BookGenre> Genres => _context.Genres;

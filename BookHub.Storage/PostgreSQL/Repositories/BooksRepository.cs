@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
-using BookHub.Contracts.REST.Requests.Books.Repository;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
+using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -31,7 +31,7 @@ public sealed class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        BookHub.Models.CRUDS.Requests.AddAuthorBookParams addBookParams,
+        AddAuthorBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
@@ -203,15 +203,31 @@ public sealed class BooksRepository :
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
                 .WithPaging(pagination)
-                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .GroupJoin(
+                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapter) => new 
+                    { 
+                        BookId = book.Id,
+                        book.Title,
+                        book.BookGenre,
+                        book.AuthorId,
+                        ChapterPreview = chapter 
+                    })
                 .ToListAsync(token);
 
         return booksShortModels
             .Select(x => new BookPreview(
-                new(x.Id),
+                new(x.BookId),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
+                new(x.AuthorId),
+                x.ChapterPreview
+                    .ToDictionary(
+                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
+                        v => new ChapterSequenceNumber(v.SequenceNumber))
+                ))
             .ToList();
     }
 
@@ -221,19 +237,34 @@ public sealed class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
-        var booksShortModels =
-            await Context.Books
-                .AsNoTracking()
+         var booksShortModels =
+            await Context.Books.AsNoTracking()
                 .WithPaging(pagination)
-                .Select(x => new { x.Id, x.AuthorId, x.BookGenre, x.Title })
+                .GroupJoin(
+                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapter) => new
+                    {
+                        BookId = book.Id,
+                        book.Title,
+                        book.BookGenre,
+                        book.AuthorId,
+                        ChapterPreview = chapter
+                    })
                 .ToListAsync(token);
 
         return booksShortModels
             .Select(x => new BookPreview(
-                new(x.Id),
+                new(x.BookId),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
+                new(x.AuthorId),
+                x.ChapterPreview
+                    .ToDictionary(
+                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
+                        v => new ChapterSequenceNumber(v.SequenceNumber))
+                ))
             .ToList();
     }
 
@@ -256,15 +287,32 @@ public sealed class BooksRepository :
                 .Include(book => book.KeywordLinks)
                 .Where(book => book.KeywordLinks.AsQueryable().Any(keywordMatchExpression))
                 .WithPaging(pagination)
-                .Select(book => new { book.Id, book.AuthorId, book.BookGenre, book.Title })
+                .GroupJoin(
+                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapter) => new
+                    {
+                        BookId = book.Id,
+                        book.Title,
+                        book.BookGenre,
+                        book.AuthorId,
+                        ChapterPreview = chapter
+                    })
                 .ToListAsync(token);
+
 
         return booksShortModels
             .Select(x => new BookPreview(
-                new(x.Id),
+                new(x.BookId),
                 new(x.Title),
                 new(x.BookGenre.Value),
-                new(x.AuthorId)))
+                new(x.AuthorId),
+                x.ChapterPreview
+                    .ToDictionary(
+                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
+                        v => new ChapterSequenceNumber(v.SequenceNumber))
+                ))
             .ToList();
     }
 

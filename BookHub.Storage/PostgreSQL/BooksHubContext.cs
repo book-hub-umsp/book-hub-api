@@ -8,6 +8,8 @@ public sealed class BooksHubContext : DbContext
 {
     public DbSet<Book> Books { get; set; } = null!;
 
+    public DbSet<Chapter> Chapters { get; set; } = null!;
+
     public DbSet<BookGenre> Genres { get; set; } = null!;
 
     public DbSet<User> Users { get; set; } = null!;
@@ -34,6 +36,7 @@ public sealed class BooksHubContext : DbContext
         CreateRole(modelBuilder);
 
         CreateBook(modelBuilder);
+        CreateChapter(modelBuilder);
         CreateKeyword(modelBuilder);
         CreateBookGenre(modelBuilder);
 
@@ -129,6 +132,11 @@ public sealed class BooksHubContext : DbContext
             .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<Book>()
+            .HasMany(x => x.Chapters)
+            .WithOne(x => x.Book)
+            .HasForeignKey(x => x.BookId);
+
+        _ = modelBuilder.Entity<Book>()
             .HasMany(x => x.UsersFavoritesLinks)
             .WithOne(x => x.Book)
             .HasForeignKey(x => x.BookId);
@@ -137,6 +145,24 @@ public sealed class BooksHubContext : DbContext
             .HasMany(x => x.KeywordLinks)
             .WithOne(x => x.Book)
             .HasForeignKey(x => x.BookId);
+    }
+
+    public static void CreateChapter(ModelBuilder modelBuilder)
+    {
+        _ = modelBuilder.Entity<Chapter>()
+            .HasKey(x => x.Id);
+
+        _ = modelBuilder.Entity<Chapter>()
+            .Property(x => x.Id)
+            .UseIdentityAlwaysColumn();
+
+        _ = modelBuilder.Entity<Chapter>()
+            .HasOne(x => x.Book)
+            .WithMany(x => x.Chapters)
+            .HasForeignKey(x => x.BookId);
+
+        _ = modelBuilder.Entity<Chapter>()
+            .ToTable("chapters");
     }
 
     public static void CreateKeyword(ModelBuilder modelBuilder)

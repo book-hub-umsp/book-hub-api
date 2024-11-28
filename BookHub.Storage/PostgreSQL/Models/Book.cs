@@ -5,7 +5,7 @@ namespace BookHub.Storage.PostgreSQL.Models;
 /// <summary>
 /// Книга.
 /// </summary>
-public sealed class Book : IKeyable
+public class Book : IKeyable
 {
     public long Id { get; set; }
 
@@ -26,6 +26,8 @@ public sealed class Book : IKeyable
     public required DateTimeOffset CreationDate { get; set; }
 
     public required DateTimeOffset LastEditDate { get; set; }
+
+    public ICollection<Chapter> Chapters { get; set; } = null!;
 
     public ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
 
