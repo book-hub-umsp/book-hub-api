@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Newtonsoft.Json;
 
 namespace BookHub.Contracts.REST.Requests.Books.Content;
 
@@ -7,9 +9,11 @@ namespace BookHub.Contracts.REST.Requests.Books.Content;
 /// </summary>
 public sealed class AddChapterRequest
 {
+    [Required]
     [JsonProperty("book_id", Required = Required.Always)]
     public required long BookId { get; init; }
 
+    [Required]
     [JsonProperty("content", Required = Required.Always)]
     public required string Content { get; init; }
 }
