@@ -34,13 +34,17 @@ public sealed class ChaptersRepository :
         ArgumentNullException.ThrowIfNull(chapter);
 
         var existedBook = await Context.Books
-            .Include(x => x.Chapters)
             .AsNoTracking()
+            .GroupJoin(
+                Context.Chapters.Select(x => x.BookId),
+                x => x.Id,
+                x => x,
+                (book, chapters) => new { book.Id, ChaptersCount = chapters.Count() })
             .SingleOrDefaultAsync(x => x.Id == chapter.BookId.Value, token) 
             ?? throw new InvalidOperationException(
                 $"No related book {chapter.BookId.Value} for creating chapter.");
 
-        if (existedBook.Chapters.Count == ChapterSequenceNumber.MAX_NUMBER)
+        if (existedBook.ChaptersCount == ChapterSequenceNumber.MAX_NUMBER)
         {
             throw new InvalidOperationException(
                 $"Book {chapter.BookId.Value} already" +
@@ -49,7 +53,7 @@ public sealed class ChaptersRepository :
 
         var storageChapter = new StorageChapter
         {
-            SequenceNumber = existedBook.Chapters.Count + 1,
+            SequenceNumber = existedBook.ChaptersCount + 1,
             Content = chapter.Content.Value,
             BookId = chapter.BookId.Value
         };
