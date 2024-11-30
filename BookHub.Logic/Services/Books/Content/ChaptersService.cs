@@ -26,6 +26,7 @@ public sealed class ChaptersService : IChaptersService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    /// <inheritdoc/>
     public async Task AddChapterAsync(
         CreatingChapter creatingChapter, 
         CancellationToken token)
@@ -41,9 +42,9 @@ public sealed class ChaptersService : IChaptersService
             currentUserId.Value);
 
         if (!await _unitOfWork.Books.IsUserAuthorForBook(
-            currentUserId,
-            creatingChapter.BookId,
-            token))
+                currentUserId,
+                creatingChapter.BookId,
+                token))
         {
             throw new InvalidOperationException(
                 $"Current user {currentUserId.Value} is not author" +
@@ -60,6 +61,7 @@ public sealed class ChaptersService : IChaptersService
             creatingChapter.BookId.Value);
     }
 
+    /// <inheritdoc/>
     public async Task RemoveChapterAsync(
         Id<Chapter> chapterId,
         Id<Book> bookId,
@@ -79,9 +81,9 @@ public sealed class ChaptersService : IChaptersService
             currentUserId.Value);
 
         if (!await _unitOfWork.Books.IsUserAuthorForBook(
-            currentUserId,
-            bookId,
-            token))
+                currentUserId,
+                bookId,
+                token))
         {
             throw new InvalidOperationException(
                 $"Current user {currentUserId.Value} is not author" +
@@ -100,6 +102,7 @@ public sealed class ChaptersService : IChaptersService
             chapterId.Value);
     }
 
+    /// <inheritdoc/>
     public async Task<Chapter> GetChapterAsync(
         Id<Chapter> chapterId, 
         CancellationToken token)
@@ -121,6 +124,7 @@ public sealed class ChaptersService : IChaptersService
         return chapter;
     }
 
+    /// <inheritdoc/>
     public async Task UpdateChapterAsync(
         UpdatedChapter<ChapterContent> updatedChapter, 
         CancellationToken token)

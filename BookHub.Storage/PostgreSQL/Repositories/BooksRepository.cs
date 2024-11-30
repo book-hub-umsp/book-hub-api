@@ -308,6 +308,7 @@ public sealed class BooksRepository :
 
         var book = await Context.Books
             .AsNoTracking()
+            .Select(x => new { x.Id, x.AuthorId})
             .SingleOrDefaultAsync(x => x.Id == bookId.Value, token) 
             ?? throw new InvalidOperationException(
                 $"Book {bookId.Value} is not found.");

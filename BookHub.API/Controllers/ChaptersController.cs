@@ -95,6 +95,7 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType<GetChapterContentResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [AllowAnonymous]
     public async Task<IActionResult> GetChapterContentAsync(
         [FromQuery] long chapterId,
         CancellationToken token)
@@ -118,7 +119,7 @@ public sealed class ChaptersController : ControllerBase
 
             _logger.LogDebug("Request was processed with succesfull result");
 
-            return Ok();
+            return Ok(contract);
         }
         catch (InvalidOperationException ex)
         {
