@@ -1,9 +1,14 @@
-﻿using BookHub.Abstractions.Logic.Services.Favorite;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Services.Favorite;
 using BookHub.Abstractions.Storage;
+using BookHub.Contracts.REST.Responses.Books.Repository;
 using BookHub.Models;
-using BookHub.Models.Account;
+using BookHub.Models.API;
 using BookHub.Models.API.Pagination;
-using BookHub.Models.Favorite;
+using BookHub.Models.Books.Repository;
+
+using BookPreview = BookHub.Models.Books.Repository.BookPreview;
+
 using Microsoft.Extensions.Logging;
 
 namespace BookHub.Logic.Services.Favorite;
@@ -15,44 +20,57 @@ public sealed class UserFavoriteService : IUserFavoriteService
 {
     private readonly IBooksHubUnitOfWork _unitOfWork;
 
+    private readonly IUserIdentityFacade _userIdentityFacade;
+
     private readonly ILogger<UserFavoriteService> _logger;
 
     public UserFavoriteService(
         IBooksHubUnitOfWork unitOfWork,
+        IUserIdentityFacade userIdentityFacade,
         ILogger<UserFavoriteService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _userIdentityFacade = userIdentityFacade
+            ?? throw new ArgumentNullException(nameof(userIdentityFacade));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task AddFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token)
+    /// <inheritdoc/>
+    public async Task AddFavoriteLinkAsync(
+        Id<Book> bookId,
+        CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(favoriteLink);
+        ArgumentNullException.ThrowIfNull(bookId);
 
-        token.ThrowIfCancellationRequested();
+        var currentUserId = _userIdentityFacade.Id!;
 
-        _logger.LogDebug("Trying to add a favorite link with user id {UserId} and book id {BookId}",
-            favoriteLink.UserId.Value,
-            favoriteLink.BookId.Value);
+        _logger.LogDebug(
+            "Trying to add in favorites book {BookId}" +
+            " via user {UserId} request",
+            bookId.Value,
+            currentUserId.Value);
 
-        await _unitOfWork.FavoriteLinks.AddFavoriteLinkAsync(favoriteLink, token);
+        await _unitOfWork.FavoriteLinks.AddFavoriteLinkAsync(
+            new(currentUserId, bookId),
+            token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation(
-            "A new favorite link with user id {UserId} and book id {BookId} have been successfully added",
-            favoriteLink.UserId.Value,
-            favoriteLink.UserId.Value);
+            "A new favorite link with user id {UserId}" +
+            " and book id {BookId} have been successfully added",
+            currentUserId.Value,
+            bookId.Value);
     }
 
-    public async Task<UsersFavorite> GetUsersFavoriteAsync(
-        Id<User> userId, 
+    /// <inheritdoc/>
+    public async Task<NewsItems<BookPreview>> GetUsersFavoritesPreviewsAsync(
         PagePagging pagePagging,
         CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(pagePagging);
 
-        token.ThrowIfCancellationRequested();
+        var currentUserId = _userIdentityFacade.Id!;
 
         var totalFavItems = await _unitOfWork.FavoriteLinks.GetTotalCountFavoriteLinkAsync(token);
 
@@ -63,38 +81,45 @@ public sealed class UserFavoriteService : IUserFavoriteService
             totalFavItems,
             pagePagging.PageNumber,
             pagePagging.PageSize,
-            userId.Value);
+            currentUserId.Value);
 
-        var pagePagination = new PagePagination(
-            pagePagging,
-            totalFavItems);
-
-        var usersFavorite = await _unitOfWork.FavoriteLinks
-            .GetUsersFavoriteAsync(userId, pagePagging, token);
+        var usersFavorites = await _unitOfWork.FavoriteLinks
+            .GetUsersFavoriteAsync(currentUserId, pagePagging, token);
 
         _logger.LogDebug(
-            "User's favorite links with user id {UserId} have been successfully received",
-            userId.Value);
+            "User's favorite books previews for user {UserId}" +
+            " have been successfully received",
+            currentUserId.Value);
 
-        return usersFavorite;
+        return new(
+            usersFavorites,
+            new PagePagination(pagePagging, totalFavItems));
     }
 
-    public async Task RemoveFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token)
+    /// <inheritdoc/>
+    public async Task RemoveFavoriteLinkAsync(
+        Id<Book> bookId,
+        CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(favoriteLink);
+        ArgumentNullException.ThrowIfNull(bookId);
 
-        token.ThrowIfCancellationRequested();
-
-        _logger.LogDebug(
-            "Trying to remove a favorite link with user id {UserId} and book id {BookId}",
-            favoriteLink.UserId.Value,
-            favoriteLink.BookId.Value);
-
-        await _unitOfWork.FavoriteLinks.RemoveFavoriteLinkAsync(favoriteLink, token);
+        var currentUserId = _userIdentityFacade.Id!;
 
         _logger.LogDebug(
-            "A favorite link with user id {UserId} and book id {BookId} have been successfully removed",
-            favoriteLink.UserId.Value,
-            favoriteLink.BookId.Value);
+            "Trying to favorites in favorites book {BookId}" +
+            " via user {UserId} request",
+            bookId.Value,
+            currentUserId.Value);
+
+        await _unitOfWork.FavoriteLinks.RemoveFavoriteLinkAsync(
+            new(currentUserId, bookId),
+            token);
+
+        _logger.LogDebug(
+            "A favorite link with user id {UserId}" +
+            " and book id {BookId}" +
+            " have been successfully removed",
+            currentUserId.Value,
+            bookId.Value);
     }
 }
