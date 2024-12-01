@@ -7,7 +7,7 @@ namespace BookHub.Models.Books.Content;
 /// <summary>
 /// Модель для создаваемой главы.
 /// </summary>
-public sealed class CreatingChapter
+public sealed record class CreatingChapter
 {
     public Id<Book> BookId { get; }
 

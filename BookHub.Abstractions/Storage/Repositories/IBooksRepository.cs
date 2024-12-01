@@ -22,11 +22,6 @@ public interface IBooksRepository
         Id<DomainBook> id,
         CancellationToken token);
 
-    public Task<bool> IsBookRelatedForCurrentAuthorAsync(
-        Id<DomainBook> bookId,
-        Id<User> authorId,
-        CancellationToken token);
-
     /// <exception cref="InvalidOperationException">
     /// Если автор книги не соответствует указанному в запросе.
     /// </exception>
@@ -47,6 +42,31 @@ public interface IBooksRepository
     public Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
         KeyWord keyword,
         PaggingBase pagination,
+        CancellationToken token);
+
+    /// <summary>
+    /// Узнает, является ли текущий пользователь
+    /// автором указанной книги.
+    /// </summary>
+    /// <param name="userId">
+    /// Идентификатор пользователя.
+    /// </param>
+    /// <param name="bookId">
+    /// Идентификатор книги.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="bookId"/> или <paramref name="userId"/>
+    /// равны <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если книга с идентификатором <paramref name="bookId"/> не существует.
+    /// </exception>
+    public Task<bool> IsUserAuthorForBook(
+        Id<User> userId,
+        Id<DomainBook> bookId, 
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);

@@ -4,56 +4,61 @@ using BookHub.Models.Books.Repository;
 using BookHub.Models.DomainEvents;
 using BookHub.Models.DomainEvents.Books;
 
-namespace BookHub.Abstractions.Storage.Repositories;
+namespace BookHub.Abstractions.Logic.Services.Books.Content;
 
 /// <summary>
-/// Описывает репозиторий глав книги.
+/// Описывает сервис работы с главами книги.
 /// </summary>
-public interface IChaptersRepository
+public interface IChaptersService
 {
     /// <summary>
-    /// Добавляет новую главу для книги.
+    /// Добавляет новую главу.
     /// </summary>
-    /// <param name="chapter">
+    /// <param name="creatingChapter">
     /// Модель создаваемой главы.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// Если <paramref name="chapter"/> равен <see langword="null"/>.
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="creatingChapter"/> равен <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Если связанной книги не существует.
+    /// Если пользователь не является автором книги, 
+    /// в которую добавляет главу.
     /// </exception>
-    public Task AddChapterAsync(CreatingChapter chapter, CancellationToken token);
+    public Task AddChapterAsync(
+        CreatingChapter creatingChapter, 
+        CancellationToken token);
 
     /// <summary>
-    /// Удаляет главу по идентификатору.
+    /// Удаляет главу для заданной книги
+    /// и пересчитывает номера остальных глав этой книги.
     /// </summary>
     /// <param name="chapterId">
-    /// Идентификатор главы.
+    /// Идентификатор удаляемой главы.
     /// </param>
     /// <param name="bookId">
-    /// Идентификатор книги.
+    /// Идентификатор связанной книги.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="chapterId"/> или <paramref name="bookId"/> 
+    /// Если <paramref name="chapterId"/> или <paramref name="bookId"/>
     /// равны <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Если не существует главы с идентификатором <paramref name="chapterId"/>.
+    /// Если пользователь не является автором книги, 
+    /// из которой удаляет главу.
     /// </exception>
     public Task RemoveChapterAsync(
-        Id<Chapter> chapterId,
-        Id<Book> bookId,
+        Id<Chapter> chapterId, 
+        Id<Book> bookId, 
         CancellationToken token);
 
     /// <summary>
-    /// Получает главу по идентификатору.
+    /// Получает контент главы по идентификатору.
     /// </summary>
     /// <param name="chapterId">
     /// Идентификатор главы.
@@ -64,16 +69,15 @@ public interface IChaptersRepository
     /// <exception cref="ArgumentNullException">
     /// Если <paramref name="chapterId"/> равен <see langword="null"/>.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Если не существует главы с идентификатором <paramref name="chapterId"/>.
-    /// </exception>
-    public Task<Chapter> GetChapterByIdAsync(Id<Chapter> chapterId, CancellationToken token);
+    public Task<Chapter> GetChapterAsync(
+        Id<Chapter> chapterId,
+        CancellationToken token);
 
     /// <summary>
-    /// Обновляет содержимое главы.
+    /// Выполняет обновление контента главы книги.
     /// </summary>
     /// <param name="updatedChapter">
-    /// Модель обновления главы.
+    /// Событие обновления контента главы.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -82,7 +86,8 @@ public interface IChaptersRepository
     /// Если <paramref name="updatedChapter"/> равен <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Если не существует указанной в модели главы.
+    /// Если пользователь не является автором книги, 
+    /// в которой изменяет данную главу.
     /// </exception>
     public Task UpdateChapterAsync(
         UpdatedChapter<ChapterContent> updatedChapter, 
