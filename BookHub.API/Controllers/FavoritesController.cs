@@ -7,7 +7,6 @@ using BookHub.Contracts;
 using BookHub.Contracts.REST.Requests.Favorite;
 using BookHub.Contracts.REST.Responses;
 using BookHub.Contracts.REST.Responses.Books.Repository;
-using BookHub.Contracts.REST.Responses.Favorite;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +65,7 @@ public sealed class FavoritesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<GetUserFavoriteResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NewsItemsResponse<ContractPreview>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetUserFavoriteBooksAsync(
