@@ -49,7 +49,7 @@ jobs:
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
         SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
-    - run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
+      run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
