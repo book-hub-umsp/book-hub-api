@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+    - run: sudo apt install jq
     - name: Extract version from git tag
       if: github.event_name == 'push'
       id: get-tag
@@ -39,17 +40,23 @@ jobs:
       with:
         version: ${{ vars.ENV_NOMAD_VERSION }}
     - run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
-    - name: Plan job
-      continue-on-error: true # becase nomad job plan can return 1 as exit code on allocation creation
+    - name: Extrtact version meta
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
+      run: nomad var get -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=json ${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }} > version.meta.json
+    - run: cat version.meta.json
+    - name: Set ner version value
+      env:
         SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
-      run: |
-        nomad job plan -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ env.SERVICE_VERSION }} ${{ vars.ENV_JOB_PATH }}
+      run: jq '.Items.MAIN_API_VERSION = "${{ env.SERVICE_VERSION }}"' <<< $(cat version.meta.json) > version.meta.json
+    - run: cat version.meta.json
+    - name: Update version meta
+      env:
+        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
+      run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-        SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
       run: |
-        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ env.SERVICE_VERSION }} ${{ vars.ENV_JOB_PATH }}
+        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} ${{ vars.ENV_JOB_PATH }}
   
