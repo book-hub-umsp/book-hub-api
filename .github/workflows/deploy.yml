@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-    - run: apt install jq
+    - run: sudo apt install jq
     - name: Extract version from git tag
       if: github.event_name == 'push'
       id: get-tag
