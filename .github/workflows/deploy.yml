@@ -41,16 +41,15 @@ jobs:
       with:
         version: ${{ vars.ENV_NOMAD_VERSION }}
     - run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
+    - run: jq '.Items' <<< $(nomad var get -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }}) > version.meta.json
+    - run: cat version.meta.json
+    - run: jq '.MAIN_API_VERSION = "${{ env.SERVICE_VERSION }}"' <<< $(cat version.meta.json) > version.meta.json
+    - run: cat version.meta.json
     - name: Update version meta
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
         SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
-      run: |
-        jq '.Items' <<< $(nomad var get -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }}) > version.meta.json
-        cat version.meta.json
-        jq '.MAIN_API_VERSION = "${{ env.SERVICE_VERSION }}"' <<< $(cat version.meta.json) > version.meta.json
-        cat version.meta.json
-        nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
+    - run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
