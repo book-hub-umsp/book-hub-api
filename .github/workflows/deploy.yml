@@ -16,6 +16,7 @@ env:
   INFRO_REPO: book-hub-umsp/bh-infrastructure
   INFRO_REPO_BRANCH: master
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
