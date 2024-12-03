@@ -39,17 +39,15 @@ jobs:
       with:
         version: ${{ vars.ENV_NOMAD_VERSION }}
     - run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
-    - name: Plan job
-      continue-on-error: true # becase nomad job plan can return 1 as exit code on allocation creation
+    - name: Update version meta
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
         SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
       run: |
-        nomad job plan -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ env.SERVICE_VERSION }} ${{ vars.ENV_JOB_PATH }}
+        nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -force -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" ${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }} MAIN_API_VERSION="${{ env.SERVICE_VERSION }}"
     - name: Run job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-        SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
       run: |
-        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} -var ROOT_PASS=${{ secrets.ENV_VAR_ROOT_PASS }} -var main-api-version=${{ env.SERVICE_VERSION }} ${{ vars.ENV_JOB_PATH }}
+        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} ${{ vars.ENV_JOB_PATH }}
   
