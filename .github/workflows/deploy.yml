@@ -40,8 +40,11 @@ jobs:
       id: setup
       with:
         version: ${{ vars.ENV_NOMAD_VERSION }}
-    - run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
-    - run: jq '.Items' <<< $(nomad var get -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=json ${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }}) > version.meta.json
+    - name: Extrtact version meta
+      env:
+        NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
+      run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
+    - run: jq '.Items' <<< $(nomad var get -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=json ${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }}) > version.meta.json
     - run: cat version.meta.json
     - run: jq '.MAIN_API_VERSION = "${{ env.SERVICE_VERSION }}"' <<< $(cat version.meta.json) > version.meta.json
     - run: cat version.meta.json
