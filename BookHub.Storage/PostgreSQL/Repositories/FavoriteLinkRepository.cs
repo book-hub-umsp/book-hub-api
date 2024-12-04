@@ -32,8 +32,8 @@ public sealed class FavoriteLinkRepository :
             .SingleOrDefaultAsync(
                 u => u.Id == favoriteLink.UserId.Value, 
                 token)
-            ?? throw new InvalidOperationException
-            ($"User with id {favoriteLink.UserId.Value} doesn't exist.");
+            ?? throw new InvalidOperationException(
+                $"User with id {favoriteLink.UserId.Value} doesn't exist.");
 
         var book = await Context.Books
             .SingleOrDefaultAsync(
@@ -80,8 +80,8 @@ public sealed class FavoriteLinkRepository :
 
         var storageFavLinks = await Context.FavoriteLinks
             .Select(x => new { x.BookId, x.UserId })
-            .OrderBy(x => x.BookId)
             .Where(f => f.UserId == user.Id)
+            .OrderBy(x => x.BookId)
             .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
             .Take(pagePagination.PageSize)
             .ToListAsync(token);
