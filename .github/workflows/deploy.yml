@@ -13,50 +13,43 @@ on:
         type: string
         
 env:
-  INFRO_REPO: book-hub-umsp/bh-infrastructure
-  INFRO_REPO_BRANCH: master
+  VERSION_META_NAME: MAIN_API_VERSION
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
     steps:
-    - run: sudo apt install jq
+    - name: Install `jq`
+      run: sudo apt install jq
+    - name: Setup `nomad`
+      uses: hashicorp/setup-nomad@main
+      id: setup
+      with:
+        version: ${{ vars.ENV_NOMAD_VERSION }}
     - name: Extract version from git tag
       if: github.event_name == 'push'
       id: get-tag
       run: |
         tag=$(echo ${{  github.ref_name }} | cut -dv -f2)
         echo "::set-output name=tag::$tag"
-    - name: Checkout Infro repo
-      uses: actions/checkout@v4
-      with:
-        repository: '${{ env.INFRO_REPO }}'
-        ref: ${{ env.INFRO_REPO_BRANCH }}
-        token: '${{ secrets.WORKFLOW_TOKEN }}'
-    - name: Setup `nomad`
-      uses: hashicorp/setup-nomad@main
-      id: setup
-      with:
-        version: ${{ vars.ENV_NOMAD_VERSION }}
     - run: echo "${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}"
     - name: Extrtact version meta
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
       run: nomad var get -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -out=json ${{ vars.ENV_NOMAD_VARIABLE_VERSION_META }} > version.meta.json
     - run: cat version.meta.json
-    - name: Set ner version value
+    - name: Set new version value
       env:
-        SERVICE_VERSION: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
-      run: jq '.Items.MAIN_API_VERSION = "${{ env.SERVICE_VERSION }}"' <<< $(cat version.meta.json) > version.meta.json
+        VERSION_VALUE: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
+      run: jq '.Items.${{ env.VERSION_META_NAME }} = "${{ env.VERSION_VALUE }}"' <<< $(cat version.meta.json) > version.meta.json
     - run: cat version.meta.json
     - name: Update version meta
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-      run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace="${{ vars.ENV_NOMAD_NAMESPACE }}" @version.meta.json
-    - name: Run job
+      run: nomad var put -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} @version.meta.json
+    - name: Restart job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
       run: |
-        nomad job run -token=${{ secrets.ENV_NOMAD_TOKEN }} ${{ vars.ENV_JOB_PATH }}
-  
+        nomad job restart -token=${{ secrets.ENV_NOMAD_TOKEN } -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -task=${{ vars.ENV_NOMAD_TASK }} ${{ vars.ENV_NOMAD_JOB }}  
