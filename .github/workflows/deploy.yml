@@ -48,4 +48,4 @@ jobs:
     - name: Restart job
       env:
         NOMAD_ADDR: ${{ vars.ENV_NOMAD_ADDR }}
-      run: nomad job restart -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -task=${{ vars.ENV_NOMAD_TASK }} ${{ vars.ENV_NOMAD_JOB }}  
+      run: nomad job restart -on-error=fail -token=${{ secrets.ENV_NOMAD_TOKEN }} -namespace=${{ vars.ENV_NOMAD_NAMESPACE }} -task=${{ vars.ENV_NOMAD_TASK }} ${{ vars.ENV_NOMAD_JOB }}  
