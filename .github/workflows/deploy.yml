@@ -1,4 +1,4 @@
-name: Deploy to Nomad cluster
+name: Update version on `Nomad` cluster
 
 on:
   push:
