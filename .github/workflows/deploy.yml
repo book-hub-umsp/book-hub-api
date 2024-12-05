@@ -12,9 +12,6 @@ on:
         required: true
         type: string
         
-env:
-  VERSION_META_NAME: MAIN_API_VERSION
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -42,7 +39,7 @@ jobs:
     - name: Set new version value
       env:
         VERSION_VALUE: ${{ steps.get-tag.outputs.tag && steps.get-tag.outputs.tag || github.event.inputs.service_version }}
-      run: jq '.Items.${{ env.VERSION_META_NAME }} = "${{ env.VERSION_VALUE }}"' <<< $(cat version.meta.json) > version.meta.json
+      run: jq '.Items.${{ vars.ENV_VERSION_META_NAME }} = "${{ env.VERSION_VALUE }}"' <<< $(cat version.meta.json) > version.meta.json
     - run: cat version.meta.json
     - name: Update version meta
       env:
