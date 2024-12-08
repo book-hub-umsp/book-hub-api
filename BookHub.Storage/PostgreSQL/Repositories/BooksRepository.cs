@@ -219,11 +219,51 @@ public sealed class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
-         var booksShortModels =
+        var booksShortModels =
             await Context.Books.AsNoTracking()
                 .WithPaging(pagination)
                 .GroupJoin(
-                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
+                    Context.Chapters.Select(x => 
+                        new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapter) => new
+                    {
+                        BookId = book.Id,
+                        book.Title,
+                        book.BookGenre,
+                        book.AuthorId,
+                        ChapterPreview = chapter
+                    })
+                .ToListAsync(token);
+
+        return booksShortModels
+            .Select(x => new BookPreview(
+                new(x.BookId),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId),
+                x.ChapterPreview
+                    .ToDictionary(
+                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
+                        v => new ChapterSequenceNumber(v.SequenceNumber))
+                ))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewsAsync(
+        IReadOnlySet<Id<DomainBook>> bookIds,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(bookIds);
+
+        var booksShortModels =
+            await Context.Books
+                .AsNoTracking()
+                .Where(x => bookIds.Contains(new(x.Id)))
+                .GroupJoin(
+                    Context.Chapters.Select(x =>
+                        new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
                     x => x.Id,
                     x => x.BookId,
                     (book, chapter) => new

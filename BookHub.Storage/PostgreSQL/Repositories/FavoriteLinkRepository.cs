@@ -2,7 +2,6 @@
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
-using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.Favorite;
 using BookHub.Storage.PostgreSQL.Abstractions;
@@ -14,30 +13,32 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Репозиторий избранного.
 /// </summary>
-public sealed class FavoriteLinkRepository : 
-    RepositoryBase, 
+public sealed class FavoriteLinkRepository :
+    RepositoryBase,
     IFavoriteLinkRepository
 {
+    /// <inheritdoc/>
     public FavoriteLinkRepository(
-        IRepositoryContext context) 
+        IRepositoryContext context)
         : base(context) { }
 
+    /// <inheritdoc/>
     public async Task AddFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLink, 
+        UserFavoriteBookLink favoriteLink,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLink);
 
         var user = await Context.Users
             .SingleOrDefaultAsync(
-                u => u.Id == favoriteLink.UserId.Value, 
+                u => u.Id == favoriteLink.UserId.Value,
                 token)
             ?? throw new InvalidOperationException(
                 $"User with id {favoriteLink.UserId.Value} doesn't exist.");
 
         var book = await Context.Books
             .SingleOrDefaultAsync(
-                b => b.Id == favoriteLink.BookId.Value, 
+                b => b.Id == favoriteLink.BookId.Value,
                 token)
             ?? throw new InvalidOperationException(
                 $"Book with id {favoriteLink.BookId.Value} doesn't exist.");
@@ -63,9 +64,10 @@ public sealed class FavoriteLinkRepository :
         });
     }
 
-    public async Task<IReadOnlyCollection<BookPreview>> GetUsersFavoriteAsync(
-        Id<User> userId, 
-        PagePagging pagePagination, 
+    /// <inheritdoc/>
+    public async Task<IReadOnlySet<Id<Book>>> GetUsersFavoriteBookIdsAsync(
+        Id<User> userId,
+        PagePagging pagePagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
@@ -86,41 +88,14 @@ public sealed class FavoriteLinkRepository :
             .Take(pagePagination.PageSize)
             .ToListAsync(token);
 
-        var favouritesBooksIds = storageFavLinks.Select(x => x.BookId).ToHashSet();
-
-        var favoriteBookShortModels = 
-            await Context.Books.AsNoTracking()
-                .Where(book => favouritesBooksIds.Contains(book.Id))
-                .GroupJoin(
-                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
-                    x => x.Id,
-                    x => x.BookId,
-                    (book, chapter) => new
-                    {
-                        BookId = book.Id,
-                        book.Title,
-                        book.BookGenre,
-                        book.AuthorId,
-                        ChapterPreview = chapter
-                    })
-                .ToListAsync(token);
-
-        return favoriteBookShortModels
-            .Select(x => new BookPreview(
-                new(x.BookId),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.ChapterPreview
-                    .ToDictionary(
-                        k => new Id<Chapter>(k.ChapterId),
-                        v => new ChapterSequenceNumber(v.SequenceNumber))
-                ))
-            .ToList();
+        return storageFavLinks
+            .Select(x => new Id<Book>(x.BookId))
+            .ToHashSet();
     }
 
+    /// <inheritdoc/>
     public async Task RemoveFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLink, 
+        UserFavoriteBookLink favoriteLink,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLink);
@@ -136,7 +111,24 @@ public sealed class FavoriteLinkRepository :
         Context.FavoriteLinks.Remove(userFavorite);
     }
 
-    public async Task<long> GetTotalCountFavoriteLinkAsync(
-        CancellationToken token) =>
-        await Context.FavoriteLinks.LongCountAsync(token);
+    /// <inheritdoc/>
+    public async Task<long> GetTotalCountUserFavoritesLinkAsync(
+        Id<User> userId,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        if (await Context.Users.SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token) is null)
+        {
+            throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
+        }
+
+        return await Context.FavoriteLinks
+            .AsNoTracking()
+            .Where(x => x.UserId == userId.Value)
+            .LongCountAsync(token);
+    }
 }

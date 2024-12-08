@@ -72,7 +72,10 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         var currentUserId = _userIdentityFacade.Id!;
 
-        var totalFavItems = await _unitOfWork.FavoriteLinks.GetTotalCountFavoriteLinkAsync(token);
+        var totalFavItems = 
+            await _unitOfWork.FavoriteLinks.GetTotalCountUserFavoritesLinkAsync(
+                currentUserId,
+                token);
 
         _logger.LogDebug(
             "Trying to get paginated favorite links from total" +
@@ -83,8 +86,16 @@ public sealed class UserFavoriteService : IUserFavoriteService
             pagePagging.PageSize,
             currentUserId.Value);
 
-        var usersFavorites = await _unitOfWork.FavoriteLinks
-            .GetUsersFavoriteAsync(currentUserId, pagePagging, token);
+        var userFavoriteBookIds = await _unitOfWork.FavoriteLinks
+            .GetUsersFavoriteBookIdsAsync(
+                currentUserId, 
+                pagePagging, 
+                token);
+
+        var userFavorites = 
+            await _unitOfWork.Books.GetBooksPreviewsAsync(
+                userFavoriteBookIds,
+                token);
 
         _logger.LogDebug(
             "User's favorite books previews for user {UserId}" +
@@ -92,7 +103,7 @@ public sealed class UserFavoriteService : IUserFavoriteService
             currentUserId.Value);
 
         return new(
-            usersFavorites,
+            userFavorites,
             new PagePagination(pagePagging, totalFavItems));
     }
 
