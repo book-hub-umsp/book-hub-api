@@ -2,6 +2,8 @@
 using BookHub.Models.Favorite;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
+using BookHub.Models.Books.Repository;
+using BookHub.Models.API;
 
 namespace BookHub.Abstractions.Logic.Services.Favorite;
 
@@ -10,16 +12,58 @@ namespace BookHub.Abstractions.Logic.Services.Favorite;
 /// </summary>
 public interface IUserFavoriteService
 {
+    /// <summary>
+    /// Добавляет книгу в избранное для текущего пользователя (в сессии).
+    /// </summary>
+    /// <param name="bookId">
+    /// Идентификатор книги.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="bookId"/> равен <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если книга с идентификатором <paramref name="bookId"/> отсутствует.
+    /// </exception>
     public Task AddFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLink, 
+        Id<Book> bookId, 
         CancellationToken token);
 
-    public Task<UsersFavorite> GetUsersFavoriteAsync(
-        Id<User> userId, 
+    /// <summary>
+    /// Получает пагинированный список превью книг
+    /// из избранного для текущего пользователя (в сессии).
+    /// </summary>
+    /// <param name="pagePagging">
+    /// Модель пагинации.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="pagePagging"/> равен <see langword="null"/>.
+    /// </exception>
+    public Task<NewsItems<BookPreview>> GetUsersFavoritesPreviewsAsync(
         PagePagging pagePagging,
         CancellationToken token);
 
+    /// <summary>
+    /// Удаляет книгу из избранного для текущего пользователя (в сессии).
+    /// </summary>
+    /// <param name="bookId">
+    /// Идентификатор книги.
+    /// </param>
+    /// <param name="token">
+    /// Токен отмены.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Если <paramref name="bookId"/> равен <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Если книга с идентификатором <paramref name="bookId"/> отсутствует.
+    /// </exception>
     public Task RemoveFavoriteLinkAsync(
-        UserFavoriteBookLink favoriteLink, 
+        Id<Book> bookId, 
         CancellationToken token);
 }

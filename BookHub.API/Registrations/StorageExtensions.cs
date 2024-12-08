@@ -4,6 +4,8 @@ using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 using BookHub.Storage.PostgreSQL;
 using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Abstractions.Converters;
+using BookHub.Storage.PostgreSQL.Converters;
 using BookHub.Storage.PostgreSQL.Repositories;
 
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +29,8 @@ static internal class StorageExtensions
             .AddScoped<IUsersRepository, UsersRepository>()
             .AddScoped<IBooksGenresRepository, BooksGenresRepository>()
             .AddScoped<IFavoriteLinkRepository, FavoriteLinkRepository>()
-            .AddScoped<IRolesRepository, RolesRepository>();
+            .AddScoped<IRolesRepository, RolesRepository>()
+            .AddSingleton<IBookPreviewConverter, BookPreviewConverter>();
 
     private static IServiceCollection AddDbContext(
         this IServiceCollection services,

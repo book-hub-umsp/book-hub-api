@@ -28,4 +28,25 @@ public sealed class BookPreview
     [Required]
     [JsonProperty("chapters_ids", Required = Required.Always)]
     public required BookChapterIdResponse[] ChaptersNumbers { get; init; }
+
+    public static BookPreview FromDomain(
+        Models.Books.Repository.BookPreview domain)
+    {
+        ArgumentNullException.ThrowIfNull(domain);
+
+        return new()
+        {
+            Id = domain.Id.Value,
+            AuthorId = domain.AuthorId.Value,
+            Genre = domain.Genre.Value,
+            Title = domain.Title.Value,
+            ChaptersNumbers = domain.ChaptersIdsMap
+                .Select(pair => new BookChapterIdResponse
+                {
+                    ChapterId = pair.Key.Value,
+                    ChapterSequenceNumber = pair.Value.Value,
+                })
+                .ToArray()
+        };
+    }
 }

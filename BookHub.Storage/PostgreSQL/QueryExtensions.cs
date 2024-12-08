@@ -4,6 +4,9 @@ using System.Text;
 using BookHub.Models.API.Filtration;
 using BookHub.Models.API.Pagination;
 using BookHub.Storage.PostgreSQL.Models;
+using BookHub.Storage.PostgreSQL.Models.Helpers;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace BookHub.Storage.PostgreSQL;
 
@@ -91,6 +94,29 @@ public static class QueryExtensions
                     $"Filter type {filter.GetType().Name} not supported.");
         }
     }
+
+    public static IQueryable<StorageBookPreviewHelper> GroupJoinOfStorageBookPreviews(
+        this IQueryable<Models.Book> storageBooks,
+        DbSet<Models.Chapter> chaptersSet)
+        => storageBooks
+            .GroupJoin(
+                chaptersSet.Select(x =>
+                    new StorageChapterHelper
+                    {
+                        ChapterId = x.Id,
+                        BookId = x.BookId,
+                        SequenceNumber = x.SequenceNumber
+                    }),
+                x => x.Id,
+                x => x.BookId,
+                (book, chapters) => new StorageBookPreviewHelper
+                {
+                    BookId = book.Id,
+                    Title = book.Title,
+                    BookGenre = book.BookGenre,
+                    AuthorId = book.AuthorId,
+                    Chapters = chapters
+                });
 
     private readonly record struct FiltersQuery(string Query, object[] Parameters);
 }

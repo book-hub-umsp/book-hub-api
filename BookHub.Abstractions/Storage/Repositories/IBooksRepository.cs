@@ -1,7 +1,6 @@
 ﻿using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
-using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 
@@ -38,6 +37,9 @@ public interface IBooksRepository
         PaggingBase pagination,
         CancellationToken token);
 
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewsAsync(
+        IReadOnlySet<Id<DomainBook>> bookIds,
+        CancellationToken token);
 
     public Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
         KeyWord keyword,
@@ -66,7 +68,7 @@ public interface IBooksRepository
     /// </exception>
     public Task<bool> IsUserAuthorForBook(
         Id<User> userId,
-        Id<DomainBook> bookId, 
+        Id<DomainBook> bookId,
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);

@@ -2,6 +2,7 @@
 using BookHub.Models;
 using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
+using BookHub.Models.Books.Repository;
 using BookHub.Models.Favorite;
 using BookHub.Storage.PostgreSQL.Abstractions;
 
@@ -12,21 +13,35 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Репозиторий избранного.
 /// </summary>
-public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkRepository
+public sealed class FavoriteLinkRepository :
+    RepositoryBase,
+    IFavoriteLinkRepository
 {
-    public FavoriteLinkRepository(IRepositoryContext context) : base(context) { }
+    /// <inheritdoc/>
+    public FavoriteLinkRepository(
+        IRepositoryContext context)
+        : base(context) { }
 
-    public async Task AddFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token)
+    /// <inheritdoc/>
+    public async Task AddFavoriteLinkAsync(
+        UserFavoriteBookLink favoriteLink,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLink);
 
         var user = await Context.Users
-            .SingleOrDefaultAsync(u => u.Id == favoriteLink.UserId.Value, token)
-            ?? throw new InvalidOperationException($"User with id {favoriteLink.UserId.Value} doesn't exist.");
+            .SingleOrDefaultAsync(
+                u => u.Id == favoriteLink.UserId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {favoriteLink.UserId.Value} doesn't exist.");
 
         var book = await Context.Books
-            .SingleOrDefaultAsync(b => b.Id == favoriteLink.BookId.Value, token)
-            ?? throw new InvalidOperationException($"Book with id {favoriteLink.BookId.Value} doesn't exist.");
+            .SingleOrDefaultAsync(
+                b => b.Id == favoriteLink.BookId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"Book with id {favoriteLink.BookId.Value} doesn't exist.");
 
         var userFavorite = await Context.FavoriteLinks
             .SingleOrDefaultAsync(
@@ -36,7 +51,8 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
         if (userFavorite != null)
         {
             throw new InvalidOperationException(
-                $"User favorite with bookId {favoriteLink.BookId.Value} already exists.");
+                "User favorite with bookId" +
+                $" {favoriteLink.BookId.Value} already exists.");
         }
 
         Context.FavoriteLinks.Add(new()
@@ -48,44 +64,71 @@ public sealed class FavoriteLinkRepository : RepositoryBase, IFavoriteLinkReposi
         });
     }
 
-    public async Task<UsersFavorite> GetUsersFavoriteAsync(
-        Id<User> userId, 
-        PagePagging pagePagination, 
+    /// <inheritdoc/>
+    public async Task<IReadOnlySet<Id<Book>>> GetUsersFavoriteBookIdsAsync(
+        Id<User> userId,
+        PagePagging pagePagination,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
         ArgumentNullException.ThrowIfNull(pagePagination);
 
         var user = await Context.Users
-            .SingleOrDefaultAsync(u => u.Id == userId.Value, token)
-            ?? throw new InvalidOperationException($"User with id {userId.Value} doesn't exist.");
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
 
         var storageFavLinks = await Context.FavoriteLinks
-            .OrderBy(f => f.BookId)
+            .Select(x => new { x.BookId, x.UserId })
             .Where(f => f.UserId == user.Id)
+            .OrderBy(x => x.BookId)
             .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
             .Take(pagePagination.PageSize)
             .ToListAsync(token);
 
-        var favoriteLinks = storageFavLinks
-            .Select(f => new UserFavoriteBookLink(new(f.UserId), new(f.BookId)))
+        return storageFavLinks
+            .Select(x => new Id<Book>(x.BookId))
             .ToHashSet();
-
-        return new UsersFavorite(new(userId.Value), favoriteLinks);
     }
 
-    public async Task RemoveFavoriteLinkAsync(UserFavoriteBookLink favoriteLink, CancellationToken token)
+    /// <inheritdoc/>
+    public async Task RemoveFavoriteLinkAsync(
+        UserFavoriteBookLink favoriteLink,
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(favoriteLink);
 
         var userFavorite = await Context.FavoriteLinks
-            .FindAsync([favoriteLink.UserId.Value, favoriteLink.BookId.Value], token)
+            .FindAsync(
+                [favoriteLink.UserId.Value, favoriteLink.BookId.Value],
+                token)
             ?? throw new InvalidOperationException(
-                $"User favorite with bookId {favoriteLink.BookId.Value} doesn't exists.");
+                "User favorite with bookId" +
+                $" {favoriteLink.BookId.Value} doesn't exists.");
 
         Context.FavoriteLinks.Remove(userFavorite);
     }
 
-    public async Task<long> GetTotalCountFavoriteLinkAsync(CancellationToken token) =>
-        await Context.FavoriteLinks.LongCountAsync(token);
+    /// <inheritdoc/>
+    public async Task<long> GetTotalCountUserFavoritesLinkAsync(
+        Id<User> userId,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+
+        if (await Context.Users.SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token) is null)
+        {
+            throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
+        }
+
+        return await Context.FavoriteLinks
+            .AsNoTracking()
+            .Where(x => x.UserId == userId.Value)
+            .LongCountAsync(token);
+    }
 }
