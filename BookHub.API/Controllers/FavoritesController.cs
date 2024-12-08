@@ -3,7 +3,6 @@
 using BookHub.Abstractions.Logic.Services.Favorite;
 using BookHub.Contracts;
 using BookHub.Contracts.REST.Responses;
-using BookHub.Contracts.REST.Responses.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -86,20 +85,7 @@ public sealed class FavoritesController : ControllerBase
             return Ok(
                 NewsItemsResponse<ContractPreview>.FromDomain(
                     favoriteBooksPreviews,
-                    x => new ContractPreview
-                    {
-                        Id = x.Id.Value,
-                        AuthorId = x.AuthorId.Value,
-                        Genre = x.Genre.Value,
-                        Title = x.Title.Value,
-                        ChaptersNumbers = x.ChaptersIdsMap
-                            .Select(pair => new BookChapterIdResponse
-                            {
-                                ChapterId = pair.Key.Value,
-                                ChapterSequenceNumber = pair.Value.Value,
-                            })
-                            .ToArray()
-                    }));
+                    ContractPreview.FromDomain));
         }
         catch (ArgumentOutOfRangeException ex)
         {

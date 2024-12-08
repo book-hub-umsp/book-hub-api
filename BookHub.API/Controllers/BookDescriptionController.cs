@@ -119,20 +119,7 @@ public partial class BookDescriptionController : ControllerBase
             return Ok(
                 NewsItemsResponse<ContractPreview>.FromDomain(
                     bookPreviews,
-                    x => new ContractPreview
-                    {
-                        Id = x.Id.Value,
-                        AuthorId = x.AuthorId.Value,
-                        Genre = x.Genre.Value,
-                        Title = x.Title.Value,
-                        ChaptersNumbers = x.ChaptersIdsMap
-                            .Select(pair => new BookChapterIdResponse
-                            {
-                                ChapterId = pair.Key.Value,
-                                ChapterSequenceNumber = pair.Value.Value,
-                            })
-                            .ToArray()
-                    }));
+                    ContractPreview.FromDomain));
         }
         catch (ArgumentOutOfRangeException ex)
         {
@@ -166,20 +153,7 @@ public partial class BookDescriptionController : ControllerBase
             return Ok(
                 NewsItemsResponse<ContractPreview>.FromDomain(
                     bookPreviews,
-                    x => new ContractPreview
-                    {
-                        Id = x.Id.Value,
-                        AuthorId = x.AuthorId.Value,
-                        Genre = x.Genre.Value,
-                        Title = x.Title.Value,
-                        ChaptersNumbers = x.ChaptersIdsMap
-                            .Select(pair => new BookChapterIdResponse
-                            {
-                                ChapterId = pair.Key.Value,
-                                ChapterSequenceNumber = pair.Value.Value,
-                            })
-                            .ToArray()
-                    }));
+                    ContractPreview.FromDomain));
         }
         catch (ArgumentOutOfRangeException ex)
         {
@@ -218,20 +192,7 @@ public partial class BookDescriptionController : ControllerBase
             return Ok(
                 NewsItemsResponse<ContractPreview>.FromDomain(
                     bookPreviews,
-                    x => new ContractPreview
-                    {
-                        Id = x.Id.Value,
-                        AuthorId = x.AuthorId.Value,
-                        Genre = x.Genre.Value,
-                        Title = x.Title.Value,
-                        ChaptersNumbers = x.ChaptersIdsMap
-                            .Select(pair => new BookChapterIdResponse
-                            {
-                                ChapterId = pair.Key.Value,
-                                ChapterSequenceNumber = pair.Value.Value,
-                            })
-                            .ToArray()
-                    }));
+                    ContractPreview.FromDomain));
         }
         catch (ArgumentException ex)
         {
