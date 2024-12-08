@@ -1,12 +1,10 @@
-﻿using System.Linq.Expressions;
-
-using BookHub.Abstractions.Storage.Repositories;
+﻿using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
-using BookHub.Models.Books.Content;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
+using BookHub.Storage.PostgreSQL.Abstractions.Converters;
 using BookHub.Storage.PostgreSQL.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +18,17 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Репозиторий книг.
 /// </summary>
-public sealed class BooksRepository :
+public sealed partial class BooksRepository :
     RepositoryBase,
     IBooksRepository
 {
     public BooksRepository(
-        IRepositoryContext context)
+        IRepositoryContext context,
+        IBookPreviewConverter bookPreviewConverter)
         : base(context)
     {
+        _bookPreviewConverter = bookPreviewConverter
+            ?? throw new ArgumentNullException(nameof(bookPreviewConverter));
     }
 
     public async Task AddBookAsync(
@@ -185,31 +186,11 @@ public sealed class BooksRepository :
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
                 .WithPaging(pagination)
-                .GroupJoin(
-                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
-                    x => x.Id,
-                    x => x.BookId,
-                    (book, chapter) => new 
-                    { 
-                        BookId = book.Id,
-                        book.Title,
-                        book.BookGenre,
-                        book.AuthorId,
-                        ChapterPreview = chapter 
-                    })
+                .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(x => new BookPreview(
-                new(x.BookId),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.ChapterPreview
-                    .ToDictionary(
-                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
-                        v => new ChapterSequenceNumber(v.SequenceNumber))
-                ))
+            .Select(_bookPreviewConverter.ToDomain)
             .ToList();
     }
 
@@ -222,32 +203,11 @@ public sealed class BooksRepository :
         var booksShortModels =
             await Context.Books.AsNoTracking()
                 .WithPaging(pagination)
-                .GroupJoin(
-                    Context.Chapters.Select(x => 
-                        new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
-                    x => x.Id,
-                    x => x.BookId,
-                    (book, chapter) => new
-                    {
-                        BookId = book.Id,
-                        book.Title,
-                        book.BookGenre,
-                        book.AuthorId,
-                        ChapterPreview = chapter
-                    })
+                .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(x => new BookPreview(
-                new(x.BookId),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.ChapterPreview
-                    .ToDictionary(
-                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
-                        v => new ChapterSequenceNumber(v.SequenceNumber))
-                ))
+            .Select(_bookPreviewConverter.ToDomain)
             .ToList();
     }
 
@@ -261,32 +221,11 @@ public sealed class BooksRepository :
             await Context.Books
                 .AsNoTracking()
                 .Where(x => bookIds.Contains(new(x.Id)))
-                .GroupJoin(
-                    Context.Chapters.Select(x =>
-                        new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
-                    x => x.Id,
-                    x => x.BookId,
-                    (book, chapter) => new
-                    {
-                        BookId = book.Id,
-                        book.Title,
-                        book.BookGenre,
-                        book.AuthorId,
-                        ChapterPreview = chapter
-                    })
+                .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(x => new BookPreview(
-                new(x.BookId),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.ChapterPreview
-                    .ToDictionary(
-                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
-                        v => new ChapterSequenceNumber(v.SequenceNumber))
-                ))
+            .Select(_bookPreviewConverter.ToDomain)
             .ToList();
     }
 
@@ -309,38 +248,17 @@ public sealed class BooksRepository :
                 .Include(book => book.KeywordLinks)
                 .Where(book => book.KeywordLinks.AsQueryable().Any(keywordMatchExpression))
                 .WithPaging(pagination)
-                .GroupJoin(
-                    Context.Chapters.Select(x => new { ChapterId = x.Id, x.BookId, x.SequenceNumber }),
-                    x => x.Id,
-                    x => x.BookId,
-                    (book, chapter) => new
-                    {
-                        BookId = book.Id,
-                        book.Title,
-                        book.BookGenre,
-                        book.AuthorId,
-                        ChapterPreview = chapter
-                    })
+                .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
-
         return booksShortModels
-            .Select(x => new BookPreview(
-                new(x.BookId),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.ChapterPreview
-                    .ToDictionary(
-                        k => new Id<BookHub.Models.Books.Content.Chapter>(k.ChapterId),
-                        v => new ChapterSequenceNumber(v.SequenceNumber))
-                ))
+            .Select(_bookPreviewConverter.ToDomain)
             .ToList();
     }
 
     public async Task<bool> IsUserAuthorForBook(
-        Id<DomainUser> userId, 
-        Id<DomainBook> bookId, 
+        Id<DomainUser> userId,
+        Id<DomainBook> bookId,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(userId);
@@ -348,8 +266,8 @@ public sealed class BooksRepository :
 
         var book = await Context.Books
             .AsNoTracking()
-            .Select(x => new { x.Id, x.AuthorId})
-            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token) 
+            .Select(x => new { x.Id, x.AuthorId })
+            .SingleOrDefaultAsync(x => x.Id == bookId.Value, token)
             ?? throw new InvalidOperationException(
                 $"Book {bookId.Value} is not found.");
 
@@ -400,30 +318,5 @@ public sealed class BooksRepository :
         }
     }
 
-    private static Expression<Func<T, bool>> CombineExpressions<T>(
-        Expression<Func<T, string>> valueSelector,
-        Expression<Func<string, bool>> condition)
-    {
-        var parameter = valueSelector.Parameters[0];
-
-        var body = Expression.Invoke(condition, valueSelector.Body);
-
-        return Expression.Lambda<Func<T, bool>>(body, parameter);
-    }
-
-    private static Expression<Func<string, bool>> BuildStringContainsExpression(string keyword)
-    {
-        var processedKeyword = keyword.Replace("_", string.Empty).ToLower();
-        var parameter = Expression.Parameter(typeof(string), "value");
-
-        var valueProcessed = Expression.Call(
-            Expression.Call(parameter, nameof(string.Replace), null, Expression.Constant("_"), Expression.Constant(string.Empty)),
-            nameof(string.ToLower), null);
-
-        var body = Expression.OrElse(
-            Expression.Call(valueProcessed, nameof(string.Contains), null, Expression.Constant(processedKeyword)),
-            Expression.Call(Expression.Constant(processedKeyword), nameof(string.Contains), null, valueProcessed));
-
-        return Expression.Lambda<Func<string, bool>>(body, parameter);
-    }
+    private readonly IBookPreviewConverter _bookPreviewConverter;
 }
