@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 using BookHub.Abstractions.Logic.Services.Favorite;
 using BookHub.Contracts;
-using BookHub.Contracts.REST.Requests.Favorite;
 using BookHub.Contracts.REST.Responses;
 using BookHub.Contracts.REST.Responses.Books.Repository;
 
@@ -27,7 +24,7 @@ public sealed class FavoritesController : ControllerBase
         IUserFavoriteService favoriteService,
         ILogger<FavoritesController> logger)
     {
-        _favoriteService = favoriteService 
+        _favoriteService = favoriteService
             ?? throw new ArgumentNullException(nameof(favoriteService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -37,19 +34,19 @@ public sealed class FavoritesController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddFavoriteBookAsync(
-        [Required][NotNull] AddFavoriteLinkRequest addFavoriteRequest,
+        [FromQuery] long bookId,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         _logger.LogInformation(
-            "Trying to add book {BookId} to favorites", 
-            addFavoriteRequest.BookId);
+            "Trying to add book {BookId} to favorites",
+            bookId);
 
         try
         {
             await _favoriteService.AddFavoriteLinkAsync(
-                new(addFavoriteRequest.BookId),
+                new(bookId),
                 token);
 
             _logger.LogDebug("Request was processed with succesfull result");
@@ -79,7 +76,7 @@ public sealed class FavoritesController : ControllerBase
 
         try
         {
-            var favoriteBooksPreviews = 
+            var favoriteBooksPreviews =
                 await _favoriteService.GetUsersFavoritesPreviewsAsync(
                     new(pageNumber, elementsInPage),
                     token);
