@@ -38,39 +38,40 @@ public static class AuthentificationExtensions
 
                 opt.TokenHandlers.Add(new JsonWebTokenHandler());
 
-                //opt.TokenValidationParameters.ValidIssuer = "https://accounts.google.com";
+                opt.TokenValidationParameters.ValidIssuer = "https://accounts.google.com";
 
-                // Todo: validate sign #81
+                opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnTokenValidated = async (context) =>
+                    {
+                        try
+                        {
+                            var payload = await Google.Apis.Auth.GoogleJsonWebSignature
+                                .ValidateAsync(((JsonWebToken)context.SecurityToken).EncodedToken);
 
-                //opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
-                //{
-                //    OnTokenValidated = async (context) =>
-                //    {
-                //        try
-                //        {
-                //            var payload = await Google.Apis.Auth.GoogleJsonWebSignature
-                //                .ValidateAsync(((JsonWebToken)context.SecurityToken).EncodedToken);
-
-                //            context.Success();
-                //        }
-                //        catch (Google.Apis.Auth.InvalidJwtException)
-                //        {
-                //            context.Fail("Invalid token.");
-                //        }
-                //    }
-                //};
-
-                //opt.TokenValidationParameters.SignatureValidator =
-                //    (token, _) => new JsonWebToken(token);
+                            context.Success();
+                        }
+                        catch (Google.Apis.Auth.InvalidJwtException)
+                        {
+                            context.Fail("Invalid token.");
+                        }
+                    }
+                };
 
                 opt.TokenValidationParameters.SignatureValidator =
                     (token, _) =>
                     {
-                        //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+                        var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+
                         return new JsonWebToken(token);
                     };
 
-                opt.TokenValidationParameters.ValidateIssuer = true;
+                opt.TokenValidationParameters.ValidateIssuer =
+                    Convert.ToBoolean(configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.ValidateSignature))
+                        .Value 
+                        ?? throw new InvalidOperationException("Auth configuration is invalid."));
 
                 opt.TokenValidationParameters.ValidIssuer =
                     configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
@@ -79,7 +80,12 @@ public static class AuthentificationExtensions
                         .Value
                         ?? throw new InvalidOperationException("Auth configuration is invalid.");
 
-                opt.TokenValidationParameters.ValidateAudience = true;
+                opt.TokenValidationParameters.ValidateAudience =
+                    Convert.ToBoolean(configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
+                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.ValidateAudience))
+                        .Value
+                        ?? throw new InvalidOperationException("Auth configuration is invalid."));
 
                 opt.TokenValidationParameters.ValidAudience =
                     configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
@@ -88,6 +94,7 @@ public static class AuthentificationExtensions
                         .Value
                         ?? throw new InvalidOperationException("Auth configuration is invalid.");
             })
+
             .AddJwtBearer(Auth.AuthProviders.YANDEX, opt =>
             {
                 opt.TokenHandlers.Clear();
