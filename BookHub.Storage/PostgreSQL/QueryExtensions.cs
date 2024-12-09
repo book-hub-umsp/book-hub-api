@@ -95,13 +95,17 @@ public static class QueryExtensions
         }
     }
 
-    public static IQueryable<StorageBookPreviewHelper> GroupJoinOfStorageBookPreviews(
-        this IQueryable<Models.Book> storageBooks,
-        DbSet<Models.Chapter> chaptersSet)
-        => storageBooks
+    public static IQueryable<StorageBookPreview> GroupJoinOfStorageBookPreviews(
+        this IQueryable<Book> storageBooks,
+        DbSet<Chapter> chaptersSet)
+    {
+        ArgumentNullException.ThrowIfNull(storageBooks);
+        ArgumentNullException.ThrowIfNull(chaptersSet);
+
+        return storageBooks
             .GroupJoin(
                 chaptersSet.Select(x =>
-                    new StorageChapterHelper
+                    new StorageChapterPreview
                     {
                         ChapterId = x.Id,
                         BookId = x.BookId,
@@ -109,7 +113,7 @@ public static class QueryExtensions
                     }),
                 x => x.Id,
                 x => x.BookId,
-                (book, chapters) => new StorageBookPreviewHelper
+                (book, chapters) => new StorageBookPreview
                 {
                     BookId = book.Id,
                     Title = book.Title,
@@ -117,6 +121,7 @@ public static class QueryExtensions
                     AuthorId = book.AuthorId,
                     Chapters = chapters
                 });
+    }
 
     private readonly record struct FiltersQuery(string Query, object[] Parameters);
 }

@@ -4,8 +4,8 @@ using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 using BookHub.Storage.PostgreSQL.Abstractions;
-using BookHub.Storage.PostgreSQL.Abstractions.Converters;
 using BookHub.Storage.PostgreSQL.Models;
+using BookHub.Storage.PostgreSQL.Models.Helpers;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -23,12 +23,9 @@ public sealed partial class BooksRepository :
     IBooksRepository
 {
     public BooksRepository(
-        IRepositoryContext context,
-        IBookPreviewConverter bookPreviewConverter)
+        IRepositoryContext context)
         : base(context)
     {
-        _bookPreviewConverter = bookPreviewConverter
-            ?? throw new ArgumentNullException(nameof(bookPreviewConverter));
     }
 
     public async Task AddBookAsync(
@@ -190,7 +187,7 @@ public sealed partial class BooksRepository :
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(_bookPreviewConverter.ToDomain)
+            .Select(StorageBookPreview.ToDomain)
             .ToList();
     }
 
@@ -207,7 +204,7 @@ public sealed partial class BooksRepository :
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(_bookPreviewConverter.ToDomain)
+            .Select(StorageBookPreview.ToDomain)
             .ToList();
     }
 
@@ -225,7 +222,7 @@ public sealed partial class BooksRepository :
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(_bookPreviewConverter.ToDomain)
+            .Select(StorageBookPreview.ToDomain)
             .ToList();
     }
 
@@ -252,7 +249,7 @@ public sealed partial class BooksRepository :
                 .ToListAsync(token);
 
         return booksShortModels
-            .Select(_bookPreviewConverter.ToDomain)
+            .Select(StorageBookPreview.ToDomain)
             .ToList();
     }
 
@@ -317,6 +314,4 @@ public sealed partial class BooksRepository :
                 });
         }
     }
-
-    private readonly IBookPreviewConverter _bookPreviewConverter;
 }

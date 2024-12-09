@@ -3,7 +3,7 @@
 /// <summary>
 /// Вспомогательная модель главы.
 /// </summary>
-public sealed class StorageChapterHelper
+public sealed class StorageChapterPreview
 {
     public required long ChapterId { get; init; }
 
