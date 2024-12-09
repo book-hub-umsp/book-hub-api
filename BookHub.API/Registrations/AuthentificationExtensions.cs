@@ -6,6 +6,7 @@ using BookHub.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookHub.API.Registrations;
 
@@ -19,7 +20,7 @@ public static class AuthentificationExtensions
             .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>()
 
             .AddAuthProviders(configuration)
-            .AddAuthorization(configuration)
+            .AddAuthorization()
 
             .AddSingleton<IValidateOptions<AuthJWTConfiguration>, AuthJWTConfigurationValidator>()
             .AddOptionsWithValidateOnStart<AuthJWTConfiguration>()
@@ -34,11 +35,22 @@ public static class AuthentificationExtensions
             .AddAuthentication()
             .AddJwtBearer(Auth.AuthProviders.GOOGLE, opt =>
             {
+                var googleConfig = configuration.GetSection(nameof(AuthJWTConfiguration))
+                    .GetSection(nameof(AuthJWTConfiguration.Google))
+                    .Get<GoogleConfiguration>()
+                    ?? throw new InvalidOperationException("Auth configuration is invalid.");
+
                 opt.TokenHandlers.Clear();
 
                 opt.TokenHandlers.Add(new JsonWebTokenHandler());
 
-                opt.TokenValidationParameters.ValidIssuer = "https://accounts.google.com";
+                opt.TokenValidationParameters.ValidateIssuer = googleConfig.ValidateIssuer;
+
+                opt.TokenValidationParameters.ValidIssuer = googleConfig.Issuer;
+
+                opt.TokenValidationParameters.ValidateAudience = googleConfig.ValidateAudience;
+
+                opt.TokenValidationParameters.ValidAudience = googleConfig.Audience;
 
                 opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 {
@@ -51,88 +63,60 @@ public static class AuthentificationExtensions
 
                             context.Success();
                         }
-                        catch (Google.Apis.Auth.InvalidJwtException)
+                        catch (Google.Apis.Auth.InvalidJwtException ex)
                         {
-                            context.Fail("Invalid token.");
+                            context.Fail($"Invalid token: {ex.Message}.");
                         }
-                    }
+                    },
+                    OnAuthenticationFailed = context => Task.CompletedTask
                 };
-
-                opt.TokenValidationParameters.SignatureValidator =
-                    (token, _) =>
-                    {
-                        var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
-
-                        return new JsonWebToken(token);
-                    };
-
-                opt.TokenValidationParameters.ValidateIssuer =
-                    Convert.ToBoolean(configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.ValidateSignature))
-                        .Value 
-                        ?? throw new InvalidOperationException("Auth configuration is invalid."));
-
-                opt.TokenValidationParameters.ValidIssuer =
-                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.Issuer))
-                        .Value
-                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
-
-                opt.TokenValidationParameters.ValidateAudience =
-                    Convert.ToBoolean(configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.ValidateAudience))
-                        .Value
-                        ?? throw new InvalidOperationException("Auth configuration is invalid."));
-
-                opt.TokenValidationParameters.ValidAudience =
-                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Google.Audience))
-                        .Value
-                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
             })
 
             .AddJwtBearer(Auth.AuthProviders.YANDEX, opt =>
             {
+                var yandexConfig = configuration.GetSection(nameof(AuthJWTConfiguration))
+                    .GetSection(nameof(AuthJWTConfiguration.Yandex))
+                    .Get<YandexConfiguration>()
+                    ?? throw new InvalidOperationException("Auth configuration is invalid.");
+
                 opt.TokenHandlers.Clear();
 
                 opt.TokenHandlers.Add(new JsonWebTokenHandler());
 
+                opt.TokenValidationParameters.ValidateIssuer = yandexConfig.ValidateIssuer;
 
-                // Todo: validate sign #81
-                opt.TokenValidationParameters.SignatureValidator =
-                    (token, _) =>
+                opt.TokenValidationParameters.ValidIssuer = yandexConfig.Issuer;
+
+                opt.TokenValidationParameters.ValidateAudience = yandexConfig.ValidateAudience;
+
+                opt.TokenValidationParameters.ValidAudience = yandexConfig.Audience;
+
+                opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnTokenValidated = async (context) =>
                     {
-                        //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
-                        return new JsonWebToken(token);
-                    };
+                        try
+                        {
+                            // some logic is duplicated here
+                            var payload = await YandexAuthHelper.ValidateYandexTokenAsync(
+                                yandexConfig,
+                                ((JsonWebToken)context.SecurityToken).EncodedToken);
 
-                opt.TokenValidationParameters.ValidateIssuer = true;
+                            context.Success();
+                        }
+                        catch (SecurityTokenException ex)
+                        {
+                            context.Fail($"Invalid token: {ex.Message}.");
+                        }
+                    },
+                    OnAuthenticationFailed = context => Task.CompletedTask
+                };
 
-                opt.TokenValidationParameters.ValidIssuer =
-                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex.Issuer))
-                        .Value
-                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
-
-                opt.TokenValidationParameters.ValidateAudience = true;
-
-                opt.TokenValidationParameters.ValidAudience =
-                    configuration.GetRequiredSection(nameof(AuthJWTConfiguration))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex))
-                        .GetRequiredSection(nameof(AuthJWTConfiguration.Yandex.Audience))
-                        .Value
-                        ?? throw new InvalidOperationException("Auth configuration is invalid.");
             })
             .Services;
 
     private static IServiceCollection AddAuthorization(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
         => services
             .AddAuthorizationBuilder()
             .AddDefaultPolicy(

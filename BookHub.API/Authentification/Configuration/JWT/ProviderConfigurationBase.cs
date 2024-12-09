@@ -26,10 +26,10 @@ public abstract class ProviderConfigurationBase
     public required string Issuer { get; init; }
 
     /// <summary>
-    /// Validate signature.
+    /// Validate signature (issuer).
     /// </summary>
     [Required]
-    public required bool ValidateSignature { get; init; }
+    public required bool ValidateIssuer { get; init; }
 
     /// <summary>
     /// Validate audience.
