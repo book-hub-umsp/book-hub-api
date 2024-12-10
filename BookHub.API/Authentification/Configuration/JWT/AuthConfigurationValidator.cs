@@ -8,4 +8,5 @@ namespace BookHub.API.Authentification.Configuration;
 /// Валидатор для <see cref="AuthJWTConfiguration"/>.
 /// </summary>
 [OptionsValidator]
-public sealed partial class AuthJWTConfigurationValidator : IValidateOptions<AuthJWTConfiguration>;
+public sealed partial class AuthJWTConfigurationValidator : 
+    IValidateOptions<AuthJWTConfiguration>;

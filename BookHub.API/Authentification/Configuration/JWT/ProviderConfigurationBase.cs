@@ -24,4 +24,16 @@ public abstract class ProviderConfigurationBase
     /// </remarks>
     [Required]
     public required string Issuer { get; init; }
+
+    /// <summary>
+    /// Validate signature (issuer).
+    /// </summary>
+    [Required]
+    public required bool ValidateIssuer { get; init; }
+
+    /// <summary>
+    /// Validate audience.
+    /// </summary>
+    [Required]
+    public required bool ValidateAudience { get; init; }
 }
