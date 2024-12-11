@@ -1,4 +1,5 @@
-﻿using BookHub.API.Authentification;
+﻿using BookHub.Abstractions.Logic.Services.Auth;
+using BookHub.API.Authentification;
 using BookHub.API.Authentification.Configuration;
 using BookHub.API.Authentification.Configuration.JWT;
 using BookHub.Models.Account;
@@ -18,6 +19,12 @@ public static class AuthentificationExtensions
         => services
             .AddScoped<IAuthorizationHandler, UserExistsAuthorizationHandler>()
             .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>()
+
+            .AddScoped<IYandexAuthService, YandexAuthService>()
+            .Configure<YandexConfiguration>(
+                configuration
+                    .GetRequiredSection(nameof(AuthJWTConfiguration))
+                    .GetSection(nameof(AuthJWTConfiguration.Yandex)))
 
             .AddAuthProviders(configuration)
             .AddAuthorization()
@@ -97,10 +104,14 @@ public static class AuthentificationExtensions
                     {
                         try
                         {
+                            var serviceProvider = context.HttpContext.RequestServices;
+
+                            var yandexAuthService = serviceProvider.GetRequiredService<IYandexAuthService>();
+
                             // some logic is duplicated here
-                            var payload = await YandexAuthHelper.ValidateYandexTokenAsync(
-                                yandexConfig,
-                                ((JsonWebToken)context.SecurityToken).EncodedToken);
+                            var payload = await yandexAuthService.ValidateYandexTokenAsync(
+                                ((JsonWebToken)context.SecurityToken).EncodedToken,
+                                CancellationToken.None);
 
                             context.Success();
                         }
