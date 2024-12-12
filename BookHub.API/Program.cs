@@ -1,9 +1,9 @@
+using BookHub.Abstractions.Logic.Services.Auth;
+using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +26,8 @@ builder.Services
     .AddSwagger()
     .AddAuth(builder.Configuration)
     .AddLogic(builder.Configuration)
-    .AddPostgresStorage(builder.Environment, builder.Configuration);
-
-builder.Host.UseSerilog((hc, lc) =>
-    lc.ReadFrom.Configuration(hc.Configuration));
+    .AddPostgresStorage(builder.Environment, builder.Configuration)
+    .AddHttpClient<IYandexAuthService, YandexAuthService>();
 
 var app = builder.Build();
 
