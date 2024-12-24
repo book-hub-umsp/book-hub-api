@@ -1,4 +1,7 @@
-﻿using BookHub.Abstractions.Storage.Repositories;
+﻿using System.Linq;
+using System.Linq.Expressions;
+
+using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
@@ -221,13 +224,16 @@ public sealed partial class BooksRepository :
         var booksShortModels =
             await Context.Books
                 .AsNoTracking()
-                .Where(x => bookIds.Contains(new(x.Id)))
-                .GroupJoinOfStorageBookPreviews(Context.Chapters)
+                .Where(x => IsBookIdContains(bookIds))
                 .ToListAsync(token);
 
         return booksShortModels
             .Select(StorageBookPreview.ToDomain)
             .ToList();
+
+        Expression<Func<StorageBook, bool>> IsBookIdContains(
+            IReadOnlySet<Id<DomainBook>> bookIds)
+            => book => bookIds.Contains(new(book.Id));
     }
 
     public async Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
