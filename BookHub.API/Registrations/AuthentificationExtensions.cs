@@ -59,14 +59,22 @@ public static class AuthentificationExtensions
 
                 opt.TokenValidationParameters.ValidAudience = googleConfig.Audience;
 
+                opt.TokenValidationParameters.SignatureValidator =
+                   (token, _) =>
+                       //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+                       new JsonWebToken(token);
+
                 opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 {
                     OnTokenValidated = async (context) =>
                     {
                         try
                         {
-                            var payload = await Google.Apis.Auth.GoogleJsonWebSignature
-                                .ValidateAsync(((JsonWebToken)context.SecurityToken).EncodedToken);
+                            if (googleConfig.ValidateSignature)
+                            {
+                                var payload = await Google.Apis.Auth.GoogleJsonWebSignature
+                                    .ValidateAsync(((JsonWebToken)context.SecurityToken).EncodedToken);
+                            }
 
                             context.Success();
                         }
@@ -98,20 +106,28 @@ public static class AuthentificationExtensions
 
                 opt.TokenValidationParameters.ValidAudience = yandexConfig.Audience;
 
+                opt.TokenValidationParameters.SignatureValidator =
+                   (token, _) =>
+                       //var payload = Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(token).Result;
+                       new JsonWebToken(token);
+
                 opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 {
                     OnTokenValidated = async (context) =>
                     {
                         try
                         {
-                            var serviceProvider = context.HttpContext.RequestServices;
+                            if (yandexConfig.ValidateSignature)
+                            {
+                                var serviceProvider = context.HttpContext.RequestServices;
 
-                            var yandexAuthService = serviceProvider.GetRequiredService<IYandexAuthService>();
+                                var yandexAuthService = serviceProvider.GetRequiredService<IYandexAuthService>();
 
-                            // some logic is duplicated here
-                            var payload = await yandexAuthService.ValidateYandexTokenAsync(
-                                ((JsonWebToken)context.SecurityToken).EncodedToken,
-                                CancellationToken.None);
+                                // some logic is duplicated here
+                                var payload = await yandexAuthService.ValidateYandexTokenAsync(
+                                    ((JsonWebToken)context.SecurityToken).EncodedToken,
+                                    CancellationToken.None);
+                            }
 
                             context.Success();
                         }
