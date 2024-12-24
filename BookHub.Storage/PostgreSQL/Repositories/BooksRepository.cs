@@ -36,7 +36,9 @@ public sealed partial class BooksRepository :
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => addBookParams.Genre.CompareTo(x.Value))
+                .SingleOrDefaultAsync(
+                    x => addBookParams.Genre.Value == x.Value,
+                    token)
                 ?? throw new InvalidOperationException(
                     $"Book genre {addBookParams.Genre} is not exists.");
 
@@ -131,9 +133,11 @@ public sealed partial class BooksRepository :
 
                 var relatedBookGenre =
                     await Context.Genres.AsNoTracking()
-                        .SingleOrDefaultAsync(x => newGenre.CompareTo(x.Value))
-                            ?? throw new InvalidOperationException(
-                                $"Book genre {newGenre} is not exists.");
+                        .SingleOrDefaultAsync(
+                            x => newGenre.Value == x.Value,
+                            token)
+                        ?? throw new InvalidOperationException(
+                            $"Book genre {newGenre} is not exists.");
 
                 storageBook.BookGenreId = relatedBookGenre.Id;
 

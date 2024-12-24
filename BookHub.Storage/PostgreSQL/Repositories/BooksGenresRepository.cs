@@ -9,7 +9,9 @@ namespace BookHub.Storage.PostgreSQL.Repositories;
 /// <summary>
 /// Представляет репозиторий жанров книг.
 /// </summary>
-public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresRepository
+public sealed class BooksGenresRepository : 
+    RepositoryBase, 
+    IBooksGenresRepository
 {
     public BooksGenresRepository(IRepositoryContext context)
         : base(context)
@@ -24,7 +26,7 @@ public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresReposito
 
         var existedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => bookGenre.CompareTo(x.Value), token);
+                .SingleOrDefaultAsync(x => bookGenre.Value == x.Value, token);
 
         if (existedBookGenre is not null)
         {
@@ -51,7 +53,9 @@ public sealed class BooksGenresRepository : RepositoryBase, IBooksGenresReposito
 
         var existedBookGenre =
             await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => bookGenre.CompareTo(x.Value), cancellationToken)
+                .SingleOrDefaultAsync(
+                    x => bookGenre.Value == x.Value, 
+                    cancellationToken)
                 ?? throw new InvalidOperationException(
                     $"Book genre '{bookGenre.Value}' is not already exists.");
 
