@@ -14,7 +14,8 @@ namespace BookHub.Abstractions.Storage.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        Id<User> user,
+        AddBookParams addBookParams,
         CancellationToken token);
 
     public Task<DomainBook> GetBookAsync(

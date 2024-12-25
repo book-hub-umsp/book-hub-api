@@ -80,17 +80,8 @@ public sealed class FavoriteLinkRepository :
             ?? throw new InvalidOperationException(
                 $"User with id {userId.Value} doesn't exist.");
 
-        var storageFavLinks = await Context.Users
-            .AsNoTracking()
-            .Include(x => x.FavoriteBooksLinks)
-            .SelectMany(
-                x => x.FavoriteBooksLinks, 
-                (user, link) => 
-                new 
-                {
-                    BookId = link.BookId,
-                    UserId = user.Id
-                })
+        var storageFavLinks = await Context.FavoriteLinks
+            .Select(x => new { x.BookId, x.UserId })
             .Where(f => f.UserId == user.Id)
             .OrderBy(x => x.BookId)
             .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
@@ -127,7 +118,7 @@ public sealed class FavoriteLinkRepository :
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        if (await Context.Users.SingleOrDefaultAsync(
+        if (await Context.Users.AsNoTracking().SingleOrDefaultAsync(
                 u => u.Id == userId.Value,
                 token) is null)
         {
@@ -135,10 +126,8 @@ public sealed class FavoriteLinkRepository :
                 $"User with id {userId.Value} doesn't exist.");
         }
 
-        return await Context.Users
-            .AsNoTracking()
-            .Include(x => x.FavoriteBooksLinks)
-            .Where(x => x.Id == userId.Value)
+        return await Context.FavoriteLinks
+            .Where(x => x.UserId == userId.Value)
             .LongCountAsync(token);
     }
 }

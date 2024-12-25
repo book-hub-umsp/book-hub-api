@@ -1,4 +1,5 @@
-﻿using BookHub.Abstractions.Logic.Services.Books.Repository;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
@@ -18,19 +19,30 @@ public sealed class BookDescriptionService : IBookDescriptionService
 {
     public BookDescriptionService(
         IBooksHubUnitOfWork unitOfWork,
+        IUserIdentityFacade userIdentityFacade,
         ILogger<BookDescriptionService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _userIdentityFacade = userIdentityFacade
+            ?? throw new ArgumentNullException(nameof(userIdentityFacade));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        AddBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
 
         _logger.LogDebug("Trying adding book to storage");
+
+        var currentUserId = _userIdentityFacade.Id!;
+
+        _logger.LogDebug(
+            "Trying to add in favorites book {BookId}" +
+            " via user {UserId} request",
+            bookId.Value,
+            currentUserId.Value);
 
         await _unitOfWork.Books.AddBookAsync(addBookParams, token);
 
@@ -182,5 +194,6 @@ public sealed class BookDescriptionService : IBookDescriptionService
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
+    private readonly IUserIdentityFacade _userIdentityFacade;
     private readonly ILogger _logger;
 }

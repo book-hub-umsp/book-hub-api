@@ -13,7 +13,7 @@ namespace BookHub.Abstractions.Logic.Services.Books.Repository;
 public interface IBookDescriptionService
 {
     public Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        AddBookParams addBookParams,
         CancellationToken token);
 
     public Task UpdateBookAsync(

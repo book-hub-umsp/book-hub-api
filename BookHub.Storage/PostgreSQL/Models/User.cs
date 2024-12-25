@@ -21,7 +21,7 @@ public class User : IKeyable
 
     public string About { get; set; } = null!;
 
-    public ICollection<Book> WrittenBooks { get; set; } = null!;
+    public virtual ICollection<Book> WrittenBooks { get; set; } = null!;
 
-    public ICollection<FavoriteLink> FavoriteBooksLinks { get; set; } = null!;
+    public virtual ICollection<FavoriteLink> FavoriteBooksLinks { get; set; } = null!;
 }

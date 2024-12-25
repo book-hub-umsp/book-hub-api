@@ -9,7 +9,7 @@ namespace BookHub.Models.CRUDS.Requests;
 /// <summary>
 /// Параметры команды добавления новой книги.
 /// </summary>
-public abstract class AddBookParams : BookParamsBase
+public sealed class AddBookParams : BookParamsBase
 {
     public BookGenre Genre { get; }
 
@@ -19,7 +19,7 @@ public abstract class AddBookParams : BookParamsBase
 
     public IReadOnlySet<KeyWord>? Keywords { get; }
 
-    protected AddBookParams(
+    public AddBookParams(
         BookGenre genre,
         Name<Book> title,
         BookAnnotation annotation)
@@ -29,7 +29,7 @@ public abstract class AddBookParams : BookParamsBase
         Annotation = annotation ?? throw new ArgumentNullException(nameof(annotation));
     }
 
-    protected AddBookParams(
+    public AddBookParams(
         BookGenre genre,
         Name<Book> title,
         BookAnnotation annotation,

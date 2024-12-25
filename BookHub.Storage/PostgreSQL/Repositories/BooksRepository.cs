@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
@@ -32,10 +31,18 @@ public sealed partial class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        Id<DomainUser> userId,
+        AddBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
@@ -49,7 +56,7 @@ public sealed partial class BooksRepository :
 
         var storageBook = new StorageBook
         {
-            AuthorId = addBookParams.AuthorId.Value,
+            AuthorId = userId.Value,
             Title = addBookParams.Title.Value,
             BookGenreId = relatedBookGenre.Id,
             BookAnnotation = addBookParams.Annotation.Content,
@@ -221,19 +228,19 @@ public sealed partial class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(bookIds);
 
+        Expression<Func<StorageBook, bool>> booksIdsPredicate =
+            book => bookIds.Select(x => x.Value).Any(x => x == book.Id);
+
         var booksShortModels =
             await Context.Books
                 .AsNoTracking()
-                .Where(x => IsBookIdContains(bookIds))
+                .Where(booksIdsPredicate)
+                .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
         return booksShortModels
             .Select(StorageBookPreview.ToDomain)
             .ToList();
-
-        Expression<Func<StorageBook, bool>> IsBookIdContains(
-            IReadOnlySet<Id<DomainBook>> bookIds)
-            => book => bookIds.Contains(new(book.Id));
     }
 
     public async Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(

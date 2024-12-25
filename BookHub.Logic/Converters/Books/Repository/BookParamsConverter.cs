@@ -2,11 +2,11 @@
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
 
-using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
+using ContractAddBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddBookParams;
 using ContractBookParams = BookHub.Contracts.REST.Requests.Books.Repository.BookParamsBase;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
-using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
+using DomainAddBookParams = BookHub.Models.CRUDS.Requests.AddBookParams;
 using DomainBookParams = BookHub.Models.CRUDS.Requests.BookParamsBase;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
@@ -24,15 +24,13 @@ public sealed class BookParamsConverter : IBookParamsConverter
 
         return contractParams switch
         {
-            ContractAddAuthorBookParams addBookParams =>
+            ContractAddBookParams addBookParams =>
                 addBookParams.Keywords is null
-                ? new DomainAddAuthorBookParams(
-                    new(addBookParams.AuthorId),
+                ? new DomainAddBookParams(
                     new(addBookParams.Genre),
                     new(addBookParams.Title),
                     new(addBookParams.Annotation))
-                : new DomainAddAuthorBookParams(
-                    new(addBookParams.AuthorId),
+                : new DomainAddBookParams(
                     new(addBookParams.Genre),
                     new(addBookParams.Title),
                     new(addBookParams.Annotation),

@@ -18,9 +18,9 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<Role> UserRoles { get; set; } = null!;
 
-    public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
+    public DbSet<FavoriteLink> FavoriteLinks { get; set; } = null!;
 
-    public DbSet<KeywordLink> KeywordLinks { get; } = null!;
+    public DbSet<KeywordLink> KeywordLinks { get; set; } = null!;
 
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
         : base(options)

@@ -11,12 +11,12 @@ using BookHub.Contracts.REST.Responses.Books.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using ContractAddAuthorBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddAuthorBookParams;
+using ContractAddBookParams = BookHub.Contracts.REST.Requests.Books.Repository.AddBookParams;
 using ContractGetBookParams = BookHub.Contracts.REST.Requests.Books.Repository.GetBookParams;
 using ContractKeyWord = BookHub.Contracts.KeyWord;
 using ContractPreview = BookHub.Contracts.REST.Responses.Books.Repository.BookPreview;
 using ContractUpdateBookParams = BookHub.Contracts.REST.Requests.Books.Repository.UpdateBookParams;
-using DomainAddAuthorBookParams = BookHub.Models.CRUDS.Requests.AddAuthorBookParams;
+using DomainAddBookParams = BookHub.Models.CRUDS.Requests.AddBookParams;
 using DomainGetBookParams = BookHub.Models.CRUDS.Requests.GetBookParams;
 using DomainUpdateBookParams = BookHub.Models.CRUDS.Requests.UpdateBookParamsBase;
 
@@ -202,25 +202,22 @@ public partial class BookDescriptionController : ControllerBase
         }
     }
 
-    // Todo: will be accepted only for book author
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> AddNewAuthorBookAsync(
-        [Required][NotNull] ContractAddAuthorBookParams addAuthorBookParams,
+    public async Task<IActionResult> AddBookAsync(
+        [Required][NotNull] ContractAddBookParams addAuthorBookParams,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug(
-            "Start processing new book adding request for author {AuthorId}",
-            addAuthorBookParams.AuthorId);
+        _logger.LogDebug("Start processing new book adding request");
 
         try
         {
             await _service.AddBookAsync(
-                (DomainAddAuthorBookParams)_converter.Convert(addAuthorBookParams),
+                (DomainAddBookParams)_converter.Convert(addAuthorBookParams),
                 token);
 
             _logger.LogInformation("Request was processed with succesfull result");

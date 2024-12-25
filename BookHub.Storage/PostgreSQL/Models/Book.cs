@@ -29,7 +29,7 @@ public class Book : IKeyable
 
     public ICollection<Chapter> Chapters { get; set; } = null!;
 
-    public ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
+    public virtual ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
 
-    public ICollection<KeywordLink> KeywordLinks { get; set; } = null!;
+    public virtual ICollection<KeywordLink> KeywordLinks { get; set; } = null!;
 }
