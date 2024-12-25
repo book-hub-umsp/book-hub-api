@@ -73,5 +73,13 @@ public interface IBooksRepository
         Id<DomainBook> bookId,
         CancellationToken token);
 
+    /// <remarks>
+    /// Синхронизирует тэги для последней книги добавленной автором.
+    /// </remarks>
+    public Task SynchronizeKeyWordsForBook(
+        Id<User> userId,
+        IReadOnlySet<KeyWord> keyWords,
+        CancellationToken token);
+
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);
 }

@@ -73,7 +73,7 @@ public sealed class BookParamsConverter : IBookParamsConverter
                     new(contractParams.NewAnnotation)),
 
             _ when contractParams.UpdatedKeywords is not null =>
-                new UpdateKeyWordsParams(
+                new ExtendKeyWordsParams(
                     new(contractParams.BookId),
                     contractParams.UpdatedKeywords.Select(
                         x => new KeyWord(new(x.Content))).ToList()),

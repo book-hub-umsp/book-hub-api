@@ -195,7 +195,7 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<BookGenre>()
             .HasMany(x => x.Books)
             .WithOne(x => x.BookGenre)
-            .HasForeignKey(x => x.Id);
+            .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<BookGenre>()
             .ToTable("genres");

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq.Dynamic.Core.Tokenizer;
+using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
@@ -64,14 +65,6 @@ public sealed partial class BooksRepository :
             CreationDate = now,
             LastEditDate = now
         };
-
-        if (addBookParams.Keywords is not null)
-        {
-            await SynchronizeKeywordsAsync(
-                addBookParams.Keywords,
-                storageBook,
-                token);
-        }
 
         Context.Books.Add(storageBook);
     }
@@ -179,11 +172,11 @@ public sealed partial class BooksRepository :
 
                 break;
 
-            case UpdateKeyWordsParams keyWordsParams:
+            case ExtendKeyWordsParams keyWordsParams:
 
                 await SynchronizeKeywordsAsync(
-                    keyWordsParams.UpdatedKeyWords,
                     storageBook,
+                    keyWordsParams.UpdatedKeyWords,
                     token);
 
                 break;
@@ -296,12 +289,44 @@ public sealed partial class BooksRepository :
         return book.AuthorId == userId.Value;
     }
 
+    public async Task SynchronizeKeyWordsForBook(
+        Id<DomainUser> userId, 
+        IReadOnlySet<KeyWord> keyWords,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(keyWords);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
+
+        if (!keyWords.Any())
+        {
+            return;
+        }
+
+        var lastBookForUser = 
+            await Context.Books
+                .OrderBy(x => x.Id)
+                .LastOrDefaultAsync(
+                    x => x.AuthorId == userId.Value,
+                    token)
+            ?? throw new InvalidOperationException(
+                $"No one book for user with id {userId.Value} was found.");
+
+        await SynchronizeKeywordsAsync(lastBookForUser, keyWords, token);
+    }
+
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
     private async Task SynchronizeKeywordsAsync(
-        IReadOnlySet<KeyWord> keywords,
         StorageBook storageBook,
+        IReadOnlySet<KeyWord> keywords,
         CancellationToken token)
     {
         foreach (var keyword in keywords)
@@ -314,11 +339,17 @@ public sealed partial class BooksRepository :
 
             if (existedKeyword is not null)
             {
+                if (storageBook.KeywordLinks.Any(
+                    x => x.KeywordId == existedKeyword.Id))
+                {
+                    return;
+                }
+
                 Context.KeywordLinks.Add(
                     new KeywordLink
                     {
                         Keyword = existedKeyword,
-                        Book = storageBook
+                        BookId = storageBook.Id
                     });
 
                 continue;
@@ -335,7 +366,7 @@ public sealed partial class BooksRepository :
                 new KeywordLink
                 {
                     Keyword = newKeyword,
-                    Book = storageBook
+                    BookId = storageBook.Id
                 });
         }
     }

@@ -46,6 +46,16 @@ public sealed class BookDescriptionService : IBookDescriptionService
         await _unitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation("New book has been succesfully added");
+
+        if (addBookParams.Keywords is not null)
+        {
+            await _unitOfWork.Books.SynchronizeKeyWordsForBook(
+                currentUserId, addBookParams.Keywords, token);
+        }
+
+        _logger.LogInformation(
+            "Synchronizing key words" +
+            " for last created book was performed");
     }
 
     public async Task<Book> GetBookAsync(
