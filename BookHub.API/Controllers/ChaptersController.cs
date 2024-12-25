@@ -50,7 +50,8 @@ public sealed class ChaptersController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -83,7 +84,8 @@ public sealed class ChaptersController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -121,7 +123,8 @@ public sealed class ChaptersController : ControllerBase
 
             return Ok(contract);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -157,7 +160,8 @@ public sealed class ChaptersController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 

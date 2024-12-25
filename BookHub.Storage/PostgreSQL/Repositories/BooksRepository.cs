@@ -119,17 +119,25 @@ public sealed partial class BooksRepository :
     }
 
     public async Task UpdateBookContentAsync(
+        Id<DomainUser> userId,
         UpdateBookParamsBase updateBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
 
         var storageBook = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token)
                 ?? throw new InvalidOperationException(
                     $"No such book with id {updateBookParams.BookId.Value}.");
 
-        if (storageBook.AuthorId != updateBookParams.AuthorId.Value)
+        if (storageBook.AuthorId != userId.Value)
         {
             throw new InvalidOperationException(
                 $"Only author can update book {storageBook.Id} description.");

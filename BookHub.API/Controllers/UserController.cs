@@ -141,7 +141,8 @@ public sealed class UserController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }

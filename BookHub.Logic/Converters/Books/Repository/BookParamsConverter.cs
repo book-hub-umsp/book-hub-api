@@ -55,31 +55,26 @@ public sealed class BookParamsConverter : IBookParamsConverter
             _ when contractParams.NewStatus is not null =>
                 new UpdateBookStatusParams(
                     new(contractParams.BookId),
-                    new(contractParams.AuthorId),
                     contractParams.NewStatus.Value),
 
             _ when contractParams.NewGenre is not null =>
                 new UpdateBookGenreParams(
                     new(contractParams.BookId),
-                    new(contractParams.AuthorId),
                     new(contractParams.NewGenre)),
 
             _ when contractParams.NewTitle is not null =>
                 new UpdateBookTitleParams(
                     new(contractParams.BookId),
-                    new(contractParams.AuthorId),
                     new(contractParams.NewTitle)),
 
             _ when contractParams.NewAnnotation is not null =>
                 new UpdateBookAnnotationParams(
                     new(contractParams.BookId),
-                    new(contractParams.AuthorId),
                     new(contractParams.NewAnnotation)),
 
             _ when contractParams.UpdatedKeywords is not null =>
                 new UpdateKeyWordsParams(
                     new(contractParams.BookId),
-                    new(contractParams.AuthorId),
                     contractParams.UpdatedKeywords.Select(
                         x => new KeyWord(new(x.Content))).ToList()),
 

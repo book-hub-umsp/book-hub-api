@@ -1,6 +1,5 @@
 ﻿using System;
 
-using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
@@ -14,9 +13,8 @@ public sealed class UpdateBookAnnotationParams : UpdateBookParamsBase
 
     public UpdateBookAnnotationParams(
         Id<Book> bookId,
-        Id<User> authorId,
         BookAnnotation newBookAnnotation)
-        : base(bookId, authorId)
+        : base(bookId)
     {
         NewBookAnnotation = newBookAnnotation
             ?? throw new ArgumentNullException(nameof(newBookAnnotation));

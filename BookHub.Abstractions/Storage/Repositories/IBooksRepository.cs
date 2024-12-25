@@ -26,6 +26,7 @@ public interface IBooksRepository
     /// Если автор книги не соответствует указанному в запросе.
     /// </exception>
     public Task UpdateBookContentAsync(
+        Id<User> userId,
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);
 

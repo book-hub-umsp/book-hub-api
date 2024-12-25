@@ -84,7 +84,8 @@ public partial class BookDescriptionController : ControllerBase
 
             return Ok(contractContent);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -121,7 +122,8 @@ public partial class BookDescriptionController : ControllerBase
                     bookPreviews,
                     ContractPreview.FromDomain));
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -155,7 +157,8 @@ public partial class BookDescriptionController : ControllerBase
                     bookPreviews,
                     ContractPreview.FromDomain));
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -194,7 +197,8 @@ public partial class BookDescriptionController : ControllerBase
                     bookPreviews,
                     ContractPreview.FromDomain));
         }
-        catch (ArgumentException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -224,7 +228,8 @@ public partial class BookDescriptionController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -257,7 +262,8 @@ public partial class BookDescriptionController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 

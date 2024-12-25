@@ -34,17 +34,14 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
 
-        _logger.LogDebug("Trying adding book to storage");
-
         var currentUserId = _userIdentityFacade.Id!;
 
         _logger.LogDebug(
-            "Trying to add in favorites book {BookId}" +
+            "Trying to add new book" +
             " via user {UserId} request",
-            bookId.Value,
             currentUserId.Value);
 
-        await _unitOfWork.Books.AddBookAsync(addBookParams, token);
+        await _unitOfWork.Books.AddBookAsync(currentUserId, addBookParams, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
@@ -77,11 +74,16 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
 
-        _logger.LogDebug(
-            "Trying update book {BookId} content on storage",
-            updateBookParams.BookId.Value);
+        var currentUserId = _userIdentityFacade.Id!;
 
-        await _unitOfWork.Books.UpdateBookContentAsync(updateBookParams, token);
+        _logger.LogDebug(
+            "Trying to update book {BookId}" +
+            " via user {UserId} request",
+            updateBookParams.BookId.Value,
+            currentUserId.Value);
+
+        await _unitOfWork.Books.UpdateBookContentAsync(
+            currentUserId, updateBookParams, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
