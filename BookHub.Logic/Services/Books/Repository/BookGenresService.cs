@@ -29,7 +29,7 @@ public sealed class BookGenresService : IBookGenresService
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("Genre '{@Genre}' was added", bookGenre);
+        _logger.LogInformation("Genre '{@Genre}' was added", bookGenre.Value);
     }
 
     public async Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token)

@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 
 using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
+using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
@@ -193,6 +194,13 @@ public sealed partial class BooksRepository :
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(pagination);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == authorId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {authorId.Value} doesn't exist.");
 
         var booksShortModels =
             await Context.Books.AsNoTracking()
