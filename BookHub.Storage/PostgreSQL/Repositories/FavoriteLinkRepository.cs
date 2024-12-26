@@ -118,7 +118,7 @@ public sealed class FavoriteLinkRepository :
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        if (await Context.Users.SingleOrDefaultAsync(
+        if (await Context.Users.AsNoTracking().SingleOrDefaultAsync(
                 u => u.Id == userId.Value,
                 token) is null)
         {
@@ -127,7 +127,6 @@ public sealed class FavoriteLinkRepository :
         }
 
         return await Context.FavoriteLinks
-            .AsNoTracking()
             .Where(x => x.UserId == userId.Value)
             .LongCountAsync(token);
     }

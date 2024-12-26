@@ -11,7 +11,7 @@ public class User : IKeyable
 
     public long RoleId { get; set; }
 
-    public Role Role { get; set; } = null!;
+    public virtual Role Role { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 
@@ -21,7 +21,7 @@ public class User : IKeyable
 
     public string About { get; set; } = null!;
 
-    public ICollection<Book> WrittenBooks { get; set; } = null!;
+    public virtual ICollection<Book> WrittenBooks { get; set; } = null!;
 
-    public ICollection<FavoriteLink> FavoriteBooksLinks { get; set; } = null!;
+    public virtual ICollection<FavoriteLink> FavoriteBooksLinks { get; set; } = null!;
 }

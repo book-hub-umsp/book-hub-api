@@ -1,4 +1,5 @@
-﻿using BookHub.Abstractions.Logic.Services.Books.Repository;
+﻿using BookHub.Abstractions;
+using BookHub.Abstractions.Logic.Services.Books.Repository;
 using BookHub.Abstractions.Storage;
 using BookHub.Models;
 using BookHub.Models.Account;
@@ -18,25 +19,43 @@ public sealed class BookDescriptionService : IBookDescriptionService
 {
     public BookDescriptionService(
         IBooksHubUnitOfWork unitOfWork,
+        IUserIdentityFacade userIdentityFacade,
         ILogger<BookDescriptionService> logger)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _userIdentityFacade = userIdentityFacade
+            ?? throw new ArgumentNullException(nameof(userIdentityFacade));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        AddBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
 
-        _logger.LogDebug("Trying adding book to storage");
+        var currentUserId = _userIdentityFacade.Id!;
 
-        await _unitOfWork.Books.AddBookAsync(addBookParams, token);
+        _logger.LogDebug(
+            "Trying to add new book" +
+            " via user {UserId} request",
+            currentUserId.Value);
+
+        await _unitOfWork.Books.AddBookAsync(currentUserId, addBookParams, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
         _logger.LogInformation("New book has been succesfully added");
+
+        if (addBookParams.Keywords is not null)
+        {
+            await _unitOfWork.Books.SynchronizeKeyWordsForBook(
+                currentUserId, addBookParams.Keywords, token);
+        }
+
+        _logger.LogInformation(
+            "Synchronizing key words" +
+            " for last created book was performed");
     }
 
     public async Task<Book> GetBookAsync(
@@ -65,11 +84,16 @@ public sealed class BookDescriptionService : IBookDescriptionService
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
 
-        _logger.LogDebug(
-            "Trying update book {BookId} content on storage",
-            updateBookParams.BookId.Value);
+        var currentUserId = _userIdentityFacade.Id!;
 
-        await _unitOfWork.Books.UpdateBookContentAsync(updateBookParams, token);
+        _logger.LogDebug(
+            "Trying to update book {BookId}" +
+            " via user {UserId} request",
+            updateBookParams.BookId.Value,
+            currentUserId.Value);
+
+        await _unitOfWork.Books.UpdateBookContentAsync(
+            currentUserId, updateBookParams, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
@@ -182,5 +206,6 @@ public sealed class BookDescriptionService : IBookDescriptionService
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;
+    private readonly IUserIdentityFacade _userIdentityFacade;
     private readonly ILogger _logger;
 }

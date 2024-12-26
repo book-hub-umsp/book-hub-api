@@ -18,9 +18,9 @@ public sealed class BooksHubContext : DbContext
 
     public DbSet<Role> UserRoles { get; set; } = null!;
 
-    public DbSet<FavoriteLink> FavoriteLinks { get; } = null!;
+    public DbSet<FavoriteLink> FavoriteLinks { get; set; } = null!;
 
-    public DbSet<KeywordLink> KeywordLinks { get; } = null!;
+    public DbSet<KeywordLink> KeywordLinks { get; set; } = null!;
 
     public BooksHubContext(DbContextOptions<BooksHubContext> options)
         : base(options)
@@ -195,7 +195,7 @@ public sealed class BooksHubContext : DbContext
         _ = modelBuilder.Entity<BookGenre>()
             .HasMany(x => x.Books)
             .WithOne(x => x.BookGenre)
-            .HasForeignKey(x => x.Id);
+            .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<BookGenre>()
             .ToTable("genres");

@@ -126,6 +126,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
             new(currentUserId, bookId),
             token);
 
+        await _unitOfWork.SaveChangesAsync(token);
+
         _logger.LogDebug(
             "A favorite link with user id {UserId}" +
             " and book id {BookId}" +

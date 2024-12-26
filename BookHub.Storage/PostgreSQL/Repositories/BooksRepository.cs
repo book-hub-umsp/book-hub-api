@@ -1,5 +1,9 @@
-﻿using BookHub.Abstractions.Storage.Repositories;
+﻿using System.Linq.Dynamic.Core.Tokenizer;
+using System.Linq.Expressions;
+
+using BookHub.Abstractions.Storage.Repositories;
 using BookHub.Models;
+using BookHub.Models.Account;
 using BookHub.Models.API.Pagination;
 using BookHub.Models.Books.Repository;
 using BookHub.Models.CRUDS.Requests;
@@ -29,10 +33,18 @@ public sealed partial class BooksRepository :
     }
 
     public async Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        Id<DomainUser> userId,
+        AddBookParams addBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(addBookParams);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
 
         var relatedBookGenre =
             await Context.Genres.AsNoTracking()
@@ -46,7 +58,7 @@ public sealed partial class BooksRepository :
 
         var storageBook = new StorageBook
         {
-            AuthorId = addBookParams.AuthorId.Value,
+            AuthorId = userId.Value,
             Title = addBookParams.Title.Value,
             BookGenreId = relatedBookGenre.Id,
             BookAnnotation = addBookParams.Annotation.Content,
@@ -54,14 +66,6 @@ public sealed partial class BooksRepository :
             CreationDate = now,
             LastEditDate = now
         };
-
-        if (addBookParams.Keywords is not null)
-        {
-            await SynchronizeKeywordsAsync(
-                addBookParams.Keywords,
-                storageBook,
-                token);
-        }
 
         Context.Books.Add(storageBook);
     }
@@ -109,17 +113,25 @@ public sealed partial class BooksRepository :
     }
 
     public async Task UpdateBookContentAsync(
+        Id<DomainUser> userId,
         UpdateBookParamsBase updateBookParams,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updateBookParams);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
 
         var storageBook = await Context.Books
             .SingleOrDefaultAsync(x => x.Id == updateBookParams.BookId.Value, token)
                 ?? throw new InvalidOperationException(
                     $"No such book with id {updateBookParams.BookId.Value}.");
 
-        if (storageBook.AuthorId != updateBookParams.AuthorId.Value)
+        if (storageBook.AuthorId != userId.Value)
         {
             throw new InvalidOperationException(
                 $"Only author can update book {storageBook.Id} description.");
@@ -161,11 +173,11 @@ public sealed partial class BooksRepository :
 
                 break;
 
-            case UpdateKeyWordsParams keyWordsParams:
+            case ExtendKeyWordsParams keyWordsParams:
 
                 await SynchronizeKeywordsAsync(
-                    keyWordsParams.UpdatedKeyWords,
                     storageBook,
+                    keyWordsParams.UpdatedKeyWords,
                     token);
 
                 break;
@@ -182,6 +194,13 @@ public sealed partial class BooksRepository :
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(pagination);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == authorId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {authorId.Value} doesn't exist.");
 
         var booksShortModels =
             await Context.Books.AsNoTracking()
@@ -218,10 +237,13 @@ public sealed partial class BooksRepository :
     {
         ArgumentNullException.ThrowIfNull(bookIds);
 
+        Expression<Func<StorageBook, bool>> booksIdsPredicate =
+            book => bookIds.Select(x => x.Value).Any(x => x == book.Id);
+
         var booksShortModels =
             await Context.Books
                 .AsNoTracking()
-                .Where(x => bookIds.Contains(new(x.Id)))
+                .Where(booksIdsPredicate)
                 .GroupJoinOfStorageBookPreviews(Context.Chapters)
                 .ToListAsync(token);
 
@@ -275,12 +297,44 @@ public sealed partial class BooksRepository :
         return book.AuthorId == userId.Value;
     }
 
+    public async Task SynchronizeKeyWordsForBook(
+        Id<DomainUser> userId, 
+        IReadOnlySet<KeyWord> keyWords,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(userId);
+        ArgumentNullException.ThrowIfNull(keyWords);
+
+        _ = await Context.Users
+            .SingleOrDefaultAsync(
+                u => u.Id == userId.Value,
+                token)
+            ?? throw new InvalidOperationException(
+                $"User with id {userId.Value} doesn't exist.");
+
+        if (!keyWords.Any())
+        {
+            return;
+        }
+
+        var lastBookForUser = 
+            await Context.Books
+                .OrderBy(x => x.Id)
+                .LastOrDefaultAsync(
+                    x => x.AuthorId == userId.Value,
+                    token)
+            ?? throw new InvalidOperationException(
+                $"No one book for user with id {userId.Value} was found.");
+
+        await SynchronizeKeywordsAsync(lastBookForUser, keyWords, token);
+    }
+
     public async Task<long> GetBooksTotalCountAsync(CancellationToken token) =>
         await Context.Books.LongCountAsync(token);
 
     private async Task SynchronizeKeywordsAsync(
-        IReadOnlySet<KeyWord> keywords,
         StorageBook storageBook,
+        IReadOnlySet<KeyWord> keywords,
         CancellationToken token)
     {
         foreach (var keyword in keywords)
@@ -293,11 +347,17 @@ public sealed partial class BooksRepository :
 
             if (existedKeyword is not null)
             {
+                if (storageBook.KeywordLinks.Any(
+                    x => x.KeywordId == existedKeyword.Id))
+                {
+                    return;
+                }
+
                 Context.KeywordLinks.Add(
                     new KeywordLink
                     {
                         Keyword = existedKeyword,
-                        Book = storageBook
+                        BookId = storageBook.Id
                     });
 
                 continue;
@@ -314,7 +374,7 @@ public sealed partial class BooksRepository :
                 new KeywordLink
                 {
                     Keyword = newKeyword,
-                    Book = storageBook
+                    BookId = storageBook.Id
                 });
         }
     }

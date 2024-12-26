@@ -14,7 +14,8 @@ namespace BookHub.Abstractions.Storage.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        AddAuthorBookParams addBookParams,
+        Id<User> user,
+        AddBookParams addBookParams,
         CancellationToken token);
 
     public Task<DomainBook> GetBookAsync(
@@ -25,6 +26,7 @@ public interface IBooksRepository
     /// Если автор книги не соответствует указанному в запросе.
     /// </exception>
     public Task UpdateBookContentAsync(
+        Id<User> userId,
         UpdateBookParamsBase updateBookParams,
         CancellationToken token);
 
@@ -69,6 +71,14 @@ public interface IBooksRepository
     public Task<bool> IsUserAuthorForBook(
         Id<User> userId,
         Id<DomainBook> bookId,
+        CancellationToken token);
+
+    /// <remarks>
+    /// Синхронизирует тэги для последней книги добавленной автором.
+    /// </remarks>
+    public Task SynchronizeKeyWordsForBook(
+        Id<User> userId,
+        IReadOnlySet<KeyWord> keyWords,
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);

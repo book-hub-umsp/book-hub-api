@@ -1,6 +1,5 @@
 ﻿using System;
 
-using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
@@ -14,9 +13,8 @@ public sealed class UpdateBookTitleParams : UpdateBookParamsBase
 
     public UpdateBookTitleParams(
         Id<Book> bookId,
-        Id<User> authorId,
         Name<Book> newTitle)
-        : base(bookId, authorId)
+        : base(bookId)
     {
         NewTitle = newTitle ?? throw new ArgumentNullException(nameof(newTitle));
     }

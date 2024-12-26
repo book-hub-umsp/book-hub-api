@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 
-using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
@@ -15,9 +14,8 @@ public sealed class UpdateBookStatusParams : UpdateBookParamsBase
 
     public UpdateBookStatusParams(
         Id<Book> bookId,
-        Id<User> authorId,
         BookStatus newBookStatus)
-        : base(bookId, authorId)
+        : base(bookId)
     {
         if (!Enum.IsDefined(newBookStatus))
         {

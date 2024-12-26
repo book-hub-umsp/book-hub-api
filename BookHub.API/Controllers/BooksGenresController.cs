@@ -31,7 +31,7 @@ public sealed class BooksGenresController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> AddNewBookGenreAsync(
+    public async Task<IActionResult> AddBookGenreAsync(
         [Required][NotNull] AddNewGenreParams addNewGenreParams,
         CancellationToken token)
     {
@@ -47,7 +47,8 @@ public sealed class BooksGenresController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -56,6 +57,7 @@ public sealed class BooksGenresController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType<BooksGenresListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,7 +78,8 @@ public sealed class BooksGenresController : ControllerBase
 
             return Ok(contractContent);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 
@@ -104,7 +107,8 @@ public sealed class BooksGenresController : ControllerBase
 
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 

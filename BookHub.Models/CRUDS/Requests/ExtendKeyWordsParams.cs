@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BookHub.Models.Account;
 using BookHub.Models.Books.Repository;
 
 namespace BookHub.Models.CRUDS.Requests;
@@ -10,15 +9,14 @@ namespace BookHub.Models.CRUDS.Requests;
 /// <summary>
 /// Параметры запроса по обновлению ключевых слов книги.
 /// </summary>
-public sealed class UpdateKeyWordsParams : UpdateBookParamsBase
+public sealed class ExtendKeyWordsParams : UpdateBookParamsBase
 {
     public IReadOnlySet<KeyWord> UpdatedKeyWords { get; }
 
-    public UpdateKeyWordsParams(
+    public ExtendKeyWordsParams(
         Id<Book> bookId,
-        Id<User> authorId,
         IReadOnlyCollection<KeyWord> updatedKeyWords)
-        : base(bookId, authorId)
+        : base(bookId)
     {
         ArgumentNullException.ThrowIfNull(updatedKeyWords);
 

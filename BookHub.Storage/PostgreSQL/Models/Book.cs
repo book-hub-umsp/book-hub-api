@@ -11,13 +11,13 @@ public class Book : IKeyable
 
     public required string Title { get; set; }
 
-    public User Author { get; set; } = null!;
+    public virtual User Author { get; set; } = null!;
 
     public required long AuthorId { get; set; }
 
-    public required long BookGenreId { get; set; }
+    public long BookGenreId { get; set; }
 
-    public BookGenre BookGenre { get; set; } = null!;
+    public virtual BookGenre BookGenre { get; set; } = null!;
 
     public required string BookAnnotation { get; set; }
 
@@ -27,9 +27,9 @@ public class Book : IKeyable
 
     public required DateTimeOffset LastEditDate { get; set; }
 
-    public ICollection<Chapter> Chapters { get; set; } = null!;
+    public virtual ICollection<Chapter> Chapters { get; set; } = null!;
 
-    public ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
+    public virtual ICollection<FavoriteLink> UsersFavoritesLinks { get; set; } = null!;
 
-    public ICollection<KeywordLink> KeywordLinks { get; set; } = null!;
+    public virtual ICollection<KeywordLink> KeywordLinks { get; set; } = null!;
 }

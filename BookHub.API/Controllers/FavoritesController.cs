@@ -87,7 +87,8 @@ public sealed class FavoritesController : ControllerBase
                     favoriteBooksPreviews,
                     ContractPreview.FromDomain));
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (Exception ex)
+        when (ex is InvalidOperationException or ArgumentException)
         {
             _logger.LogError("Error is happened: '{Message}'", ex.Message);
 

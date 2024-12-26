@@ -9,9 +9,6 @@ namespace BookHub.Contracts.REST.Requests.Books.Repository;
 /// </summary>
 public sealed class UpdateBookParams : BookParamsWithIdBase
 {
-    [JsonProperty("author_id", Required = Required.Always)]
-    public required long AuthorId { get; init; }
-
     [JsonProperty("genre", NullValueHandling = NullValueHandling.Ignore)]
     public string? NewGenre { get; init; } = null!;
 

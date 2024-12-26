@@ -14,9 +14,8 @@ public sealed class UpdateBookGenreParams : UpdateBookParamsBase
 
     public UpdateBookGenreParams(
         Id<Book> bookId,
-        Id<User> authorId,
         BookGenre newGenre)
-        : base(bookId, authorId)
+        : base(bookId)
     {
         NewGenre = newGenre ?? throw new ArgumentNullException(nameof(newGenre));
     }
