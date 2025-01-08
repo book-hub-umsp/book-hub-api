@@ -3,6 +3,7 @@ using BookHub.Metrics;
 using BookHub.Metrics.Configurations;
 using BookHub.Metrics.TargetFactory;
 
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 
 namespace BookHub.API.Registrations;
@@ -13,6 +14,11 @@ static internal class MetricsExtensions
         this IServiceCollection services,
         IConfiguration configuration)
         => services
+            .AddScoped<IActionFilter, MetricsActionFilter>()
+
+            .AddControllers(opt => opt.Filters.Add<MetricsActionFilter>())
+            .Services
+
             .AddSingleton<IMetricsManager, MetricsManager>()
             .AddSingleton<IMetricTargetFactory, MetricTargetFactory>()
             .AddHostedService<KestrelMetricsBackgroundServer>()
