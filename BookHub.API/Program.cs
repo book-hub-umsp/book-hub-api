@@ -22,6 +22,12 @@ builder.Services
             .AllowAnyHeader()
             .AllowAnyOrigin()));
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Clear();
+});
+
 builder.Services
     .AddSwagger()
     .AddAuth(builder.Configuration)
@@ -37,7 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger().UseSwaggerUI();
-
+app.UseForwardedHeaders();
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseRouting();
