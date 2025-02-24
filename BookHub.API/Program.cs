@@ -2,6 +2,8 @@ using BookHub.Abstractions.Logic.Services.Auth;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
@@ -22,6 +24,12 @@ builder.Services
             .AllowAnyHeader()
             .AllowAnyOrigin()));
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Clear();
+});
+
 builder.Services
     .AddSwagger()
     .AddAuth(builder.Configuration)
@@ -37,7 +45,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger().UseSwaggerUI();
-
+app.UseForwardedHeaders();
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseRouting();
