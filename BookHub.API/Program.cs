@@ -2,6 +2,8 @@ using BookHub.Abstractions.Logic.Services.Auth;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
