@@ -23,24 +23,36 @@ public sealed class MetricsActionFilter :
 
         _metricsManager.CountRequestsCalls(actionName);
 
+        ObjectDisposedException.ThrowIf(_isMetricJobDisposed, this);
+
         _metricJob = _metricsManager.MeasureRequestsExecution(actionName);
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
+        ObjectDisposedException.ThrowIf(_isMetricJobDisposed, this);
+
+        _metricJob!.Dispose();
+
+        _isMetricJobDisposed = true;
     }
 
     public void Dispose()
     {
         if (!_disposed)
         {
-            _metricJob!.Dispose();
+            if (!_isMetricJobDisposed)
+            {
+                _metricJob!.Dispose();
+            }
 
             _disposed = true;
         }
     }
 
     private bool _disposed;
+
+    private bool _isMetricJobDisposed;
     private IDisposable? _metricJob;
 
     private readonly IMetricsManager _metricsManager;
