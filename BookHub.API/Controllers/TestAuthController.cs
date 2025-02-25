@@ -31,6 +31,23 @@ public class TestAuthController : ControllerBase
     public IActionResult AnyAllowEndpoint() => Ok($"Any allow endpoint is works! Config: {_config.Content}");
 
     [HttpGet]
+    [AllowAnonymous]
+    [Route("test-https")]
+    public IActionResult TestHttpsEndpoint() 
+    {  
+        var isHttps = Request.IsHttps; // Checks if the original request was HTTPS
+        var scheme = Request.Scheme;   // Shows HTTP or HTTPS
+        var forwardedProto = Request.Headers["X-Forwarded-Proto"].ToString(); // From Traefik
+
+        return Ok(new
+        {
+            IsHttps = isHttps,
+            Scheme = scheme,
+            XForwardedProto = forwardedProto
+        });
+    } 
+
+    [HttpGet]
     [Authorize]
     [Route("jwt")]
     public IActionResult AnyJWTEndpoint() => Ok($"Any JWT endpoint is works! Config: {_config.Content}");
