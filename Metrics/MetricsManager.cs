@@ -8,7 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace BookHub.Metrics;
 
-public sealed class MetricsManager : IMetricsManager
+public sealed class MetricsManager : 
+    IMetricsManager,
+    IDisposable
 {
     public MetricsManager(
         IOptions<TargetAppSourceMetricsConfiguration> options)
@@ -28,15 +30,30 @@ public sealed class MetricsManager : IMetricsManager
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         return _activitySource
-            .StartActivity(ACTIVITY_NAME_MEASURING)
-            ?.SetTag(TAG_KEY, apiMethodName);
+            .StartActivity(ACTIVITY_NAME_MEASURING)?
+            .SetTag(TAG_KEY, apiMethodName);
     }
 
     public void CountRequestsCalls(string apiMethodName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(apiMethodName);
 
-        _counter.Add(1, new KeyValuePair<string, object?>(TAG_KEY, apiMethodName));
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        _counter.Add(
+            COUNTER_STEP,
+            new KeyValuePair<string, object?>(TAG_KEY, apiMethodName));
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _meter.Dispose();
+            _activitySource.Dispose();
+
+            _disposed = true;
+        }
     }
 
     private readonly Meter _meter;
@@ -49,4 +66,6 @@ public sealed class MetricsManager : IMetricsManager
     private const string ACTIVITY_NAME_COUNTING = "request_calls_count";
 
     private const string TAG_KEY = "api_method_name";
+
+    private const int COUNTER_STEP = 1;
 }
