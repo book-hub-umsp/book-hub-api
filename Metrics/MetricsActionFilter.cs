@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BookHub.Metrics;
 
-public sealed class MetricsActionFilter : IActionFilter
+public sealed class MetricsActionFilter : 
+    IActionFilter,
+    IDisposable
 {
     public MetricsActionFilter(
         IMetricsManager metricsManager)
@@ -15,22 +17,30 @@ public sealed class MetricsActionFilter : IActionFilter
 
     public void OnActionExecuting(ActionExecutingContext context)
     {
-        _actionName = 
+        var actionName = 
             $"{context.ActionDescriptor.RouteValues["controller"]}" +
             $".{context.ActionDescriptor.RouteValues["action"]}";
 
-        _metricJob = _metricsManager.MeasureRequestsExecution(_actionName);
+        _metricsManager.CountRequestsCalls(actionName);
+
+        _metricJob = _metricsManager.MeasureRequestsExecution(actionName);
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        _metricsManager.CountRequestsCalls(_actionName!);
-
-        _metricJob!.Dispose();
     }
 
-    private string? _actionName;
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _metricJob!.Dispose();
 
+            _disposed = true;
+        }
+    }
+
+    private bool _disposed;
     private IDisposable? _metricJob;
 
     private readonly IMetricsManager _metricsManager;
