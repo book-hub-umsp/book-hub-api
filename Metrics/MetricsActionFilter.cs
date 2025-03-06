@@ -17,42 +17,35 @@ public sealed class MetricsActionFilter :
 
     public void OnActionExecuting(ActionExecutingContext context)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         var actionName = 
             $"{context.ActionDescriptor.RouteValues["controller"]}" +
             $".{context.ActionDescriptor.RouteValues["action"]}";
 
         _metricsManager.CountRequestsCalls(actionName);
 
-        ObjectDisposedException.ThrowIf(_isMetricJobDisposed, this);
-
         _metricJob = _metricsManager.MeasureRequestsExecution(actionName);
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        ObjectDisposedException.ThrowIf(_isMetricJobDisposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
         _metricJob!.Dispose();
-
-        _isMetricJobDisposed = true;
     }
 
     public void Dispose()
     {
         if (!_disposed)
         {
-            if (!_isMetricJobDisposed)
-            {
-                _metricJob!.Dispose();
-            }
-
+            _metricJob?.Dispose();
             _disposed = true;
         }
     }
 
     private bool _disposed;
 
-    private bool _isMetricJobDisposed;
     private IDisposable? _metricJob;
 
     private readonly IMetricsManager _metricsManager;
