@@ -1,6 +1,7 @@
 using BookHub.Abstractions.Logic.Services.Auth;
 using BookHub.API.Authentification;
 using BookHub.API.Registrations;
+using BookHub.Metrics;
 
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -36,6 +37,7 @@ builder.Services
     .AddAuth(builder.Configuration)
     .AddLogic(builder.Configuration)
     .AddPostgresStorage(builder.Environment, builder.Configuration)
+    .AddMetrics(builder.Configuration)
     .AddHttpClient<IYandexAuthService, YandexAuthService>();
 
 var app = builder.Build();
