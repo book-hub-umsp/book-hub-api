@@ -33,13 +33,16 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(MailAddress mailAddress, CancellationToken token)
+    public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
+        MailAddress mailAddress, 
+        CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(mailAddress);
 
         token.ThrowIfCancellationRequested();
 
-        return await _booksHubUnitOfWork.Users.FindUserProfileInfoByEmailAsync(mailAddress, token);
+        return await _booksHubUnitOfWork.Users
+            .FindUserProfileInfoByEmailAsync(mailAddress, token);
     }
 
     /// <inheritdoc/>
@@ -114,6 +117,8 @@ public sealed class UserService : IUserService
 
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
-        _logger.LogDebug("Update user with id: {UserId} completed successfully", updatedUser.Id.Value);
+        _logger.LogDebug(
+            "Update user with id: {UserId} completed successfully", 
+            updatedUser.Id.Value);
     }
 }

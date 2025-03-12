@@ -8,7 +8,6 @@ namespace BookHub.API.Contracts.REST.Requests.Books.Repository;
 public sealed class AddBookParams : BookParamsBase
 {
     [JsonProperty("genre", Required = Required.Always)]
-
     public required string Genre { get; init; }
 
     [JsonProperty("title", Required = Required.Always)]

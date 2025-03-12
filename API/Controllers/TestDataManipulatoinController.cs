@@ -15,6 +15,9 @@ namespace BookHub.API.Service.Controllers;
 [Produces("application/json")]
 public class TestDataManipulationController : ControllerBase
 {
+    private readonly IUserService _userService;
+    private readonly ILogger<TestDataManipulationController> _logger;
+
     public TestDataManipulationController(
         IUserService userService,
         ILogger<TestDataManipulationController> logger)
@@ -51,7 +54,4 @@ public class TestDataManipulationController : ControllerBase
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
     }
-
-    private readonly IUserService _userService;
-    private readonly ILogger<TestDataManipulationController> _logger;
 }

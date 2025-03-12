@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BookHub.API.Service.Registrations;
 
-public static class AuthentificationExtensions
+internal static class AuthentificationExtensions
 {
     public static IServiceCollection AddAuth(
         this IServiceCollection services,
@@ -86,7 +86,6 @@ public static class AuthentificationExtensions
                     OnAuthenticationFailed = context => Task.CompletedTask
                 };
             })
-
             .AddJwtBearer(Auth.AuthProviders.YANDEX, opt =>
             {
                 var yandexConfig = configuration.GetSection(nameof(AuthJWTConfiguration))
@@ -174,9 +173,8 @@ public static class AuthentificationExtensions
         foreach (var permission in Enum.GetValues<Permission>())
         {
             _ = authorizationBuilder.AddPolicy(
-                permission.ToString(),
-                opt => opt
-                    .AddRequirements(new PermissionRequirement(permission)));
+                    permission.ToString(),
+                    opt => opt.AddRequirements(new PermissionRequirement(permission)));
         }
 
         return authorizationBuilder.Services;

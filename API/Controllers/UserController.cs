@@ -2,11 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BookHub.API.Abstractions;
-using BookHub.API.Abstractions.Logic.Converters.Account;
 using BookHub.API.Abstractions.Logic.Services.Account;
 using BookHub.API.Contracts;
 using BookHub.API.Contracts.REST.Requests.Account;
 using BookHub.API.Contracts.REST.Responses.Account;
+using BookHub.API.Models;
+using BookHub.API.Models.Account;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 using BookHub.API.Service.Authentification;
 
 using Microsoft.AspNetCore.Authorization;
@@ -20,21 +23,16 @@ namespace BookHub.API.Service.Controllers;
 public sealed class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly IUserRequestConverter _converter;
     private readonly IUserIdentityFacade _userIdentityFacade;
     private readonly ILogger<UserController> _logger;
 
     public UserController(
         IUserService userService,
-        IUserRequestConverter converter,
         IUserIdentityFacade userIdentityFacade,
         ILogger<UserController> logger)
     {
         ArgumentNullException.ThrowIfNull(userService);
         _userService = userService;
-
-        ArgumentNullException.ThrowIfNull(converter);
-        _converter = converter;
 
         ArgumentNullException.ThrowIfNull(userIdentityFacade);
         _userIdentityFacade = userIdentityFacade;
@@ -59,7 +57,7 @@ public sealed class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserProfileInfoResponse>> MeAsync(CancellationToken token)
     {
-        _logger.LogInformation("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogDebug("Getting info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {
@@ -96,7 +94,7 @@ public sealed class UserController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogInformation("Getting info by user id: {Id}", userId);
+        _logger.LogDebug("Getting info by user id: {Id}", userId);
 
         try
         {
@@ -131,11 +129,11 @@ public sealed class UserController : ControllerBase
         [Required][NotNull] UpdateUserProfileInfoRequest request,
         CancellationToken token)
     {
-        _logger.LogInformation("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
+        _logger.LogDebug("Update info by user id: {Id}", _userIdentityFacade.Id!.Value);
 
         try
         {
-            var updated = _converter.Convert(_userIdentityFacade.Id, request);
+            var updated = FromRequest(_userIdentityFacade.Id, request);
 
             await _userService.UpdateUserInfoAsync(updated, token);
 
@@ -146,5 +144,19 @@ public sealed class UserController : ControllerBase
         {
             return BadRequest(FailureCommandResultResponse.FromException(ex));
         }
+    }
+
+    private static UserUpdatedBase FromRequest(
+        Id<User> userId,
+        UpdateUserProfileInfoRequest request)
+    {
+        return (request.NewName, request.About) switch
+        {
+            (not null, null) => new UserUpdated<Name<User>>(userId, new(request.NewName)),
+
+            (null, not null) => new UserUpdated<About>(userId, new(request.About)),
+
+            _ => throw new InvalidOperationException("Update parameters is invalid.")
+        };
     }
 }

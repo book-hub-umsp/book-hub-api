@@ -2,7 +2,7 @@
 
 namespace BookHub.API.Service.Registrations;
 
-public static class SwaggerExtensions
+internal static class SwaggerExtensions
 {
     public static IServiceCollection AddSwagger(
         this IServiceCollection services)

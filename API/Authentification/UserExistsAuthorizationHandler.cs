@@ -14,6 +14,7 @@ namespace BookHub.API.Service.Authentification;
 public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsRequirementMarker>
 {
     private readonly IUserService _userService;
+    private readonly ILogger<UserExistsAuthorizationHandler> _logger;
 
     public UserExistsAuthorizationHandler(
         IUserService userService,
@@ -43,14 +44,12 @@ public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsReq
 
         if (userInfo is null)
         {
-            if (requirement.NeedRegisterIfNotExists)
-            {
-                userInfo = await _userService.RegisterNewUserAsync(new(mailAddress), CancellationToken.None);
-            }
-            else
+            if (!requirement.NeedRegisterIfNotExists)
             {
                 return;
             }
+            
+            userInfo = await _userService.RegisterNewUserAsync(new(mailAddress), CancellationToken.None);
         }
 
         _logger.LogInformation("Auth user name is: {UserName}", userInfo.Name);
@@ -64,6 +63,4 @@ public class UserExistsAuthorizationHandler : AuthorizationHandler<UserExistsReq
 
         context.Succeed(requirement);
     }
-
-    private readonly ILogger<UserExistsAuthorizationHandler> _logger;
 }
