@@ -9,7 +9,7 @@ public interface IBooksHubUnitOfWork
 {
     public IBooksRepository Books { get; }
 
-    public IChaptersRepository Chapters { get; }
+    public IBookPartitionsRepository Chapters { get; }
 
     public IRolesRepository UserRoles { get; }
 

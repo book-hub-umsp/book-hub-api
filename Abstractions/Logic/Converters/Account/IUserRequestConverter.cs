@@ -1,7 +1,8 @@
 ﻿using BookHub.API.Contracts.REST.Requests.Account;
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.DomainEvents;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Abstractions.Logic.Converters.Account;
 
@@ -10,5 +11,5 @@ namespace BookHub.API.Abstractions.Logic.Converters.Account;
 /// </summary>
 public interface IUserRequestConverter
 {
-    public UpdatedBase<User> Convert(Id<User> userId, UpdateUserProfileInfoRequest request);
+    public UserUpdatedBase Convert(Id<User> userId, UpdateUserProfileInfoRequest request);
 }

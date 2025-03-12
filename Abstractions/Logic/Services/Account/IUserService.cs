@@ -1,9 +1,10 @@
 ﻿using System.Net.Mail;
 
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.API;
 using BookHub.API.Models.DomainEvents;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Abstractions.Logic.Services.Account;
 
@@ -97,5 +98,5 @@ public interface IUserService
     /// <returns>
     /// <see cref="Task"/>.
     /// </returns>
-    Task UpdateUserInfoAsync(UpdatedBase<User> updatedUser, CancellationToken token);
+    Task UpdateUserInfoAsync(UserUpdatedBase updatedUser, CancellationToken token);
 }

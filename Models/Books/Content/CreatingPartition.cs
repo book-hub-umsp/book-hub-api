@@ -1,19 +1,20 @@
 ﻿using BookHub.API.Models.Books.Repository;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Models.Books.Content;
 
 /// <summary>
-/// Модель для создаваемой главы.
+/// Модель для создаваемого раздела.
 /// </summary>
-public sealed record class CreatingChapter
+public sealed record class CreatingPartition
 {
     public Id<Book> BookId { get; }
 
-    public ChapterContent Content { get; }
+    public PartitionContent Content { get; }
 
-    public CreatingChapter(
+    public CreatingPartition(
         Id<Book> bookId,
-        ChapterContent content)
+        PartitionContent content)
     {
         BookId = bookId ?? throw new ArgumentNullException(nameof(bookId));
         Content = content ?? throw new ArgumentNullException(nameof(content));

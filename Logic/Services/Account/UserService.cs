@@ -2,11 +2,12 @@
 
 using BookHub.API.Abstractions.Logic.Services.Account;
 using BookHub.API.Abstractions.Storage;
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.API;
 using BookHub.API.Models.API.Pagination;
 using BookHub.API.Models.DomainEvents;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 using Microsoft.Extensions.Logging;
 
@@ -103,7 +104,7 @@ public sealed class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public async Task UpdateUserInfoAsync(UpdatedBase<User> updatedUser, CancellationToken token)
+    public async Task UpdateUserInfoAsync(UserUpdatedBase updatedUser, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updatedUser);
 

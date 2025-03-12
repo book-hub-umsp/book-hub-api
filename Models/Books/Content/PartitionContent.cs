@@ -1,13 +1,13 @@
 ﻿namespace BookHub.API.Models.Books.Content;
 
 /// <summary>
-/// Модель контента.
+/// Модель контента раздела книги.
 /// </summary>
-public sealed record class ChapterContent
+public sealed record class PartitionContent
 {
     public string Value { get; }
 
-    public ChapterContent(string value)
+    public PartitionContent(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
 

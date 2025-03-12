@@ -1,5 +1,7 @@
 ﻿using System.Net.Mail;
 
+using BookHub.API.Models.Identifiers;
+
 namespace BookHub.API.Models.Account;
 
 /// <summary>

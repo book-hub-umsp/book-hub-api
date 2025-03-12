@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 namespace BookHub.API.Contracts.REST.Requests.Books.Content;
 
 /// <summary>
-/// Модель запроса на добавление главы.
+/// Модель запроса на добавление раздела.
 /// </summary>
-public sealed class AddChapterRequest
+public sealed class AddPartitionRequest
 {
     [Required]
     [JsonProperty("book_id", Required = Required.Always)]

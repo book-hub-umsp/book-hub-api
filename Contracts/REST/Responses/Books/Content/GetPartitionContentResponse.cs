@@ -7,7 +7,7 @@ namespace BookHub.API.Contracts.REST.Responses.Books.Content;
 /// <summary>
 /// Модель ответа на запрос о получении контента главы.
 /// </summary>
-public sealed class GetChapterContentResponse
+public sealed class GetPartitionContentResponse
 {
     [Required]
     [JsonProperty("book_id", Required = Required.Always)]
@@ -15,7 +15,7 @@ public sealed class GetChapterContentResponse
 
     [Required]
     [JsonProperty("chapter_number", Required = Required.Always)]
-    public required int ChapterNumber { get; init; }
+    public required int PartitionNumber { get; init; }
 
     [Required]
     [JsonProperty("content", Required = Required.Always)]

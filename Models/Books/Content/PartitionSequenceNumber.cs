@@ -1,13 +1,13 @@
 ﻿namespace BookHub.API.Models.Books.Content;
 
 /// <summary>
-/// Модель номера главы.
+/// Модель номера раздела.
 /// </summary>
-public sealed record class ChapterSequenceNumber
+public sealed record class PartitionSequenceNumber
 {
     public int Value { get; }
 
-    public ChapterSequenceNumber(int value)
+    public PartitionSequenceNumber(int value)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(value, MIN_NUMBER);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(value, MAX_NUMBER);

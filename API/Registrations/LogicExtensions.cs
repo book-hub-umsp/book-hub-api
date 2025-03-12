@@ -42,6 +42,6 @@ internal static class LogicExtensions
         => services
             .AddScoped<IBookDescriptionService, BookDescriptionService>()
             .AddScoped<IBookGenresService, BookGenresService>()
-            .AddScoped<IChaptersService, ChaptersService>()
+            .AddScoped<IBookPartitionService, BookPartitionService>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();
 }

@@ -13,7 +13,7 @@ CREATE TABLE books (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     title TEXT NOT NULL,
     author_id BIGINT DEFAULT NULL,
-    genre_id BIGINT NOT NULL DEFAULT 1,
+    genre_id BIGINT NOT NULL DEFAULT 0,
     annotation TEXT NOT NULL,
     "status" book_status NOT NULL DEFAULT 'draft',
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -26,19 +26,21 @@ CREATE TABLE books (
         FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-CREATE TABLE chapters (
-    id BIGINT GENERATED ALWAYS AS IDENTITY,
-    sequence_number SMALLINT NOT NULL,
+CREATE TABLE partitions (
     book_id BIGINT NOT NULL,
+    sequence_number SMALLINT NOT NULL,    
+
     content TEXT NOT NULL,
-    CONSTRAINT "pk_chapters" PRIMARY KEY(id),
-    CONSTRAINT "fk_chapters_book_id" 
+
+    CONSTRAINT "pk_partitions" PRIMARY KEY(book_id, sequence_number),
+
+    CONSTRAINT "fk_partitions_book_id" 
         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
 );
 
 INSERT INTO genres (value) 
 VALUES 
-    ('default'),
+    ('none'),
     ('epic_novel'),
     ('novel'),
     ('narrativa'),

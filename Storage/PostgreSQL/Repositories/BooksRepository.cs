@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 
 using BookHub.API.Abstractions.Storage.Repositories;
-using BookHub.API.Models;
 using BookHub.API.Models.API.Pagination;
 using BookHub.API.Models.Books.Repository;
 using BookHub.API.Models.CRUDS.Requests;
+using BookHub.API.Models.Identifiers;
 using BookHub.API.Storage.PostgreSQL;
 using BookHub.API.Storage.PostgreSQL.Abstractions;
 using BookHub.API.Storage.PostgreSQL.Models;
@@ -206,7 +206,18 @@ public sealed partial class BooksRepository :
             await Context.Books.AsNoTracking()
                 .Where(x => x.AuthorId == authorId.Value)
                 .WithPaging(pagination)
-                .GroupJoinOfStorageBookPreviews(Context.Chapters)
+                .GroupJoin(
+                    Context.Partitions,
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapters) => new StorageBookPreview
+                    {
+                        BookId = book.Id,
+                        Title = book.Title,
+                        BookGenre = book.BookGenre,
+                        AuthorId = book.AuthorId,
+                        Partitions = chapters.Select(x => x.SequenceNumber).ToList()
+                    })
                 .ToListAsync(token);
 
         return booksShortModels
@@ -223,7 +234,18 @@ public sealed partial class BooksRepository :
         var booksShortModels =
             await Context.Books.AsNoTracking()
                 .WithPaging(pagination)
-                .GroupJoinOfStorageBookPreviews(Context.Chapters)
+                .GroupJoin(
+                    Context.Partitions,
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapters) => new StorageBookPreview
+                    {
+                        BookId = book.Id,
+                        Title = book.Title,
+                        BookGenre = book.BookGenre,
+                        AuthorId = book.AuthorId,
+                        Partitions = chapters.Select(x => x.SequenceNumber).ToList()
+                    })
                 .ToListAsync(token);
 
         return booksShortModels
@@ -244,7 +266,18 @@ public sealed partial class BooksRepository :
             await Context.Books
                 .AsNoTracking()
                 .Where(booksIdsPredicate)
-                .GroupJoinOfStorageBookPreviews(Context.Chapters)
+                .GroupJoin(
+                    Context.Partitions,
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapters) => new StorageBookPreview
+                    {
+                        BookId = book.Id,
+                        Title = book.Title,
+                        BookGenre = book.BookGenre,
+                        AuthorId = book.AuthorId,
+                        Partitions = chapters.Select(x => x.SequenceNumber).ToList()
+                    })
                 .ToListAsync(token);
 
         return booksShortModels
@@ -271,7 +304,18 @@ public sealed partial class BooksRepository :
                 .Include(book => book.KeywordLinks)
                 .Where(book => book.KeywordLinks.AsQueryable().Any(keywordMatchExpression))
                 .WithPaging(pagination)
-                .GroupJoinOfStorageBookPreviews(Context.Chapters)
+                .GroupJoin(
+                    Context.Partitions,
+                    x => x.Id,
+                    x => x.BookId,
+                    (book, chapters) => new StorageBookPreview
+                    {
+                        BookId = book.Id,
+                        Title = book.Title,
+                        BookGenre = book.BookGenre,
+                        AuthorId = book.AuthorId,
+                        Partitions = chapters.Select(x => x.SequenceNumber).ToList()
+                    })
                 .ToListAsync(token);
 
         return booksShortModels

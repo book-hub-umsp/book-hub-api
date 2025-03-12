@@ -21,7 +21,7 @@ public sealed class BooksHubUnitOfWork :
 
     public IBooksRepository Books { get; }
 
-    public IChaptersRepository Chapters { get; }
+    public IBookPartitionsRepository Chapters { get; }
 
     public IBooksGenresRepository BooksGenres { get; }
 
@@ -31,7 +31,7 @@ public sealed class BooksHubUnitOfWork :
 
     public BooksHubUnitOfWork(
         IBooksRepository books,
-        IChaptersRepository chapters,
+        IBookPartitionsRepository chapters,
         IUsersRepository users,
         IRolesRepository userRoles,
         IBooksGenresRepository booksGenres,

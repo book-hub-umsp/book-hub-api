@@ -10,19 +10,5 @@ public enum Permission
     /// </summary>
     None = 0,
 
-    ModerateComments,
-
-    ModerateReviews,
-
-    CreateTopics,
-
-    ChangeBookVisibility,
-
-    ManageUserActions,
-
-    ManageUserAccounts,
-
-    ChangeUserRole,
-
-    ChangeRolePermissions,
+    ModerateAccounts,
 }

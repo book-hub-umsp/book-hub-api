@@ -1,5 +1,6 @@
 ﻿using BookHub.API.Models.Account;
 using BookHub.API.Models.Books.Content;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Models.Books.Repository;
 
@@ -16,20 +17,20 @@ public sealed class BookPreview
 
     public Id<User> AuthorId { get; }
 
-    public IReadOnlyDictionary<Id<Chapter>, ChapterSequenceNumber> ChaptersIdsMap { get; }
+    public IReadOnlyCollection<PartitionSequenceNumber> Partitions { get; }
 
     public BookPreview(
         Id<Book> id,
         Name<Book> title,
         BookGenre genre,
         Id<User> authorId,
-        IReadOnlyDictionary<Id<Chapter>, ChapterSequenceNumber> chaptersIdsMap)
+        IReadOnlyCollection<PartitionSequenceNumber> partitions)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Genre = genre ?? throw new ArgumentNullException(nameof(genre));
         AuthorId = authorId ?? throw new ArgumentNullException(nameof(authorId));
-        ChaptersIdsMap = chaptersIdsMap
-            ?? throw new ArgumentNullException(nameof(chaptersIdsMap));
+        Partitions = partitions
+            ?? throw new ArgumentNullException(nameof(partitions));
     }
 }

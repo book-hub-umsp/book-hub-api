@@ -1,9 +1,10 @@
 using BookHub.API.Abstractions.Storage;
 using BookHub.API.Abstractions.Storage.Repositories;
 using BookHub.API.Logic.Services.Account;
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.DomainEvents;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 using FluentAssertions;
 
@@ -206,7 +207,7 @@ public class UserServiceTests
         exception.Should().BeOfType<ArgumentNullException>();
     }
 
-    public sealed class FakeUpdated : UpdatedBase<User>
+    public sealed class FakeUpdated : UserUpdatedBase
     {
         public FakeUpdated(Id<User> id) : base(id)
         {

@@ -4,8 +4,8 @@ using BookHub.API.Abstractions.Storage.Repositories;
 using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.API;
-using BookHub.API.Models.DomainEvents;
 using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 using BookHub.API.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +49,7 @@ public sealed class UsersRepository :
     }
 
     /// <inheritdoc/>
-    public async Task UpdateUserAsync(UpdatedBase<User> updated, CancellationToken token)
+    public async Task UpdateUserAsync(UserUpdatedBase updated, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(updated);
 
@@ -58,11 +58,11 @@ public sealed class UsersRepository :
 
         switch (updated)
         {
-            case Updated<Name<User>> update:
+            case UserUpdated<Name<User>> update:
                 storageUser.Name = update.Attribute.Value;
                 break;
 
-            case Updated<About> update:
+            case UserUpdated<About> update:
                 storageUser.About = update.Attribute.Content;
                 break;
 

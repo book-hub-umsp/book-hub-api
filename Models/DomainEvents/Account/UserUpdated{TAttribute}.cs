@@ -1,4 +1,5 @@
 ﻿using BookHub.API.Models.Account;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Models.DomainEvents.Account;
 
@@ -8,11 +9,11 @@ namespace BookHub.API.Models.DomainEvents.Account;
 /// <typeparam name="TAttribute">
 /// Тип атрибута, который необходимо обновить.
 /// </typeparam>
-public sealed class Updated<TAttribute> : UpdatedBase<User>
+public sealed class UserUpdated<TAttribute> : UserUpdatedBase
 {
     public TAttribute Attribute { get; }
 
-    public Updated(Id<User> id, TAttribute attribute) : base(id)
+    public UserUpdated(Id<User> id, TAttribute attribute) : base(id)
     {
         ArgumentNullException.ThrowIfNull(attribute);
         Attribute = attribute;

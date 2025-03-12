@@ -1,44 +1,44 @@
-﻿using BookHub.API.Models;
-using BookHub.API.Models.Books.Content;
+﻿using BookHub.API.Models.Books.Content;
 using BookHub.API.Models.Books.Repository;
 using BookHub.API.Models.DomainEvents.Books;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Abstractions.Logic.Services.Books.Content;
 
 /// <summary>
-/// Описывает сервис работы с главами книги.
+/// Описывает сервис работы с разделами книги.
 /// </summary>
-public interface IChaptersService
+public interface IBookPartitionService
 {
     /// <summary>
-    /// Добавляет новую главу.
+    /// Добавляет новый раздел.
     /// </summary>
-    /// <param name="creatingChapter">
-    /// Модель создаваемой главы.
+    /// <param name="creatingPartition">
+    /// Модель создаваемого раздела.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="creatingChapter"/> равен <see langword="null"/>.
+    /// Если <paramref name="creatingPartition"/> равен <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Если пользователь не является автором книги, 
     /// в которую добавляет главу.
     /// </exception>
     public Task AddChapterAsync(
-        CreatingChapter creatingChapter,
+        CreatingPartition creatingPartition,
         CancellationToken token);
 
     /// <summary>
     /// Удаляет главу для заданной книги
     /// и пересчитывает номера остальных глав этой книги.
     /// </summary>
-    /// <param name="chapterId">
-    /// Идентификатор удаляемой главы.
-    /// </param>
     /// <param name="bookId">
     /// Идентификатор связанной книги.
+    /// </param>
+    /// <param name="partitionNumber">
+    /// Номер раздела.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
@@ -51,44 +51,48 @@ public interface IChaptersService
     /// Если пользователь не является автором книги, 
     /// из которой удаляет главу.
     /// </exception>
-    public Task RemoveChapterAsync(
-        Id<Chapter> chapterId,
+    public Task RemovePartitionAsync(
         Id<Book> bookId,
+        PartitionSequenceNumber partitionNumber,
         CancellationToken token);
 
     /// <summary>
-    /// Получает контент главы по идентификатору.
+    /// Получает контент раздела.
     /// </summary>
-    /// <param name="chapterId">
-    /// Идентификатор главы.
+    /// <param name="bookId">
+    /// Идентификатор книги.
+    /// </param>
+    /// <param name="partitionNumber">
+    /// Номер раздела.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="chapterId"/> равен <see langword="null"/>.
+    /// Если <paramref name="bookId"/> равен <see langword="null"/>.
     /// </exception>
-    public Task<Chapter> GetChapterAsync(
-        Id<Chapter> chapterId,
+    public Task<Partition> GetPartitionAsync(
+        Id<Book> bookId,
+        PartitionSequenceNumber partitionNumber,
         CancellationToken token);
 
     /// <summary>
-    /// Выполняет обновление контента главы книги.
+    /// Выполняет обновление контента раздела книги.
     /// </summary>
-    /// <param name="updatedChapter">
-    /// Событие обновления контента главы.
+    /// <param name="partitionUpdated">
+    /// Событие обновления контента раздела.
     /// </param>
     /// <param name="token">
     /// Токен отмены.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Если <paramref name="updatedChapter"/> равен <see langword="null"/>.
+    /// Если <paramref name="partitionUpdated"/> равен <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Если пользователь не является автором книги, 
-    /// в которой изменяет данную главу.
+    /// в которой изменяет данный раздел.
     /// </exception>
-    public Task UpdateChapterAsync(
-        UpdatedChapter<ChapterContent> updatedChapter,
+    public Task UpdatePartitionAsync(
+        PartitionUpdated<PartitionContent> partitionUpdated,
         CancellationToken token);
 }

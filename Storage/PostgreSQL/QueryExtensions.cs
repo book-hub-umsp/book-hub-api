@@ -59,11 +59,12 @@ public static class QueryExtensions
         return items.Where(query, parameters);
     }
 
-    private static FiltersQuery BuildFiltersQuery(IReadOnlyCollection<FilterBase> filters)
+    private static (string, object[]) BuildFiltersQuery(
+        IReadOnlyCollection<FilterBase> filters)
     {
         var count = 0;
         var sb = new StringBuilder();
-        var parameters = new List<object>(filters.Count);
+        var parameters = new object[filters.Count];
 
         sb.Append($"x => {GetQueryFromFilter(filters.First(), parameters, ref count)}");
         foreach (var filter in filters.Skip(1))
@@ -71,22 +72,22 @@ public static class QueryExtensions
             sb.Append($" && {GetQueryFromFilter(filter, parameters, ref count)}");
         }
 
-        return new(sb.ToString(), [.. parameters]);
+        return (sb.ToString(), parameters);
     }
 
     private static string GetQueryFromFilter(
         FilterBase filter,
-        List<object> parameters,
+        object[] parameters,
         ref int counter)
     {
         switch (filter)
         {
             case EqualsFilter equalsFilter:
-                parameters.Add(equalsFilter.Value);
+                parameters[counter] = equalsFilter.Value;
                 return $"x.{equalsFilter.PropertyName} == @{counter++}";
 
             case ContainsFilter containsFilter:
-                parameters.Add(containsFilter.Value);
+                parameters[counter] = containsFilter.Value;
                 return $"x.{containsFilter.PropertyName}.Contains(@{counter++})";
 
             default:
@@ -94,35 +95,4 @@ public static class QueryExtensions
                     $"Filter type {filter.GetType().Name} not supported.");
         }
     }
-
-    public static IQueryable<StorageBookPreview> GroupJoinOfStorageBookPreviews(
-        this IQueryable<Book> storageBooks,
-        DbSet<Chapter> chaptersSet)
-    {
-        ArgumentNullException.ThrowIfNull(storageBooks);
-        ArgumentNullException.ThrowIfNull(chaptersSet);
-
-        return storageBooks
-            .GroupJoin(
-                chaptersSet
-                    .Select(x =>
-                        new StorageChapterPreview
-                        {
-                            ChapterId = x.Id,
-                            BookId = x.BookId,
-                            SequenceNumber = x.SequenceNumber
-                        }),
-                x => x.Id,
-                x => x.BookId,
-                (book, chapters) => new StorageBookPreview
-                {
-                    BookId = book.Id,
-                    Title = book.Title,
-                    BookGenre = book.BookGenre,
-                    AuthorId = book.AuthorId,
-                    Chapters = chapters.ToList()
-                });
-    }
-
-    private readonly record struct FiltersQuery(string Query, object[] Parameters);
 }

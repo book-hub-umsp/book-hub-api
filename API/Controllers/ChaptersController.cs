@@ -17,7 +17,7 @@ namespace BookHub.API.Service.Controllers;
 public sealed class ChaptersController : ControllerBase
 {
     public ChaptersController(
-        IChaptersService chaptersService,
+        IBookPartitionService chaptersService,
         ILogger<ChaptersController> logger)
     {
         _chaptersService = chaptersService
@@ -30,14 +30,10 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddChapterAsync(
-        [Required][NotNull] AddChapterRequest addChapterRequest,
+        [Required][NotNull] AddPartitionRequest addChapterRequest,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-
-        _logger.LogDebug(
-            "Start processing adding chapter request for book {BookId}",
-            addChapterRequest.BookId);
 
         try
         {
@@ -46,7 +42,7 @@ public sealed class ChaptersController : ControllerBase
                     new(addChapterRequest.Content)),
                 token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successful result");
 
             return Ok();
         }
@@ -64,23 +60,20 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> RemoveChapterAsync(
-        [FromQuery] long chapterId,
         [FromQuery] long bookId,
+        [FromQuery] int partitionNumber,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug(
-            "Start processing removing chapter {ChapterId} request" +
-            " for book {BookId}",
-            chapterId,
-            bookId);
-
         try
         {
-            await _chaptersService.RemoveChapterAsync(new(chapterId), new(bookId), token);
+            await _chaptersService.RemovePartitionAsync(
+                new(bookId), 
+                new(partitionNumber), 
+                token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successful result");
 
             return Ok();
         }
@@ -94,32 +87,32 @@ public sealed class ChaptersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<GetChapterContentResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<GetPartitionContentResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AllowAnonymous]
     public async Task<IActionResult> GetChapterContentAsync(
-        [FromQuery] long chapterId,
+        [FromQuery] long bookId,
+        [FromQuery] int partitionNumber,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug(
-            "Start processing getting chapter {ChapterId} content request" +
-            chapterId);
-
         try
         {
-            var chapter = await _chaptersService.GetChapterAsync(new(chapterId), token);
+            var partition = await _chaptersService.GetPartitionAsync(
+                new(bookId),
+                new(partitionNumber), 
+                token);
 
-            var contract = new GetChapterContentResponse
+            var contract = new GetPartitionContentResponse
             {
-                BookId = chapter.BookId.Value,
-                ChapterNumber = chapter.ChapterNumber.Value,
-                Content = chapter.Content.Value
+                BookId = partition.BookId.Value,
+                PartitionNumber = partition.PartitionNumber.Value,
+                Content = partition.Content.Value
             };
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successful result");
 
             return Ok(contract);
         }
@@ -137,26 +130,21 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateChapterContentAsync(
-        [Required][NotNull] UpdateChapterContentRequest updateChapterRequest,
+        [Required][NotNull] UpdatePartitionContentRequest updateChapterRequest,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug(
-            "Start processing updating chapter {ChapterId} request" +
-            " for book {BookId}",
-            updateChapterRequest.ChapterId,
-            updateChapterRequest.BookId);
-
         try
         {
-            await _chaptersService.UpdateChapterAsync(
-                new(new(updateChapterRequest.ChapterId),
-                    new(updateChapterRequest.BookId),
+            await _chaptersService.UpdatePartitionAsync(
+                new(new(
+                        new(updateChapterRequest.BookId), 
+                        new(updateChapterRequest.PartitionNumber)),
                     new(updateChapterRequest.NewContent)),
                 token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successful result");
 
             return Ok();
         }
@@ -169,6 +157,6 @@ public sealed class ChaptersController : ControllerBase
         }
     }
 
-    private readonly IChaptersService _chaptersService;
+    private readonly IBookPartitionService _chaptersService;
     private readonly ILogger<ChaptersController> _logger;
 }

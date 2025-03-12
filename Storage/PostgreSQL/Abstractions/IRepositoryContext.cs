@@ -15,7 +15,7 @@ public interface IRepositoryContext
 
     public DbSet<Book> Books { get; }
 
-    public DbSet<Chapter> Chapters { get; }
+    public DbSet<Partition> Partitions { get; }
 
     public DbSet<Keyword> Keywords { get; }
 

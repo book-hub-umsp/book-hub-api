@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 
 using BookHub.API.Abstractions;
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
+using BookHub.API.Models.Identifiers;
 using BookHub.API.Service.Authentification;
 
 namespace BookHub.API.Service;

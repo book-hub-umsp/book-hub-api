@@ -14,7 +14,7 @@ public sealed class About
 
         if (content.Length > MAX_LENGHT)
         {
-            throw new ArgumentException($"Content max lenght must be {MAX_LENGHT} symbols");
+            throw new ArgumentException($"Content max length is: {MAX_LENGHT} symbols.");
         }
 
         Content = content;

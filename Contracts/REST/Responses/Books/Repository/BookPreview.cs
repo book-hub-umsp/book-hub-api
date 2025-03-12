@@ -26,8 +26,8 @@ public sealed class BookPreview
     public required string Genre { get; init; }
 
     [Required]
-    [JsonProperty("chapters_ids", Required = Required.Always)]
-    public required BookChapterIdResponse[] ChaptersNumbers { get; init; }
+    [JsonProperty("partitions", Required = Required.Always)]
+    public required IReadOnlyCollection<int> Partitions { get; init; }
 
     public static BookPreview FromDomain(
         Models.Books.Repository.BookPreview domain)
@@ -40,13 +40,7 @@ public sealed class BookPreview
             AuthorId = domain.AuthorId.Value,
             Genre = domain.Genre.Value,
             Title = domain.Title.Value,
-            ChaptersNumbers = domain.ChaptersIdsMap
-                .Select(pair => new BookChapterIdResponse
-                {
-                    ChapterId = pair.Key.Value,
-                    ChapterSequenceNumber = pair.Value.Value,
-                })
-                .ToArray()
+            Partitions = domain.Partitions.Select(x => x.Value).ToList()
         };
     }
 }

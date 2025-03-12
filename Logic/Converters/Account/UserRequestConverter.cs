@@ -4,6 +4,7 @@ using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.DomainEvents;
 using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Logic.Converters.Account;
 
@@ -12,7 +13,7 @@ namespace BookHub.API.Logic.Converters.Account;
 /// </summary>
 public sealed class UserRequestConverter : IUserRequestConverter
 {
-    public UpdatedBase<User> Convert(
+    public UserUpdatedBase Convert(
         Id<User> userId,
         UpdateUserProfileInfoRequest request)
     {
@@ -21,9 +22,9 @@ public sealed class UserRequestConverter : IUserRequestConverter
 
         return (request.NewName, request.About) switch
         {
-            (not null, null) => new Updated<Name<User>>(userId, new(request.NewName)),
+            (not null, null) => new UserUpdated<Name<User>>(userId, new(request.NewName)),
 
-            (null, not null) => new Updated<About>(userId, new(request.About)),
+            (null, not null) => new UserUpdated<About>(userId, new(request.About)),
 
             _ => throw new InvalidOperationException("Update parameters is invalid.")
         };

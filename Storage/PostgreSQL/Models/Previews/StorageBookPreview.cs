@@ -1,5 +1,4 @@
-﻿using BookHub.API.Models;
-using BookHub.API.Models.Books.Content;
+﻿using BookHub.API.Models.Books.Content;
 using BookHub.API.Models.Books.Repository;
 
 namespace BookHub.API.Storage.PostgreSQL.Models.Previews;
@@ -13,11 +12,11 @@ public sealed class StorageBookPreview
 
     public required string Title { get; init; }
 
-    public required BookGenre BookGenre { get; init; }
-
     public required long AuthorId { get; init; }
 
-    public ICollection<StorageChapterPreview> Chapters { get; init; } = null!;
+    public required BookGenre BookGenre { get; init; }
+
+    public ICollection<int> Partitions { get; init; } = null!;
 
     public static BookPreview ToDomain(StorageBookPreview storagePreview)
     {
@@ -28,9 +27,8 @@ public sealed class StorageBookPreview
             new(storagePreview.Title),
             new(storagePreview.BookGenre.Value),
             new(storagePreview.AuthorId),
-            storagePreview.Chapters
-                .ToDictionary(
-                    k => new Id<API.Models.Books.Content.Chapter>(k.ChapterId),
-                    v => new ChapterSequenceNumber(v.SequenceNumber)));
+            storagePreview.Partitions
+                .Select(x => new PartitionSequenceNumber(x))
+                .ToList());
     }
 }

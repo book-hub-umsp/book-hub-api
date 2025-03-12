@@ -1,9 +1,9 @@
 ﻿using System.Net.Mail;
 
-using BookHub.API.Models;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.API;
-using BookHub.API.Models.DomainEvents;
+using BookHub.API.Models.DomainEvents.Account;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Abstractions.Storage.Repositories;
 
@@ -63,7 +63,7 @@ public interface IUsersRepository
     /// <returns>
     /// <see cref="Task"/>.
     /// </returns>
-    public Task UpdateUserAsync(UpdatedBase<User> updated, CancellationToken token);
+    public Task UpdateUserAsync(UserUpdatedBase updated, CancellationToken token);
 
     /// <summary>
     /// Пытается найти пользователя по его почте.
@@ -99,7 +99,7 @@ public interface IUsersRepository
     /// Если <paramref name="userId"/> был <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Если пользователя с таким идентификатом не существует в хранилище.
+    /// Если пользователя с таким идентификатором не существует в хранилище.
     /// </exception>
     public Task<UserProfileInfo> GetUserProfileInfoByIdAsync(Id<User> userId, CancellationToken token);
 

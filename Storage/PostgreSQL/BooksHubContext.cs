@@ -8,7 +8,7 @@ public sealed class BooksHubContext : DbContext
 {
     public DbSet<Book> Books { get; set; } = null!;
 
-    public DbSet<Chapter> Chapters { get; set; } = null!;
+    public DbSet<Partition> Chapters { get; set; } = null!;
 
     public DbSet<BookGenre> Genres { get; set; } = null!;
 
@@ -36,7 +36,7 @@ public sealed class BooksHubContext : DbContext
         CreateRole(modelBuilder);
 
         CreateBook(modelBuilder);
-        CreateChapter(modelBuilder);
+        CreateBookPartition(modelBuilder);
         CreateKeyword(modelBuilder);
         CreateBookGenre(modelBuilder);
 
@@ -132,7 +132,7 @@ public sealed class BooksHubContext : DbContext
             .HasForeignKey(x => x.BookGenreId);
 
         _ = modelBuilder.Entity<Book>()
-            .HasMany(x => x.Chapters)
+            .HasMany(x => x.Partitions)
             .WithOne(x => x.Book)
             .HasForeignKey(x => x.BookId);
 
@@ -147,22 +147,18 @@ public sealed class BooksHubContext : DbContext
             .HasForeignKey(x => x.BookId);
     }
 
-    public static void CreateChapter(ModelBuilder modelBuilder)
+    public static void CreateBookPartition(ModelBuilder modelBuilder)
     {
-        _ = modelBuilder.Entity<Chapter>()
-            .HasKey(x => x.Id);
+        _ = modelBuilder.Entity<Partition>()
+            .HasKey(x => new { x.BookId, x.SequenceNumber });
 
-        _ = modelBuilder.Entity<Chapter>()
-            .Property(x => x.Id)
-            .UseIdentityAlwaysColumn();
-
-        _ = modelBuilder.Entity<Chapter>()
+        _ = modelBuilder.Entity<Partition>()
             .HasOne(x => x.Book)
-            .WithMany(x => x.Chapters)
+            .WithMany(x => x.Partitions)
             .HasForeignKey(x => x.BookId);
 
-        _ = modelBuilder.Entity<Chapter>()
-            .ToTable("chapters");
+        _ = modelBuilder.Entity<Partition>()
+            .ToTable("partitions");
     }
 
     public static void CreateKeyword(ModelBuilder modelBuilder)
