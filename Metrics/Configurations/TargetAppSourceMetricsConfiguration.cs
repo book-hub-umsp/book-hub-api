@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookHub.Metrics.Configurations;
+namespace BookHub.API.Metrics.Configurations;
 
 /// <summary>
 /// Конфигурация указания таргета источника приложения.

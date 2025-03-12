@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace BookHub.Metrics.Configurations;
+namespace BookHub.API.Metrics.Configurations;
 
 public sealed class KestrelMetricServerConfigurationValidator :
     IValidateOptions<KestrelMetricServerConfiguration>
 {
     public ValidateOptionsResult Validate(
-        string? name, 
+        string? name,
         KestrelMetricServerConfiguration options)
     {
         if (string.IsNullOrWhiteSpace(options.Host))

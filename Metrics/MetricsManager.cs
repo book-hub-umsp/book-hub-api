@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-using BookHub.Abstractions.Metrics;
-using BookHub.Metrics.Configurations;
+using BookHub.API.Abstractions.Metrics;
+using BookHub.API.Metrics.Configurations;
 
 using Microsoft.Extensions.Options;
 
-namespace BookHub.Metrics;
+namespace BookHub.API.Metrics;
 
-public sealed class MetricsManager : 
+public sealed class MetricsManager :
     IMetricsManager,
     IDisposable
 {

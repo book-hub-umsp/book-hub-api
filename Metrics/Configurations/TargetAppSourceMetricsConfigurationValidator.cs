@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using BookHub.API.Metrics.Configurations;
+
+using Microsoft.Extensions.Options;
 
 namespace BookHub.Metrics.Configurations;
 

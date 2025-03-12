@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace BookHub.Metrics;
+namespace BookHub.API.Metrics;
 
 /// <summary>
 /// Инструментация для работы с метриками.
