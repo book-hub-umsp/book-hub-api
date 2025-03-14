@@ -9,7 +9,7 @@ namespace BookHub.API.Contracts.REST.Responses.Account.Roles;
 /// <summary>
 /// Транспортная модель роли.
 /// </summary>
-public sealed class RoleDTO
+public sealed class RoleDTO : IResponseModel<RoleDTO, Role>
 {
     [JsonProperty("id", Required = Required.Always)]
     public required long RoleId { get; init; }

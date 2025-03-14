@@ -12,8 +12,8 @@ namespace BookHub.API.Models.DomainEvents.Books;
 /// </typeparam>
 public sealed class PartitionUpdated<TAttribute> : UpdatedBase
 {
-    public override CompositeId<Partition, Id<Book>, PartitionSequenceNumber> Id => 
-        (CompositeId<Partition, Id<Book>, PartitionSequenceNumber>)base.Id;
+    public override CompositeId<Partition, Id<Book>, PartitionSequenceNumber> EntityId => 
+        (CompositeId<Partition, Id<Book>, PartitionSequenceNumber>)base.EntityId;
 
     public TAttribute Attribute { get; }
 

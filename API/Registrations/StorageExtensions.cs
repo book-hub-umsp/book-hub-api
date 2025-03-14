@@ -5,7 +5,6 @@ using BookHub.API.Models.Books.Repository;
 using BookHub.API.Storage.PostgreSQL;
 using BookHub.API.Storage.PostgreSQL.Abstractions;
 using BookHub.API.Storage.PostgreSQL.Repositories;
-using BookHub.Storage.PostgreSQL.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 

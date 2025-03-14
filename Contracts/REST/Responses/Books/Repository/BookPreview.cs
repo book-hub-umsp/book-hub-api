@@ -7,7 +7,8 @@ namespace BookHub.API.Contracts.REST.Responses.Books.Repository;
 /// <summary>
 /// Транспортная модель превью книги.
 /// </summary>
-public sealed class BookPreview
+public sealed class BookPreview : 
+    IResponseModel<BookPreview, Models.Books.Repository.BookPreview>
 {
     [Required]
     [JsonProperty("id", Required = Required.Always)]

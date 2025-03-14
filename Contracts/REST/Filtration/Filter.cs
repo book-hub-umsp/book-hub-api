@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace BookHub.API.Contracts.REST.Filtration;
 
-public sealed class Filter
+public sealed class Filter : IRequestModel<FilterBase>
 {
     [JsonProperty("type", Required = Required.Always)]
     public required FilterType Type { get; set; }
@@ -15,20 +15,16 @@ public sealed class Filter
     [JsonProperty("value")]
     public object? FilterValue { get; set; }
 
-    public static FilterBase ToDomain(Filter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        return filter.Type switch
+    public FilterBase ToDomain() =>
+        Type switch
         {
             FilterType.Equals =>
-                new EqualsFilter(filter.Field, filter.FilterValue!),
+                new EqualsFilter(Field, FilterValue!),
 
             FilterType.Contains =>
-                new ContainsFilter(filter.Field, filter.FilterValue!),
+                new ContainsFilter(Field, FilterValue!),
 
             _ => throw new InvalidOperationException(
-                $"Unknown filter type {filter.Type}.")
+                $"Unknown filter type {Type}.")
         };
-    }
 }

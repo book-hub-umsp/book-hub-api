@@ -7,11 +7,11 @@ namespace BookHub.API.Models.DomainEvents;
 /// </summary>
 public abstract class UpdatedBase
 {
-    public virtual IIdentifier Id { get; }
+    public virtual IIdentifier EntityId { get; }
 
     protected UpdatedBase(IIdentifier id)
     {
         ArgumentNullException.ThrowIfNull(id);
-        Id = id;
+        EntityId = id;
     }
 }

@@ -11,9 +11,9 @@ public class Book : IKeyable
 
     public required string Title { get; set; }
 
-    public User Author { get; set; } = null!;
-
     public required long AuthorId { get; set; }
+
+    public User Author { get; set; } = null!;
 
     public long BookGenreId { get; set; }
 

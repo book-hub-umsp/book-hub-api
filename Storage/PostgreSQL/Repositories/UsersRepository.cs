@@ -53,7 +53,7 @@ public sealed class UsersRepository :
     {
         ArgumentNullException.ThrowIfNull(updated);
 
-        var storageUser = await Context.Users.FindAsync([updated.Id.Value], token)
+        var storageUser = await Context.Users.FindAsync([updated.EntityId.Value], token)
             ?? throw new InvalidOperationException(NOT_EXISTS_MESSAGE);
 
         switch (updated)

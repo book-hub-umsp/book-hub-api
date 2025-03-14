@@ -1,4 +1,5 @@
 ﻿using BookHub.API.Models.Books.Repository;
+using BookHub.API.Models.Identifiers;
 
 namespace BookHub.API.Abstractions.Logic.Services.Books.Repository;
 
@@ -11,5 +12,5 @@ public interface IBookGenresService
 
     public Task<IReadOnlyCollection<BookGenre>> GetBooksGenresAsync(CancellationToken token);
 
-    public Task RemoveBookGenreAsync(BookGenre bookGenre, CancellationToken token);
+    public Task RemoveBookGenreAsync(Id<BookGenre> genreId, CancellationToken token);
 }

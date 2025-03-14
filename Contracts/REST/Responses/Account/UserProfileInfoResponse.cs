@@ -6,7 +6,8 @@ using Newtonsoft.Json;
 
 namespace BookHub.API.Contracts.REST.Responses.Account;
 
-public sealed class UserProfileInfoResponse
+public sealed class UserProfileInfoResponse :
+    IResponseModel<UserProfileInfoResponse, UserProfileInfo>
 {
     [Required]
     [JsonProperty("id", Required = Required.Always)]

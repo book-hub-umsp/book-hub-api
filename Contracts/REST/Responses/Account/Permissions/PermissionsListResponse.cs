@@ -9,7 +9,7 @@ namespace BookHub.API.Contracts.REST.Responses.Account.Permissions;
 /// <summary>
 /// Список из permissions, присутствующих в системе.
 /// </summary>
-public sealed class PermissionsListResponse
+public sealed class PermissionsListResponse 
 {
     [JsonProperty(
         "permissions",

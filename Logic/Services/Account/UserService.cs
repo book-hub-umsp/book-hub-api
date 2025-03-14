@@ -118,6 +118,6 @@ public sealed class UserService : IUserService
 
         _logger.LogDebug(
             "Update user with id: {UserId} completed successfully",
-            updatedUser.Id.Value);
+            updatedUser.EntityId.Value);
     }
 }

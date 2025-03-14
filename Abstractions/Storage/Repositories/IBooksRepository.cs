@@ -1,10 +1,9 @@
 ﻿using BookHub.API.Models.Account;
-using BookHub.API.Models.API.Pagination;
+using BookHub.API.Models.API;
+using BookHub.API.Models.Books;
 using BookHub.API.Models.Books.Repository;
-using BookHub.API.Models.CRUDS.Requests;
+using BookHub.API.Models.DomainEvents.Books;
 using BookHub.API.Models.Identifiers;
-
-using DomainBook = BookHub.API.Models.Books.Repository.Book;
 
 namespace BookHub.API.Abstractions.Storage.Repositories;
 
@@ -14,38 +13,21 @@ namespace BookHub.API.Abstractions.Storage.Repositories;
 public interface IBooksRepository
 {
     public Task AddBookAsync(
-        Id<User> user,
-        AddBookParams addBookParams,
-        CancellationToken token);
-
-    public Task<DomainBook> GetBookAsync(
-        Id<DomainBook> id,
-        CancellationToken token);
-
-    /// <exception cref="InvalidOperationException">
-    /// Если автор книги не соответствует указанному в запросе.
-    /// </exception>
-    public Task UpdateBookContentAsync(
         Id<User> userId,
-        UpdateBookParamsBase updateBookParams,
+        CreatingBook creatingBook,
         CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookPreview>> GetAuthorBooksAsync(
-        Id<User> authorId,
-        PaggingBase pagination,
+    public Task<Book> GetBookByIdAsync(
+        Id<Book> id,
         CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookPreview>> GetBooksAsync(
-        PaggingBase pagination,
+    public Task UpdateBookAsync(
+        Id<User> userId,
+        BookUpdatedBase bookUpdated,
         CancellationToken token);
 
-    public Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewsAsync(
-        IReadOnlySet<Id<DomainBook>> bookIds,
-        CancellationToken token);
-
-    public Task<IReadOnlyCollection<BookPreview>> GetBooksByKeywordAsync(
-        KeyWord keyword,
-        PaggingBase pagination,
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
+        DataManipulation dataManipulation,
         CancellationToken token);
 
     /// <summary>
@@ -70,15 +52,7 @@ public interface IBooksRepository
     /// </exception>
     public Task<bool> IsUserAuthorForBook(
         Id<User> userId,
-        Id<DomainBook> bookId,
-        CancellationToken token);
-
-    /// <remarks>
-    /// Синхронизирует тэги для последней книги добавленной автором.
-    /// </remarks>
-    public Task SynchronizeKeyWordsForBook(
-        Id<User> userId,
-        IReadOnlySet<KeyWord> keyWords,
+        Id<Book> bookId,
         CancellationToken token);
 
     public Task<long> GetBooksTotalCountAsync(CancellationToken token);

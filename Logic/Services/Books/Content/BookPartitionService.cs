@@ -92,7 +92,7 @@ public sealed class BookPartitionService : IBookPartitionService
     {
         ArgumentNullException.ThrowIfNull(updatedChapter);
 
-        var (bookId, partitionNumber) = updatedChapter.Id;
+        var (bookId, partitionNumber) = updatedChapter.EntityId;
 
         await CheckAccessAsync(bookId, token);
 

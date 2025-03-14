@@ -9,20 +9,21 @@ namespace BookHub.API.Contracts.REST.Responses.Books.Repository;
 /// <summary>
 /// Ответ на запрос о получении всех жанров.
 /// </summary>
-public sealed class BooksGenresListResponse
+public sealed class BooksGenresListResponse :
+    IResponseModel<BooksGenresListResponse, IReadOnlyCollection<BookGenre>>
 {
     [Required]
     [JsonProperty("books_genres", Required = Required.Always)]
     public required IReadOnlyCollection<string> BookGenres { get; init; }
 
-    public static BooksGenresListResponse FromDomainsList(
-        IReadOnlyCollection<BookGenre> booksGenres)
+    public static BooksGenresListResponse FromDomain(
+        IReadOnlyCollection<BookGenre> domain)
     {
-        ArgumentNullException.ThrowIfNull(booksGenres);
+        ArgumentNullException.ThrowIfNull(domain);
 
         return new()
         {
-            BookGenres = booksGenres
+            BookGenres = domain
                 .Select(x => SnakeCaseToPascalCase(x.Value))
                 .ToList()
         };

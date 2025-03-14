@@ -9,7 +9,7 @@ namespace BookHub.API.Contracts.REST.Responses.Books.Content;
 /// <summary>
 /// Модель ответа на запрос о получении контента главы.
 /// </summary>
-public sealed class PartitionResponse
+public sealed class PartitionResponse : IResponseModel<PartitionResponse, Partition>
 {
     [Required]
     [JsonProperty("book_id", Required = Required.Always)]

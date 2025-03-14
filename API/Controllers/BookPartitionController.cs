@@ -38,8 +38,7 @@ public sealed class BookPartitionController : ControllerBase
         try
         {
             await _bookPartitionsService.AddPartitionAsync(
-                new(new(addChapterRequest.BookId),
-                    new(addChapterRequest.Content)),
+                addChapterRequest.ToDomain(),
                 token);
 
             _logger.LogDebug("Request was processed with successful result");
@@ -123,7 +122,7 @@ public sealed class BookPartitionController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateChapterContentAsync(
-        [Required][NotNull] UpdatePartitionContentRequest updateChapterRequest,
+        [Required][NotNull] UpdatePartitionContentRequest updatePartitionRequest,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -131,10 +130,7 @@ public sealed class BookPartitionController : ControllerBase
         try
         {
             await _bookPartitionsService.UpdatePartitionAsync(
-                new(new(
-                        new(updateChapterRequest.BookId), 
-                        new(updateChapterRequest.PartitionNumber)),
-                    new(updateChapterRequest.NewContent)),
+                updatePartitionRequest.ToDomain(),
                 token);
 
             _logger.LogDebug("Request was processed with successful result");

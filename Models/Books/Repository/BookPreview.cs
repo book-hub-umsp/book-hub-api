@@ -17,14 +17,14 @@ public sealed class BookPreview
 
     public Id<User> AuthorId { get; }
 
-    public IReadOnlyCollection<PartitionSequenceNumber> Partitions { get; }
+    public IReadOnlySet<PartitionSequenceNumber> Partitions { get; }
 
     public BookPreview(
         Id<Book> id,
         Name<Book> title,
         BookGenre genre,
         Id<User> authorId,
-        IReadOnlyCollection<PartitionSequenceNumber> partitions)
+        IReadOnlySet<PartitionSequenceNumber> partitions)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Title = title ?? throw new ArgumentNullException(nameof(title));

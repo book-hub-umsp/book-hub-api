@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace BookHub.API.Contracts.REST.Requests;
 
-public sealed class DataManipulationRequest
+public sealed class DataManipulationRequest : IRequestModel<DataManipulation>
 {
     [JsonConverter(typeof(PaggingConverter))]
     [JsonProperty("pagination")]
@@ -15,10 +15,10 @@ public sealed class DataManipulationRequest
     [JsonProperty("filters")]
     public IReadOnlyCollection<Filter> Filters { get; init; } = [];
 
-    public static DataManipulation ToDomain(DataManipulationRequest? contract)
+    public DataManipulation ToDomain()
     {
         return new(
-            PaggingBase.ToDomain(contract?.Pagination),
-            contract?.Filters.Select(Filter.ToDomain).ToList() ?? []);
+            PaggingBase.ToDomain(Pagination),
+            Filters.Select(x => x.ToDomain()).ToList() ?? []);
     }
 }

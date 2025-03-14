@@ -36,7 +36,7 @@ internal static class LogicExtensions
     private static IServiceCollection AddBooksActionsHandling(
         this IServiceCollection services)
         => services
-            .AddScoped<IBookDescriptionService, BookDescriptionService>()
+            .AddScoped<IBookService, BookService>()
             .AddScoped<IBookGenresService, BookGenresService>()
             .AddScoped<IBookPartitionService, BookPartitionService>()
             .AddSingleton<IBookParamsConverter, BookParamsConverter>();

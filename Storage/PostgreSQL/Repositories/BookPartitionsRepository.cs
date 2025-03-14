@@ -112,7 +112,7 @@ public sealed class BookPartitionsRepository :
     {
         ArgumentNullException.ThrowIfNull(partitionUpdated);
 
-        var (bookId, partitionNumber) = partitionUpdated.Id;
+        var (bookId, partitionNumber) = partitionUpdated.EntityId;
 
         var existedPartition = await Context.Partitions
             .FindAsync([bookId.Value, partitionNumber.Value], token)

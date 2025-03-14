@@ -32,14 +32,14 @@ public sealed class BooksGenresController : ControllerBase
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> AddBookGenreAsync(
-        [Required][NotNull] AddNewGenreParams addNewGenreParams,
+        [Required][FromQuery][NotNull] string newGenre,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         try
         {
-            await _service.AddBookGenreAsync(new(addNewGenreParams.NewGenre), token);
+            await _service.AddBookGenreAsync(new(newGenre), token);
 
             _logger.LogInformation("Request was processed with successfully result");
 
@@ -70,7 +70,7 @@ public sealed class BooksGenresController : ControllerBase
 
             _logger.LogInformation("Request was processed with successfully result");
 
-            var contractContent = BooksGenresListResponse.FromDomainsList(genres);
+            var contractContent = BooksGenresListResponse.FromDomain(genres);
 
             return Ok(contractContent);
         }
@@ -83,19 +83,19 @@ public sealed class BooksGenresController : ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> DeleteBookGenreAsync(
-        [Required][NotNull] RemoveGenreParams removeGenreParams,
+        [FromRoute][Required][NotNull] long id,
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         try
         {
-            await _service.RemoveBookGenreAsync(new(removeGenreParams.Genre), token);
+            await _service.RemoveBookGenreAsync(new(id), token);
 
             _logger.LogInformation("Request was processed with successfully result");
 
