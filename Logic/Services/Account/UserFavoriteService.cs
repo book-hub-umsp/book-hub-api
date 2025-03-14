@@ -86,19 +86,21 @@ public sealed class UserFavoriteService : IUserFavoriteService
                 pagePagging,
                 token);
 
-        var userFavorites =
-            await _unitOfWork.Books.GetBooksPreviewsAsync(
-                userFavoriteBookIds,
-                token);
+        throw new NotImplementedException();
 
-        _logger.LogDebug(
-            "User's favorite books previews for user {UserId}" +
-            " have been successfully received",
-            currentUserId.Value);
+        //var userFavorites =
+        //    await _unitOfWork.Books.GetBooksPreviewAsync(
+        //        userFavoriteBookIds,
+        //        token);
 
-        return new(
-            userFavorites,
-            new PagePagination(pagePagging, totalFavItems));
+        //_logger.LogDebug(
+        //    "User's favorite books previews for user {UserId}" +
+        //    " have been successfully received",
+        //    currentUserId.Value);
+
+        //return new(
+        //    userFavorites,
+        //    new PagePagination(pagePagging, totalFavItems));
     }
 
     /// <inheritdoc/>

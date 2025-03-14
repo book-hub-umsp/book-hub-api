@@ -41,7 +41,7 @@ public sealed class TestDataManipulationController : ControllerBase
         try
         {
             var users = await _userService.GetUserProfilesInfoAsync(
-                DataManipulationRequest.ToDomain(request),
+                request.ToDomain(),
                 token);
 
             return Ok(

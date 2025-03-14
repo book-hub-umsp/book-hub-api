@@ -1,10 +1,8 @@
 ﻿using BookHub.API.Abstractions;
-using BookHub.API.Abstractions.Logic.Converters.Books.Repository;
 using BookHub.API.Abstractions.Logic.Services.Account;
 using BookHub.API.Abstractions.Logic.Services.Books.Content;
 using BookHub.API.Abstractions.Logic.Services.Books.Repository;
 using BookHub.API.Abstractions.Logic.Services.Favorite;
-using BookHub.API.Logic.Converters.Books.Repository;
 using BookHub.API.Logic.Services.Account;
 using BookHub.API.Logic.Services.Books.Content;
 using BookHub.API.Logic.Services.Books.Repository;
@@ -38,6 +36,5 @@ internal static class LogicExtensions
         => services
             .AddScoped<IBookService, BookService>()
             .AddScoped<IBookGenresService, BookGenresService>()
-            .AddScoped<IBookPartitionService, BookPartitionService>()
-            .AddSingleton<IBookParamsConverter, BookParamsConverter>();
+            .AddScoped<IBookPartitionService, BookPartitionService>();
 }

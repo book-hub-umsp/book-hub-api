@@ -29,6 +29,6 @@ public sealed class StorageBookPreview
             new(storagePreview.AuthorId),
             storagePreview.Partitions
                 .Select(x => new PartitionSequenceNumber(x))
-                .ToList());
+                .ToHashSet());
     }
 }

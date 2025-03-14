@@ -1,6 +1,7 @@
 ﻿using BookHub.API.Abstractions.Logic.Services.Books.Repository;
 using BookHub.API.Abstractions.Storage;
 using BookHub.API.Models.Books.Repository;
+using BookHub.API.Models.Identifiers;
 
 using Microsoft.Extensions.Logging;
 
@@ -43,17 +44,17 @@ public sealed class BookGenresService : IBookGenresService
         return genres;
     }
 
-    public async Task RemoveBookGenreAsync(BookGenre bookGenre, CancellationToken token)
+    public async Task RemoveBookGenreAsync(Id<BookGenre> genreId, CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(bookGenre);
+        ArgumentNullException.ThrowIfNull(genreId);
 
         token.ThrowIfCancellationRequested();
 
-        await _unitOfWork.BooksGenres.RemoveGenreAsync(bookGenre, token);
+        await _unitOfWork.BooksGenres.RemoveGenreAsync(genreId, token);
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation("Genre '{@Genre}' was removed with books links", bookGenre);
+        _logger.LogInformation("Genre '{@Genre}' was removed with books links", genreId);
     }
 
     private readonly IBooksHubUnitOfWork _unitOfWork;

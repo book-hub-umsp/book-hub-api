@@ -1,5 +1,6 @@
 ﻿using BookHub.API.Abstractions.Storage.Repositories;
 using BookHub.API.Models.Books.Repository;
+using BookHub.API.Models.Identifiers;
 using BookHub.API.Storage.PostgreSQL.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
@@ -46,18 +47,18 @@ public sealed class BooksGenresRepository :
     }
 
     public async Task RemoveGenreAsync(
-        BookGenre bookGenre,
+        Id<BookGenre> genreId,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(bookGenre);
+        ArgumentNullException.ThrowIfNull(genreId);
 
         var existedBookGenre =
             await Context.Genres.AsNoTracking()
                 .SingleOrDefaultAsync(
-                    x => bookGenre.Value == x.Value,
+                    x => genreId.Value == x.Id,
                     cancellationToken)
                 ?? throw new InvalidOperationException(
-                    $"Book genre '{bookGenre.Value}' is not already exists.");
+                    $"Book genre '{genreId.Value}' is not already exists.");
 
         _ = Context.Genres.Remove(existedBookGenre);
     }
