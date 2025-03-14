@@ -1,17 +1,17 @@
-﻿using BookHub.Abstractions.Metrics;
+﻿using BookHub.API.Abstractions.Metrics;
 
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace BookHub.Metrics;
+namespace BookHub.API.Metrics;
 
-public sealed class MetricsActionFilter : 
+public sealed class MetricsActionFilter :
     IActionFilter,
     IDisposable
 {
     public MetricsActionFilter(
         IMetricsManager metricsManager)
     {
-        _metricsManager = metricsManager 
+        _metricsManager = metricsManager
             ?? throw new ArgumentNullException(nameof(metricsManager));
     }
 
@@ -19,7 +19,7 @@ public sealed class MetricsActionFilter :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var actionName = 
+        var actionName =
             $"{context.ActionDescriptor.RouteValues["controller"]}" +
             $".{context.ActionDescriptor.RouteValues["action"]}";
 

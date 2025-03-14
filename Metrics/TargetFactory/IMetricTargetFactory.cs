@@ -1,4 +1,4 @@
-﻿namespace BookHub.Metrics.TargetFactory;
+﻿namespace BookHub.API.Metrics.TargetFactory;
 
 /// <summary>
 /// Описывает фабрику для кастомных таргетов.

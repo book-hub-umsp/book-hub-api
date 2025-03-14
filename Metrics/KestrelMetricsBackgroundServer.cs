@@ -1,5 +1,5 @@
-﻿using BookHub.Metrics.Configurations;
-using BookHub.Metrics.TargetFactory;
+﻿using BookHub.API.Metrics.Configurations;
+using BookHub.API.Metrics.TargetFactory;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 using OpenTelemetry.Metrics;
 
-namespace BookHub.Metrics;
+namespace BookHub.API.Metrics;
 
 /// <summary>
 /// Сервер Kestrel, являющийся сайдкаром основного приложения 
@@ -28,7 +28,7 @@ public sealed class KestrelMetricsBackgroundServer : BackgroundService
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        var config = options?.Value 
+        var config = options?.Value
             ?? throw new ArgumentNullException(nameof(options));
 
         _hostAddress = $"https://{config.Host}:{config.Port}";
@@ -38,7 +38,7 @@ public sealed class KestrelMetricsBackgroundServer : BackgroundService
             _hostAddress);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken) =>
+    override protected async Task ExecuteAsync(CancellationToken stoppingToken) =>
         await new WebHostBuilder()
             .UseKestrel()
             .ConfigureServices(

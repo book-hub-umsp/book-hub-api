@@ -1,9 +1,8 @@
-﻿
-using BookHub.Metrics.Configurations;
+﻿using BookHub.API.Metrics.Configurations;
 
 using Microsoft.Extensions.Options;
 
-namespace BookHub.Metrics.TargetFactory;
+namespace BookHub.API.Metrics.TargetFactory;
 
 /// <summary>
 /// Представляет фабрику для кастомных таргетов.
