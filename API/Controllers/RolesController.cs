@@ -43,13 +43,9 @@ public sealed class RolesController : ControllerBase
 
         var dto = new RolesListResponse
         {
-            Roles = rolesList.Select(x => new RoleDTO
-            {
-                RoleId = x.Id.Value,
-                Name = x.Name.Value,
-                Permissions = x.Permissions
-            })
-            .ToList()
+            Roles = rolesList
+                .Select(RoleDTO.FromDomain)
+                .ToList()
         };
 
         return Ok(dto);

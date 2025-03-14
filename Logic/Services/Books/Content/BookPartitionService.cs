@@ -31,7 +31,7 @@ public sealed class BookPartitionService : IBookPartitionService
     }
 
     /// <inheritdoc/>
-    public async Task AddChapterAsync(
+    public async Task AddPartitionAsync(
         CreatingPartition creatingChapter,
         CancellationToken token)
     {

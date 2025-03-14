@@ -26,7 +26,7 @@ public interface IBookPartitionService
     /// Если пользователь не является автором книги, 
     /// в которую добавляет главу.
     /// </exception>
-    public Task AddChapterAsync(
+    public Task AddPartitionAsync(
         CreatingPartition creatingPartition,
         CancellationToken token);
 

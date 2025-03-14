@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using BookHub.API.Models.Books.Content;
+
 using Newtonsoft.Json;
 
 namespace BookHub.API.Contracts.REST.Responses.Books.Content;
@@ -7,7 +9,7 @@ namespace BookHub.API.Contracts.REST.Responses.Books.Content;
 /// <summary>
 /// Модель ответа на запрос о получении контента главы.
 /// </summary>
-public sealed class GetPartitionContentResponse
+public sealed class PartitionResponse
 {
     [Required]
     [JsonProperty("book_id", Required = Required.Always)]
@@ -20,4 +22,12 @@ public sealed class GetPartitionContentResponse
     [Required]
     [JsonProperty("content", Required = Required.Always)]
     public required string Content { get; init; }
+
+    public static PartitionResponse FromDomain(Partition partition) =>
+        new()
+        {
+            BookId = partition.BookId.Value,
+            PartitionNumber = partition.PartitionNumber.Value,
+            Content = partition.Content.Value,
+        };
 }

@@ -12,15 +12,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookHub.API.Service.Controllers;
 
 [ApiController]
+[Route("[controller]")]
 [Authorize]
-[Route("chapters")]
-public sealed class ChaptersController : ControllerBase
+public sealed class BookPartitionController : ControllerBase
 {
-    public ChaptersController(
+    public BookPartitionController(
         IBookPartitionService chaptersService,
-        ILogger<ChaptersController> logger)
+        ILogger<BookPartitionController> logger)
     {
-        _chaptersService = chaptersService
+        _bookPartitionsService = chaptersService
             ?? throw new ArgumentNullException(nameof(chaptersService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -29,7 +29,7 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> AddChapterAsync(
+    public async Task<IActionResult> AddPartitionAsync(
         [Required][NotNull] AddPartitionRequest addChapterRequest,
         CancellationToken token)
     {
@@ -37,7 +37,7 @@ public sealed class ChaptersController : ControllerBase
 
         try
         {
-            await _chaptersService.AddChapterAsync(
+            await _bookPartitionsService.AddPartitionAsync(
                 new(new(addChapterRequest.BookId),
                     new(addChapterRequest.Content)),
                 token);
@@ -59,7 +59,7 @@ public sealed class ChaptersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> RemoveChapterAsync(
+    public async Task<IActionResult> RemovePartitionAsync(
         [FromQuery] long bookId,
         [FromQuery] int partitionNumber,
         CancellationToken token)
@@ -68,7 +68,7 @@ public sealed class ChaptersController : ControllerBase
 
         try
         {
-            await _chaptersService.RemovePartitionAsync(
+            await _bookPartitionsService.RemovePartitionAsync(
                 new(bookId), 
                 new(partitionNumber), 
                 token);
@@ -87,11 +87,11 @@ public sealed class ChaptersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<GetPartitionContentResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<PartitionResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AllowAnonymous]
-    public async Task<IActionResult> GetChapterContentAsync(
+    public async Task<ActionResult<PartitionResponse>> GetPartitionAsync(
         [FromQuery] long bookId,
         [FromQuery] int partitionNumber,
         CancellationToken token)
@@ -100,21 +100,14 @@ public sealed class ChaptersController : ControllerBase
 
         try
         {
-            var partition = await _chaptersService.GetPartitionAsync(
+            var partition = await _bookPartitionsService.GetPartitionAsync(
                 new(bookId),
                 new(partitionNumber), 
                 token);
 
-            var contract = new GetPartitionContentResponse
-            {
-                BookId = partition.BookId.Value,
-                PartitionNumber = partition.PartitionNumber.Value,
-                Content = partition.Content.Value
-            };
-
             _logger.LogDebug("Request was processed with successful result");
 
-            return Ok(contract);
+            return Ok(PartitionResponse.FromDomain(partition));
         }
         catch (Exception ex)
         when (ex is InvalidOperationException or ArgumentException)
@@ -137,7 +130,7 @@ public sealed class ChaptersController : ControllerBase
 
         try
         {
-            await _chaptersService.UpdatePartitionAsync(
+            await _bookPartitionsService.UpdatePartitionAsync(
                 new(new(
                         new(updateChapterRequest.BookId), 
                         new(updateChapterRequest.PartitionNumber)),
@@ -157,6 +150,6 @@ public sealed class ChaptersController : ControllerBase
         }
     }
 
-    private readonly IBookPartitionService _chaptersService;
-    private readonly ILogger<ChaptersController> _logger;
+    private readonly IBookPartitionService _bookPartitionsService;
+    private readonly ILogger<BookPartitionController> _logger;
 }

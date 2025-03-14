@@ -23,4 +23,12 @@ public sealed class RoleDTO
         ItemConverterParameters = [typeof(SnakeCaseNamingStrategy)],
         Required = Required.Always)]
     public required IReadOnlyCollection<Permission> Permissions { get; init; }
+
+    public static RoleDTO FromDomain(Role role) =>
+        new()
+        {
+            RoleId = role.Id.Value,
+            Name = role.Name.Value,
+            Permissions = role.Permissions,
+        };
 }
