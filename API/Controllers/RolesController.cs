@@ -36,7 +36,7 @@ public class RolesController : ControllerBase
     [ProducesResponseType<RolesListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("all")]
-    public async Task<IActionResult> GetAllRolesAsync(CancellationToken token)
+    public async Task<ActionResult<RolesListResponse>> GetAllRolesAsync(CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
