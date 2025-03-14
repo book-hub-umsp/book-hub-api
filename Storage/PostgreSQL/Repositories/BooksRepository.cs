@@ -95,6 +95,61 @@ public sealed class BooksRepository :
             storageBook.BookStatus);
     }
 
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
+        IReadOnlySet<Id<Book>> bookIds,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(bookIds);
+
+        token.ThrowIfCancellationRequested();
+
+        var storageBook = await Context.Books
+            .AsNoTracking()
+            .Include(x => x.BookGenre)
+            .Include(x => x.Partitions.Select(x => x.SequenceNumber))
+            .Where(x => bookIds.Contains(new(x.Id)))
+            .ToListAsync(token);
+
+        return storageBook
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId),
+                x.Partitions
+                    .Select(x => new PartitionSequenceNumber(x.SequenceNumber))
+                    .ToHashSet()))
+            .ToList();
+    }
+
+    public async Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
+        DataManipulation dataManipulation,
+        CancellationToken token)
+    {
+        ArgumentNullException.ThrowIfNull(dataManipulation);
+
+        token.ThrowIfCancellationRequested();
+
+        var storageBook = await Context.Books
+            .AsNoTracking()
+            .Include(x => x.BookGenre)
+            .Include(x => x.Partitions.Select(x => x.SequenceNumber))
+            .WithFiltering(dataManipulation.Filters)
+            .WithPaging(dataManipulation.Pagination)
+            .ToListAsync(token);
+
+        return storageBook
+            .Select(x => new BookPreview(
+                new(x.Id),
+                new(x.Title),
+                new(x.BookGenre.Value),
+                new(x.AuthorId),
+                x.Partitions
+                    .Select(x => new PartitionSequenceNumber(x.SequenceNumber))
+                    .ToHashSet()))
+            .ToList();
+    }
+
     public async Task UpdateBookAsync(
         Id<User> userId,
         BookUpdatedBase bookUpdated,
@@ -137,34 +192,6 @@ public sealed class BooksRepository :
                     .ToList();
                 break;
         };
-    }
-
-    public async Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
-        DataManipulation dataManipulation,
-        CancellationToken token)
-    {
-        ArgumentNullException.ThrowIfNull(dataManipulation);
-
-        token.ThrowIfCancellationRequested();
-
-        var storageBook = await Context.Books
-            .AsNoTracking()
-            .Include(x => x.BookGenre)
-            .Include(x => x.Partitions.Select(x => x.SequenceNumber))
-            .WithFiltering(dataManipulation.Filters)
-            .WithPaging(dataManipulation.Pagination)
-            .ToListAsync(token);
-
-        return storageBook
-            .Select(x => new BookPreview(
-                new(x.Id),
-                new(x.Title),
-                new(x.BookGenre.Value),
-                new(x.AuthorId),
-                x.Partitions
-                    .Select(x => new PartitionSequenceNumber(x.SequenceNumber))
-                    .ToHashSet()))
-            .ToList();
     }
 
     public async Task<bool> IsUserAuthorForBook(

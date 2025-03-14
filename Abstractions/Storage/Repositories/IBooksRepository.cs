@@ -27,6 +27,10 @@ public interface IBooksRepository
         CancellationToken token);
 
     public Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
+        IReadOnlySet<Id<Book>> bookIds,
+        CancellationToken token);
+
+    public Task<IReadOnlyCollection<BookPreview>> GetBooksPreviewAsync(
         DataManipulation dataManipulation,
         CancellationToken token);
 

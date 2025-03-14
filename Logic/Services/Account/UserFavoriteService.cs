@@ -8,8 +8,6 @@ using BookHub.API.Models.Identifiers;
 
 using Microsoft.Extensions.Logging;
 
-using BookPreview = BookHub.API.Models.Books.Repository.BookPreview;
-
 namespace BookHub.API.Logic.Services.Account;
 
 /// <summary>
@@ -86,21 +84,19 @@ public sealed class UserFavoriteService : IUserFavoriteService
                 pagePagging,
                 token);
 
-        throw new NotImplementedException();
+        var userFavorites =
+            await _unitOfWork.Books.GetBooksPreviewAsync(
+                userFavoriteBookIds,
+                token);
 
-        //var userFavorites =
-        //    await _unitOfWork.Books.GetBooksPreviewAsync(
-        //        userFavoriteBookIds,
-        //        token);
+        _logger.LogDebug(
+            "User's favorite books previews for user {UserId}" +
+            " have been successfully received",
+            currentUserId.Value);
 
-        //_logger.LogDebug(
-        //    "User's favorite books previews for user {UserId}" +
-        //    " have been successfully received",
-        //    currentUserId.Value);
-
-        //return new(
-        //    userFavorites,
-        //    new PagePagination(pagePagging, totalFavItems));
+        return new(
+            userFavorites,
+            new PagePagination(pagePagging, totalFavItems));
     }
 
     /// <inheritdoc/>
