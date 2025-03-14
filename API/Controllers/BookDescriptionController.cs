@@ -28,7 +28,7 @@ namespace BookHub.API.Service.Controllers;
 [ApiController]
 [Authorize]
 [Route("books")]
-public partial class BookDescriptionController : ControllerBase
+public sealed partial class BookDescriptionController : ControllerBase
 {
     public BookDescriptionController(
         IBookDescriptionService service,

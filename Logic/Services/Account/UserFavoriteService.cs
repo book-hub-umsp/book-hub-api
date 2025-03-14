@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using BookPreview = BookHub.API.Models.Books.Repository.BookPreview;
 
-namespace BookHub.API.Logic.Services.Favorite;
+namespace BookHub.API.Logic.Services.Account;
 
 /// <summary>
 /// Представляет собой сервис для работы с избранными книгами пользователя
@@ -41,6 +41,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
     {
         ArgumentNullException.ThrowIfNull(bookId);
 
+        token.ThrowIfCancellationRequested();
+
         var currentUserId = _userIdentityFacade.Id!;
 
         _logger.LogDebug(
@@ -55,7 +57,7 @@ public sealed class UserFavoriteService : IUserFavoriteService
 
         await _unitOfWork.SaveChangesAsync(token);
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "A new favorite link with user id {UserId}" +
             " and book id {BookId} have been successfully added",
             currentUserId.Value,
@@ -69,21 +71,14 @@ public sealed class UserFavoriteService : IUserFavoriteService
     {
         ArgumentNullException.ThrowIfNull(pagePagging);
 
+        token.ThrowIfCancellationRequested();
+
         var currentUserId = _userIdentityFacade.Id!;
 
         var totalFavItems =
             await _unitOfWork.FavoriteLinks.GetTotalCountUserFavoritesLinkAsync(
                 currentUserId,
                 token);
-
-        _logger.LogDebug(
-            "Trying to get paginated favorite links from total" +
-            " favorite links count {Total} with settings: page number {PageNumber}" +
-            " and elements in page {ElementsInPage} for user with id {UserId}",
-            totalFavItems,
-            pagePagging.PageNumber,
-            pagePagging.PageSize,
-            currentUserId.Value);
 
         var userFavoriteBookIds = await _unitOfWork.FavoriteLinks
             .GetUsersFavoriteBookIdsAsync(
@@ -112,6 +107,8 @@ public sealed class UserFavoriteService : IUserFavoriteService
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(bookId);
+
+        token.ThrowIfCancellationRequested();
 
         var currentUserId = _userIdentityFacade.Id!;
 

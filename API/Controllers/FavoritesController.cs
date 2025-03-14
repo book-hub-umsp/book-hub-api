@@ -3,11 +3,10 @@
 using BookHub.API.Abstractions.Logic.Services.Favorite;
 using BookHub.API.Contracts;
 using BookHub.API.Contracts.REST.Responses;
+using BookHub.API.Contracts.REST.Responses.Books.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using ContractPreview = BookHub.API.Contracts.REST.Responses.Books.Repository.BookPreview;
 
 namespace BookHub.API.Service.Controllers;
 
@@ -15,8 +14,8 @@ namespace BookHub.API.Service.Controllers;
 /// Контроллер для работы с избранным пользователя.
 /// </summary>
 [ApiController]
+[Route("[controller]")]
 [Authorize]
-[Route("favorites")]
 public sealed class FavoritesController : ControllerBase
 {
     public FavoritesController(
@@ -38,17 +37,13 @@ public sealed class FavoritesController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogInformation(
-            "Trying to add book {BookId} to favorites",
-            bookId);
-
         try
         {
             await _favoriteService.AddFavoriteLinkAsync(
                 new(bookId),
                 token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successfully result");
 
             return Ok();
         }
@@ -61,7 +56,7 @@ public sealed class FavoritesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType<NewsItemsResponse<ContractPreview>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NewsItemsResponse<BookPreview>>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetUserFavoriteBooksAsync(
@@ -71,8 +66,6 @@ public sealed class FavoritesController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug("Start processing get paginated favorite books request");
-
         try
         {
             var favoriteBooksPreviews =
@@ -80,12 +73,12 @@ public sealed class FavoritesController : ControllerBase
                     new(pageNumber, elementsInPage),
                     token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successfully result");
 
             return Ok(
-                NewsItemsResponse<ContractPreview>.FromDomain(
+                NewsItemsResponse<BookPreview>.FromDomain(
                     favoriteBooksPreviews,
-                    ContractPreview.FromDomain));
+                    BookPreview.FromDomain));
         }
         catch (Exception ex)
         when (ex is InvalidOperationException or ArgumentException)
@@ -106,16 +99,11 @@ public sealed class FavoritesController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug(
-            "Start processing removing from favorites request" +
-            " for book {BookId}",
-            bookId);
-
         try
         {
             await _favoriteService.RemoveFavoriteLinkAsync(new(bookId), token);
 
-            _logger.LogDebug("Request was processed with succesfull result");
+            _logger.LogDebug("Request was processed with successfully result");
 
             return Ok();
         }

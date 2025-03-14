@@ -17,7 +17,7 @@ namespace BookHub.API.Service.Controllers;
 [Route("[controller]")]
 [Produces("application/json")]
 [Authorize(Policy = nameof(Permission.ModerateAccounts))]
-public class RolesController : ControllerBase
+public sealed class RolesController : ControllerBase
 {
     public RolesController(
         IRolesService rolesService,

@@ -13,7 +13,7 @@ namespace BookHub.API.Service.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class TestDataManipulationController : ControllerBase
+public sealed class TestDataManipulationController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ILogger<TestDataManipulationController> _logger;

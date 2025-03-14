@@ -29,7 +29,10 @@ public sealed class FavoriteLinkRepository :
     {
         ArgumentNullException.ThrowIfNull(favoriteLink);
 
+        token.ThrowIfCancellationRequested();
+
         var user = await Context.Users
+            .AsNoTracking()
             .SingleOrDefaultAsync(
                 u => u.Id == favoriteLink.UserId.Value,
                 token)
@@ -37,6 +40,7 @@ public sealed class FavoriteLinkRepository :
                 $"User with id {favoriteLink.UserId.Value} doesn't exist.");
 
         var book = await Context.Books
+            .AsNoTracking()
             .SingleOrDefaultAsync(
                 b => b.Id == favoriteLink.BookId.Value,
                 token)
@@ -44,6 +48,7 @@ public sealed class FavoriteLinkRepository :
                 $"Book with id {favoriteLink.BookId.Value} doesn't exist.");
 
         var userFavorite = await Context.FavoriteLinks
+            .AsNoTracking()
             .SingleOrDefaultAsync(
                 u => u.UserId == user.Id && u.BookId == book.Id,
                 token);
@@ -73,19 +78,12 @@ public sealed class FavoriteLinkRepository :
         ArgumentNullException.ThrowIfNull(userId);
         ArgumentNullException.ThrowIfNull(pagePagination);
 
-        var user = await Context.Users
-            .SingleOrDefaultAsync(
-                u => u.Id == userId.Value,
-                token)
-            ?? throw new InvalidOperationException(
-                $"User with id {userId.Value} doesn't exist.");
+        token.ThrowIfCancellationRequested();
 
         var storageFavLinks = await Context.FavoriteLinks
-            .Select(x => new { x.BookId, x.UserId })
-            .Where(f => f.UserId == user.Id)
-            .OrderBy(x => x.BookId)
-            .Skip(pagePagination.PageSize * (pagePagination.PageNumber - 1))
-            .Take(pagePagination.PageSize)
+            .AsNoTracking()
+            .Where(x => x.UserId == userId.Value)
+            .WithPaging(pagePagination)
             .ToListAsync(token);
 
         return storageFavLinks
@@ -118,13 +116,7 @@ public sealed class FavoriteLinkRepository :
     {
         ArgumentNullException.ThrowIfNull(userId);
 
-        if (await Context.Users.AsNoTracking().SingleOrDefaultAsync(
-                u => u.Id == userId.Value,
-                token) is null)
-        {
-            throw new InvalidOperationException(
-                $"User with id {userId.Value} doesn't exist.");
-        }
+        token.ThrowIfCancellationRequested();
 
         return await Context.FavoriteLinks
             .Where(x => x.UserId == userId.Value)
