@@ -13,10 +13,10 @@ namespace BookHub.API.Service.Controllers;
 /// <summary>
 /// Контроллер для управления permissions.
 /// </summary>
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = nameof(Permission.ModerateAccounts))]
 public class RolesController : ControllerBase
 {
     public RolesController(
@@ -28,7 +28,6 @@ public class RolesController : ControllerBase
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    //Todo: сделать только для админов.
     /// <summary>
     /// Получает список ролей в системе.
     /// </summary>
@@ -60,7 +59,6 @@ public class RolesController : ControllerBase
     /// Изменяет permissions для существующей в системе роли.
     /// </summary>
     [HttpPatch]
-    [Authorize(Policy = nameof(Permission.ModerateAccounts))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -94,7 +92,6 @@ public class RolesController : ControllerBase
     /// Изменяет роль для указанного пользователя.
     /// </summary>
     [HttpPatch]
-    [Authorize(Policy = nameof(Permission.ModerateAccounts))]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

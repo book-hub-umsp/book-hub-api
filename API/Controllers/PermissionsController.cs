@@ -8,14 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookHub.API.Service.Controllers;
 
-//Todo: сделать только для админов
 /// <summary>
 /// Контроллер для управления permissions.
 /// </summary>
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
+[Authorize(Policy = nameof(Permission.ModerateAccounts))]
 public sealed class PermissionsController : ControllerBase
 {
     public PermissionsController(
@@ -34,10 +33,8 @@ public sealed class PermissionsController : ControllerBase
     [ProducesResponseType<PermissionsListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("all")]
-    public IActionResult GetAllPermissions()
+    public ActionResult<PermissionsListResponse> GetAllPermissions()
     {
-        _logger.LogDebug("Getting all system permissions");
-
         var permissions = Enum.GetValues<Permission>();
 
         return Ok(new PermissionsListResponse
@@ -64,7 +61,7 @@ public sealed class PermissionsController : ControllerBase
         [FromRoute] long userId,
         CancellationToken token)
     {
-        _logger.LogDebug("Trying get permissions for user {UserId}", userId);
+        token.ThrowIfCancellationRequested();
 
         try
         {

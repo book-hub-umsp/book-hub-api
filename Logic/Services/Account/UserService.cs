@@ -5,7 +5,6 @@ using BookHub.API.Abstractions.Storage;
 using BookHub.API.Models.Account;
 using BookHub.API.Models.API;
 using BookHub.API.Models.API.Pagination;
-using BookHub.API.Models.DomainEvents;
 using BookHub.API.Models.DomainEvents.Account;
 using BookHub.API.Models.Identifiers;
 
@@ -34,7 +33,7 @@ public sealed class UserService : IUserService
 
     /// <inheritdoc/>
     public async Task<UserProfileInfo?> FindUserProfileInfoByEmailAsync(
-        MailAddress mailAddress, 
+        MailAddress mailAddress,
         CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(mailAddress);
@@ -118,7 +117,7 @@ public sealed class UserService : IUserService
         await _booksHubUnitOfWork.SaveChangesAsync(token);
 
         _logger.LogDebug(
-            "Update user with id: {UserId} completed successfully", 
+            "Update user with id: {UserId} completed successfully",
             updatedUser.Id.Value);
     }
 }
