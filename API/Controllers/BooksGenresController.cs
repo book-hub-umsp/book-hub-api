@@ -37,13 +37,11 @@ public sealed class BooksGenresController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug("Start processing adding new genre request");
-
         try
         {
             await _service.AddBookGenreAsync(new(addNewGenreParams.NewGenre), token);
 
-            _logger.LogInformation("Request was processed with succesfull result");
+            _logger.LogInformation("Request was processed with successfully result");
 
             return Ok();
         }
@@ -61,18 +59,16 @@ public sealed class BooksGenresController : ControllerBase
     [ProducesResponseType<BooksGenresListResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<FailureCommandResultResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetBooksGenresAsync(
+    public async Task<ActionResult<BooksGenresListResponse>> GetBooksGenresAsync(
         CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-
-        _logger.LogDebug("Start processing getting all books genres request");
 
         try
         {
             var genres = await _service.GetBooksGenresAsync(token);
 
-            _logger.LogInformation("Request was processed with succesfull result");
+            _logger.LogInformation("Request was processed with successfully result");
 
             var contractContent = BooksGenresListResponse.FromDomainsList(genres);
 
@@ -97,13 +93,11 @@ public sealed class BooksGenresController : ControllerBase
     {
         token.ThrowIfCancellationRequested();
 
-        _logger.LogDebug("Start processing removing genre request");
-
         try
         {
             await _service.RemoveBookGenreAsync(new(removeGenreParams.Genre), token);
 
-            _logger.LogInformation("Request was processed with succesfull result");
+            _logger.LogInformation("Request was processed with successfully result");
 
             return Ok();
         }

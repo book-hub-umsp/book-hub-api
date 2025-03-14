@@ -24,9 +24,9 @@ public sealed class BooksGenresRepository :
     {
         ArgumentNullException.ThrowIfNull(bookGenre);
 
-        var existedBookGenre =
-            await Context.Genres.AsNoTracking()
-                .SingleOrDefaultAsync(x => bookGenre.Value == x.Value, token);
+        var existedBookGenre = await Context.Genres
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => bookGenre.Value == x.Value, token);
 
         if (existedBookGenre is not null)
         {

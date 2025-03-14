@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookHub.API.Service.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("book/partition")]
 [Authorize]
 public sealed class BookPartitionController : ControllerBase
 {
