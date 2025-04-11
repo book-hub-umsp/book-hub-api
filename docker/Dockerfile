@@ -18,7 +18,7 @@ RUN dotnet restore "./API/API.csproj"
 COPY . .
 WORKDIR "/src/API"
 
-# RUN dotnet dev-certs https
+RUN dotnet dev-certs https --trust
 RUN dotnet build "./API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
