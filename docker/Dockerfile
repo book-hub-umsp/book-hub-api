@@ -18,7 +18,6 @@ RUN dotnet restore "./API/API.csproj"
 COPY . .
 WORKDIR "/src/API"
 
-RUN dotnet dev-certs https --trust
 RUN dotnet build "./API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
@@ -28,5 +27,7 @@ RUN dotnet publish "./API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+RUN dotnet dev-certs https --trust
 
 ENTRYPOINT ["dotnet", "BookHub.API.Service.dll"]
